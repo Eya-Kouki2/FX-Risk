@@ -11,16 +11,16 @@ import { toast } from "sonner";
 import { ROLE_LABELS, logAudit, type AppRole } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Sign in — FX Risk Console" }] }),
+  head: () => ({ meta: [{ title: "Connexion — FX Risk Console" }] }),
   component: LoginPage,
 });
 
 const DEMO_USERS: { role: AppRole; email: string; label: string }[] = [
-  { role: "front_office", email: "front@fxrisk.demo", label: "Front Office Operator" },
-  { role: "back_office", email: "back@fxrisk.demo", label: "Back Office Validator" },
-  { role: "risk_team", email: "risk@fxrisk.demo", label: "Risk Team Analyst" },
-  { role: "manager", email: "manager@fxrisk.demo", label: "Responsible Manager" },
-  { role: "admin", email: "admin@fxrisk.demo", label: "Administrator" },
+  { role: "front_office", email: "front@fxrisk.demo", label: "Opérateur Front Office" },
+  { role: "back_office", email: "back@fxrisk.demo", label: "Validateur Back Office" },
+  { role: "risk_team", email: "risk@fxrisk.demo", label: "Analyste Équipe des Risques" },
+  { role: "manager", email: "manager@fxrisk.demo", label: "Responsable" },
+  { role: "admin", email: "admin@fxrisk.demo", label: "Administrateur" },
 ];
 
 function LoginPage() {
@@ -44,7 +44,7 @@ function LoginPage() {
     setLoading(false);
     if (error) return toast.error(error.message);
     await logAudit("login", "auth");
-    toast.success("Welcome back");
+    toast.success("Bienvenue !");
     navigate({ to: "/app" });
   };
 
@@ -60,7 +60,7 @@ function LoginPage() {
     });
     setLoading(false);
     if (error) return toast.error(error.message);
-    toast.success("Account created. Signing in…");
+    toast.success("Compte créé. Connexion en cours…");
     await supabase.auth.signInWithPassword({ email, password });
     navigate({ to: "/app" });
   };
@@ -107,7 +107,7 @@ function LoginPage() {
 
     setLoading(false);
     if (res.error) return toast.error(res.error.message);
-    toast.success(`Signed in as ${u.label}`);
+    toast.success(`Connecté en tant que ${u.label}`);
     navigate({ to: "/app" });
   };
 
@@ -123,24 +123,24 @@ function LoginPage() {
             </div>
             <div>
               <div className="font-display font-bold">FX Risk Console</div>
-              <div className="text-xs text-sidebar-foreground/60">Operational Risk Management</div>
+              <div className="text-xs text-sidebar-foreground/60">Gestion des Risques Opérationnels</div>
             </div>
           </div>
         </div>
         <div className="relative space-y-6 max-w-md">
           <h1 className="text-4xl font-display font-bold leading-tight">
-            Centralized spot-FX operational risk supervision.
+            Supervision centralisée des risques opérationnels Spot-FX.
           </h1>
           <p className="text-sidebar-foreground/70">
-            Real-time scoring, anomaly detection, multi-role validation workflows, and audit-grade
-            traceability for every transaction your bank processes.
+            Scoring en temps réel, détection des anomalies, workflows de validation multi-rôles et
+            traçabilité de niveau audit pour chaque transaction traitée par votre banque.
           </p>
           <div className="grid grid-cols-2 gap-3 pt-4">
             {[
-              { k: "Avg. risk score", v: "32" },
-              { k: "Daily operations", v: "284" },
-              { k: "Critical alerts", v: "4" },
-              { k: "Validation SLA", v: "12 min" },
+              { k: "Score de risque moyen", v: "32" },
+              { k: "Opérations quotidiennes", v: "284" },
+              { k: "Alertes critiques", v: "4" },
+              { k: "SLA de validation", v: "12 min" },
             ].map((s) => (
               <div key={s.k} className="rounded-lg border border-sidebar-border/40 bg-sidebar-accent/40 p-3">
                 <div className="text-xs text-sidebar-foreground/60">{s.k}</div>
@@ -150,7 +150,7 @@ function LoginPage() {
           </div>
         </div>
         <div className="relative text-xs text-sidebar-foreground/50">
-          ISO 27001 patterns · RLS-backed access · Audit logged
+          Conformité ISO 27001 · Accès sécurisé RLS · Journaux d'audit
         </div>
       </div>
 
@@ -164,13 +164,13 @@ function LoginPage() {
             <div className="font-display font-bold">FX Risk Console</div>
           </div>
 
-          <h2 className="text-2xl font-display font-bold">Access your console</h2>
-          <p className="text-sm text-muted-foreground mt-1">Sign in or create a workspace account.</p>
+          <h2 className="text-2xl font-display font-bold">Accéder à votre console</h2>
+          <p className="text-sm text-muted-foreground mt-1">Connectez-vous ou créez un compte de travail.</p>
 
           <Tabs defaultValue="signin" className="mt-6">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Sign in</TabsTrigger>
-              <TabsTrigger value="signup">Create account</TabsTrigger>
+              <TabsTrigger value="signin">Connexion</TabsTrigger>
+              <TabsTrigger value="signup">Créer un compte</TabsTrigger>
             </TabsList>
             <TabsContent value="signin" className="space-y-4 mt-4">
               <form onSubmit={signIn} className="space-y-4">
@@ -189,14 +189,14 @@ function LoginPage() {
                   </div>
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  Sign in <ArrowRight className="ml-2 h-4 w-4" />
+                  Connexion <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </form>
             </TabsContent>
             <TabsContent value="signup" className="space-y-4 mt-4">
               <form onSubmit={signUp} className="space-y-4">
                 <div className="space-y-1.5">
-                  <Label htmlFor="fullName">Full name</Label>
+                  <Label htmlFor="fullName">Nom complet</Label>
                   <Input id="fullName" required value={fullName} onChange={(e) => setFullName(e.target.value)} />
                 </div>
                 <div className="space-y-1.5">
@@ -208,7 +208,7 @@ function LoginPage() {
                   <Input id="password2" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Department / Role</Label>
+                  <Label>Département / Rôle</Label>
                   <Select value={role} onValueChange={(v) => setRole(v as AppRole)}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
@@ -218,14 +218,14 @@ function LoginPage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>Create account</Button>
+                <Button type="submit" className="w-full" disabled={loading}>Créer un compte</Button>
               </form>
             </TabsContent>
           </Tabs>
 
           <div className="my-6 flex items-center gap-3">
             <div className="flex-1 h-px bg-border" />
-            <span className="text-xs text-muted-foreground">Demo workspace</span>
+            <span className="text-xs text-muted-foreground">Espace de démonstration</span>
             <div className="flex-1 h-px bg-border" />
           </div>
           <div className="grid grid-cols-1 gap-2">

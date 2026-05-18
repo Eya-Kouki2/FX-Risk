@@ -74,7 +74,7 @@ export function OperationDetailDialog({ operationId, onClose }: Props) {
     }).eq("id", op.id);
     if (error) return toast.error(error.message);
     await logAudit("correct_and_resubmit", "operations", { ref: op.operation_ref });
-    toast.success(`Operation ${op.operation_ref} corrected and resubmitted`);
+    toast.success(`Opération ${op.operation_ref} corrigée et resoumise`);
     qc.invalidateQueries();
     onClose();
   };
@@ -87,12 +87,12 @@ export function OperationDetailDialog({ operationId, onClose }: Props) {
       update.validated_at = new Date().toISOString();
     }
     if (status === "rejected") {
-      update.rejection_reason = form.rejection_reason || "Compliance review required";
+      update.rejection_reason = form.rejection_reason || "Examen de conformité requis";
     }
     const { error } = await supabase.from("operations").update(update).eq("id", op.id);
     if (error) return toast.error(error.message);
     await logAudit(`${status}_operation`, "operations", { ref: op.operation_ref });
-    toast.success(`Operation ${op.operation_ref} ${status}`);
+    toast.success(`Opération ${op.operation_ref} ${status === "validated" ? "validée" : status === "rejected" ? "rejetée" : "escaladée"}`);
     qc.invalidateQueries();
     onClose();
   };
@@ -101,7 +101,7 @@ export function OperationDetailDialog({ operationId, onClose }: Props) {
     <Dialog open={!!operationId} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         {!op ? (
-          <div className="py-12 text-center text-muted-foreground">Loading…</div>
+          <div className="py-12 text-center text-muted-foreground">Chargement…</div>
         ) : (
           <>
             <DialogHeader>
@@ -111,47 +111,47 @@ export function OperationDetailDialog({ operationId, onClose }: Props) {
                 <StatusBadge status={op.status as OpStatus} />
               </div>
               <DialogDescription>
-                Created {format(new Date(op.created_at), "PPpp")} · {op.client_name}
+                Créée le {format(new Date(op.created_at), "PPpp")} · {op.client_name}
               </DialogDescription>
             </DialogHeader>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
-              <Info label="Counterparty" value={op.counterparty} />
-              <Info label="Pair" value={`${op.buy_currency}/${op.sell_currency}`} mono />
-              <Info label="Amount" value={formatCurrency(Number(op.amount), op.buy_currency)} />
-              <Info label="Exchange rate" value={Number(op.exchange_rate).toFixed(4)} mono />
-              <Info label="Market rate" value={op.market_rate ? Number(op.market_rate).toFixed(4) : "—"} mono />
-              <Info label="Value date" value={format(new Date(op.value_date), "PP")} />
-              <Info label="SWIFT" value={op.swift_reference || "Missing"} mono danger={!op.swift_reference} />
-              <Info label="Risk score" value={`${op.risk_score}/100`} />
-              <Info label="Validated by" value={op.validated_by ? "✓" : "—"} />
+              <Info label="Contrepartie" value={op.counterparty} />
+              <Info label="Paire" value={`${op.buy_currency}/${op.sell_currency}`} mono />
+              <Info label="Montant" value={formatCurrency(Number(op.amount), op.buy_currency)} />
+              <Info label="Taux de change" value={Number(op.exchange_rate).toFixed(4)} mono />
+              <Info label="Taux de marché" value={op.market_rate ? Number(op.market_rate).toFixed(4) : "—"} mono />
+              <Info label="Date valeur" value={format(new Date(op.value_date), "PP")} />
+              <Info label="SWIFT" value={op.swift_reference || "Manquant"} mono danger={!op.swift_reference} />
+              <Info label="Score de risque" value={`${op.risk_score}/100`} />
+              <Info label="Validé par" value={op.validated_by ? "✓" : "—"} />
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground uppercase">Risk indicator</Label>
+              <Label className="text-xs text-muted-foreground uppercase">Indicateur de risque</Label>
               <RiskBar score={op.risk_score} />
             </div>
 
             {op.comments && (
               <div className="text-sm bg-muted/40 rounded-md p-3 border border-border">
-                <div className="text-xs text-muted-foreground uppercase mb-1">Comments</div>
+                <div className="text-xs text-muted-foreground uppercase mb-1">Commentaires</div>
                 {op.comments}
               </div>
             )}
 
             {op.rejection_reason && (
               <div className="text-sm bg-destructive/10 rounded-md p-3 border border-destructive/30">
-                <div className="text-xs text-destructive uppercase mb-1 font-semibold">Rejection reason</div>
+                <div className="text-xs text-destructive uppercase mb-1 font-semibold">Motif de rejet</div>
                 {op.rejection_reason}
               </div>
             )}
 
             <div>
               <h3 className="text-xs uppercase tracking-wide text-muted-foreground mb-2">
-                Alerts ({opAlerts.length})
+                Alertes ({opAlerts.length})
               </h3>
               {opAlerts.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No alerts triggered.</p>
+                <p className="text-sm text-muted-foreground">Aucune alerte déclenchée.</p>
               ) : (
                 <ul className="space-y-1.5">
                   {opAlerts.map((a) => (
@@ -171,10 +171,10 @@ export function OperationDetailDialog({ operationId, onClose }: Props) {
             {canCorrect && (
               <div className="border-t border-border pt-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-display font-semibold text-sm">Correction workflow</h3>
+                  <h3 className="font-display font-semibold text-sm">Processus de correction</h3>
                   {!editing && (
                     <Button size="sm" variant="outline" onClick={() => setEditing(true)}>
-                      <Edit3 className="h-3.5 w-3.5 mr-1.5" /> Correct
+                      <Edit3 className="h-3.5 w-3.5 mr-1.5" /> Corriger
                     </Button>
                   )}
                 </div>
@@ -191,7 +191,7 @@ export function OperationDetailDialog({ operationId, onClose }: Props) {
                       </div>
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-xs">Comments</Label>
+                      <Label className="text-xs">Commentaires</Label>
                       <Textarea rows={2} value={form.comments} onChange={(e) => setForm((f) => ({ ...f, comments: e.target.value }))} />
                     </div>
                   </div>
@@ -201,29 +201,29 @@ export function OperationDetailDialog({ operationId, onClose }: Props) {
 
             {canValidate && (
               <div className="border-t border-border pt-4 space-y-2">
-                <Label className="text-xs">Rejection reason (if rejecting)</Label>
-                <Input value={form.rejection_reason} onChange={(e) => setForm((f) => ({ ...f, rejection_reason: e.target.value }))} placeholder="e.g. SWIFT reference invalid" />
+                <Label className="text-xs">Motif de rejet (si refus)</Label>
+                <Input value={form.rejection_reason} onChange={(e) => setForm((f) => ({ ...f, rejection_reason: e.target.value }))} placeholder="ex: Référence SWIFT invalide" />
               </div>
             )}
 
             <DialogFooter className="gap-2 flex-wrap">
               {canCorrect && editing && (
-                <Button onClick={resubmit}><Save className="h-4 w-4 mr-1.5" /> Resubmit</Button>
+                <Button onClick={resubmit}><Save className="h-4 w-4 mr-1.5" /> Resoumettre</Button>
               )}
               {canValidate && (
                 <>
                   <Button variant="destructive" size="sm" onClick={() => act("rejected")}>
-                    <XCircle className="h-4 w-4 mr-1.5" /> Reject
+                    <XCircle className="h-4 w-4 mr-1.5" /> Rejeter
                   </Button>
                   <Button variant="outline" size="sm" onClick={() => act("escalated")}>
-                    <AlertTriangle className="h-4 w-4 mr-1.5" /> Escalate
+                    <AlertTriangle className="h-4 w-4 mr-1.5" /> Escalader
                   </Button>
                   <Button size="sm" onClick={() => act("validated")}>
-                    <CheckCircle2 className="h-4 w-4 mr-1.5" /> Validate
+                    <CheckCircle2 className="h-4 w-4 mr-1.5" /> Valider
                   </Button>
                 </>
               )}
-              <Button variant="ghost" onClick={onClose}>Close</Button>
+              <Button variant="ghost" onClick={onClose}>Fermer</Button>
             </DialogFooter>
           </>
         )}

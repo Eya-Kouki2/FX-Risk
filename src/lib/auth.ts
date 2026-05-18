@@ -6,9 +6,9 @@ export type AppRole = "front_office" | "back_office" | "risk_team" | "manager" |
 export const ROLE_LABELS: Record<AppRole, string> = {
   front_office: "Front Office",
   back_office: "Back Office",
-  risk_team: "Risk Team",
-  manager: "Manager",
-  admin: "Administrator",
+  risk_team: "Équipe des Risques",
+  manager: "Responsable",
+  admin: "Administrateur",
 };
 
 export interface SessionUser {

@@ -32,15 +32,15 @@ function ApprovalQueue() {
     }).eq("id", id);
     if (error) return toast.error(error.message);
     await logAudit(`manager_${status}`, "approvals", { ref });
-    toast.success(`Decision recorded for ${ref}`);
+    toast.success(`Décision enregistrée pour ${ref}`);
     qc.invalidateQueries({ queryKey: ["escalated-ops"] });
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-display font-bold">Approval Queue</h1>
-        <p className="text-sm text-muted-foreground mt-1">Critical and escalated operations awaiting manager decision</p>
+        <h1 className="text-2xl sm:text-3xl font-display font-bold">File d'approbation</h1>
+        <p className="text-sm text-muted-foreground mt-1">Opérations critiques et escaladées en attente de décision managériale</p>
       </div>
 
       <div className="space-y-3">
@@ -59,18 +59,18 @@ function ApprovalQueue() {
                 </div>
               </div>
               <div className="flex gap-2">
-                <Button size="sm" variant="ghost"><Search className="h-4 w-4 mr-1.5" /> Investigate</Button>
+                <Button size="sm" variant="ghost"><Search className="h-4 w-4 mr-1.5" /> Investiguer</Button>
                 <Button size="sm" onClick={() => act(o.id, "validated", o.operation_ref)}>
-                  <CheckCircle2 className="h-4 w-4 mr-1.5" /> Approve
+                  <CheckCircle2 className="h-4 w-4 mr-1.5" /> Approuver
                 </Button>
                 <Button size="sm" variant="destructive" onClick={() => act(o.id, "rejected", o.operation_ref)}>
-                  <XCircle className="h-4 w-4 mr-1.5" /> Reject
+                  <XCircle className="h-4 w-4 mr-1.5" /> Rejeter
                 </Button>
               </div>
             </div>
           </div>
         ))}
-        {!ops.length && <div className="stat-card text-center text-muted-foreground py-12">No escalations pending.</div>}
+        {!ops.length && <div className="stat-card text-center text-muted-foreground py-12">Aucune escalade en attente.</div>}
       </div>
     </div>
   );

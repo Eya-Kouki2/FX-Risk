@@ -35,7 +35,7 @@ function ReportsPage() {
     const a = document.createElement("a");
     a.href = url; a.download = `fx-operations-${format(new Date(), "yyyy-MM-dd")}.csv`;
     a.click(); URL.revokeObjectURL(url);
-    toast.success("CSV exported");
+    toast.success("Export CSV réussi");
   };
 
   const totalExposure = ops.reduce((s, o) => s + Number(o.amount), 0);
@@ -44,33 +44,33 @@ function ReportsPage() {
 
   const reports = [
     {
-      title: "Operations report",
-      desc: "Full transaction ledger with risk scores",
+      title: "Rapport des opérations",
+      desc: "Grand livre des transactions avec scores de risque",
       icon: FileSpreadsheet,
       actions: [
-        { label: "PDF", icon: FileDown, fn: () => { exportOperationsPdf(ops as any); toast.success("PDF exported"); } },
+        { label: "PDF", icon: FileDown, fn: () => { exportOperationsPdf(ops as any); toast.success("Export PDF réussi"); } },
         { label: "CSV", icon: Download, fn: exportCsv },
       ],
     },
     {
-      title: "Alerts report",
-      desc: "Risk alerts grouped by severity",
+      title: "Rapport des alertes",
+      desc: "Alertes de risque groupées par sévérité",
       icon: FileText,
       actions: [
-        { label: "PDF", icon: FileDown, fn: () => { exportAlertsPdf(alerts as any); toast.success("PDF exported"); } },
+        { label: "PDF", icon: FileDown, fn: () => { exportAlertsPdf(alerts as any); toast.success("Export PDF réussi"); } },
       ],
     },
     {
-      title: "Audit summary",
-      desc: "User activity and operational traceability",
+      title: "Rapport d'audit",
+      desc: "Activité des utilisateurs et traçabilité opérationnelle",
       icon: FileText,
       actions: [
-        { label: "PDF", icon: FileDown, fn: () => { exportAuditPdf(audit as any); toast.success("PDF exported"); } },
+        { label: "PDF", icon: FileDown, fn: () => { exportAuditPdf(audit as any); toast.success("Export PDF réussi"); } },
       ],
     },
     {
-      title: "Risk exposure report",
-      desc: "Aggregated exposure by counterparty",
+      title: "Rapport d'exposition aux risques",
+      desc: "Exposition agrégée par contrepartie",
       icon: FileText,
       actions: [
         { label: "CSV", icon: Download, fn: exportCsv },
@@ -81,21 +81,21 @@ function ReportsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-display font-bold">Reports</h1>
-        <p className="text-sm text-muted-foreground mt-1">Export operational data and risk summaries</p>
+        <h1 className="text-2xl sm:text-3xl font-display font-bold">Rapports</h1>
+        <p className="text-sm text-muted-foreground mt-1">Exporter les données opérationnelles et les synthèses de risques</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="stat-card">
-          <div className="text-xs text-muted-foreground uppercase tracking-wide">Total exposure</div>
+          <div className="text-xs text-muted-foreground uppercase tracking-wide">Exposition totale</div>
           <div className="text-2xl font-display font-bold mt-2">{formatCurrency(totalExposure)}</div>
         </div>
         <div className="stat-card">
-          <div className="text-xs text-muted-foreground uppercase tracking-wide">Critical operations</div>
+          <div className="text-xs text-muted-foreground uppercase tracking-wide">Opérations critiques</div>
           <div className="text-2xl font-display font-bold mt-2 text-risk-critical">{critical}</div>
         </div>
         <div className="stat-card">
-          <div className="text-xs text-muted-foreground uppercase tracking-wide">Validated</div>
+          <div className="text-xs text-muted-foreground uppercase tracking-wide">Validées</div>
           <div className="text-2xl font-display font-bold mt-2 text-success">{validated}</div>
         </div>
       </div>

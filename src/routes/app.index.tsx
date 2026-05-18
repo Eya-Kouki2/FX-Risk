@@ -85,32 +85,32 @@ function DashboardPage() {
           <h1 className="text-2xl sm:text-3xl font-display font-bold mt-1">
             {greetingByRole(user?.role)}
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">Real-time operational risk overview · {format(new Date(), "EEEE, MMM d, yyyy")}</p>
+          <p className="text-sm text-muted-foreground mt-1">Aperçu des risques opérationnels en temps réel · {format(new Date(), "EEEE d MMMM yyyy")}</p>
         </div>
         <Link
           to="/app/operations"
           className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
         >
-          View all operations <ArrowUpRight className="h-4 w-4" />
+          Voir toutes les opérations <ArrowUpRight className="h-4 w-4" />
         </Link>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard icon={Activity} label="Total operations" value={total.toString()} sub="last 500 tracked" tone="info" />
-        <KpiCard icon={AlertTriangle} label="High-risk operations" value={highRisk.toString()} sub={`${total ? Math.round((highRisk / total) * 100) : 0}% of book`} tone="warning" />
-        <KpiCard icon={TrendingUp} label="Average risk score" value={`${avgScore}/100`} sub="Lower is safer" tone="primary" />
-        <KpiCard icon={CheckCircle2} label="Pending validation" value={pending.toString()} sub="Awaiting Back Office" tone="success" />
+        <KpiCard icon={Activity} label="Total des opérations" value={total.toString()} sub="500 dernières suivies" tone="info" />
+        <KpiCard icon={AlertTriangle} label="Opérations à risque élevé" value={highRisk.toString()} sub={`${total ? Math.round((highRisk / total) * 100) : 0}% du portefeuille`} tone="warning" />
+        <KpiCard icon={TrendingUp} label="Score de risque moyen" value={`${avgScore}/100`} sub="Plus bas = plus sûr" tone="primary" />
+        <KpiCard icon={CheckCircle2} label="En attente de validation" value={pending.toString()} sub="En attente du Back Office" tone="success" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="stat-card lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="font-display font-semibold">Risk trend — 14 days</h3>
-              <p className="text-xs text-muted-foreground">Operations volume vs. average risk score</p>
+              <h3 className="font-display font-semibold">Tendance des risques — 14 jours</h3>
+              <p className="text-xs text-muted-foreground">Volume des opérations vs. score de risque moyen</p>
             </div>
             <div className="text-right">
-              <div className="text-xs text-muted-foreground">Operational exposure</div>
+              <div className="text-xs text-muted-foreground">Exposition opérationnelle</div>
               <div className="font-display font-bold text-lg">{formatCurrency(exposure)}</div>
             </div>
           </div>
@@ -137,8 +137,8 @@ function DashboardPage() {
         </div>
 
         <div className="stat-card">
-          <h3 className="font-display font-semibold mb-1">Risk distribution</h3>
-          <p className="text-xs text-muted-foreground mb-4">Operations by severity</p>
+          <h3 className="font-display font-semibold mb-1">Distribution des risques</h3>
+          <p className="text-xs text-muted-foreground mb-4">Opérations par sévérité</p>
           <ResponsiveContainer width="100%" height={220}>
             <PieChart>
               <Pie data={riskDist} dataKey="value" nameKey="name" innerRadius={50} outerRadius={80} paddingAngle={2}>
@@ -153,8 +153,8 @@ function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="stat-card">
-          <h3 className="font-display font-semibold mb-1">Operations by currency pair</h3>
-          <p className="text-xs text-muted-foreground mb-4">Top traded</p>
+          <h3 className="font-display font-semibold mb-1">Opérations par paire de devises</h3>
+          <p className="text-xs text-muted-foreground mb-4">Les plus échangées</p>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={byPair} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
@@ -169,23 +169,23 @@ function DashboardPage() {
         <div className="stat-card lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="font-display font-semibold">Recent operations</h3>
-              <p className="text-xs text-muted-foreground">Latest activity</p>
+              <h3 className="font-display font-semibold">Opérations récentes</h3>
+              <p className="text-xs text-muted-foreground">Dernière activité</p>
             </div>
             <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-              <Clock className="h-3 w-3" /> Live
+              <Clock className="h-3 w-3" /> En direct
             </span>
           </div>
           <div className="overflow-x-auto -mx-2">
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-xs uppercase tracking-wide text-muted-foreground border-b border-border">
-                  <th className="text-left font-medium px-2 py-2">Ref</th>
+                  <th className="text-left font-medium px-2 py-2">Réf.</th>
                   <th className="text-left font-medium px-2 py-2">Client</th>
-                  <th className="text-left font-medium px-2 py-2">Pair</th>
-                  <th className="text-right font-medium px-2 py-2">Amount</th>
-                  <th className="text-left font-medium px-2 py-2">Risk</th>
-                  <th className="text-left font-medium px-2 py-2">Status</th>
+                  <th className="text-left font-medium px-2 py-2">Paire</th>
+                  <th className="text-right font-medium px-2 py-2">Montant</th>
+                  <th className="text-left font-medium px-2 py-2">Risque</th>
+                  <th className="text-left font-medium px-2 py-2">Statut</th>
                 </tr>
               </thead>
               <tbody>
@@ -200,7 +200,7 @@ function DashboardPage() {
                   </tr>
                 ))}
                 {!ops.length && (
-                  <tr><td colSpan={6} className="text-center text-muted-foreground py-8">No operations yet. Create one to see analytics.</td></tr>
+                  <tr><td colSpan={6} className="text-center text-muted-foreground py-8">Aucune opération. Créez-en une pour voir les analyses.</td></tr>
                 )}
               </tbody>
             </table>
@@ -209,8 +209,8 @@ function DashboardPage() {
       </div>
 
       <div className="stat-card">
-        <h3 className="font-display font-semibold mb-1">Active alerts</h3>
-        <p className="text-xs text-muted-foreground mb-4">Critical and high severity issues awaiting review</p>
+        <h3 className="font-display font-semibold mb-1">Alertes actives</h3>
+        <p className="text-xs text-muted-foreground mb-4">Problèmes critiques et élevés en attente de traitement</p>
         <div className="space-y-2">
           {alerts.filter((a) => !a.acknowledged).slice(0, 5).map((a) => (
             <div key={a.id} className="flex items-start gap-3 p-3 rounded-md border border-border bg-card">
@@ -229,10 +229,10 @@ function DashboardPage() {
             </div>
           ))}
           {alerts.filter((a) => !a.acknowledged).length === 0 && (
-            <p className="text-sm text-muted-foreground text-center py-4">No active alerts. All clear.</p>
+            <p className="text-sm text-muted-foreground text-center py-4">Aucune alerte active. Tout est normal.</p>
           )}
           {critical > 0 && (
-            <p className="text-xs text-risk-critical">{critical} critical alert{critical > 1 ? "s" : ""} require attention.</p>
+            <p className="text-xs text-risk-critical">{critical} alerte{critical > 1 ? "s" : ""} critique{critical > 1 ? "s" : ""} nécessite{critical > 1 ? "nt" : ""} une attention immédiate.</p>
           )}
         </div>
       </div>
@@ -242,12 +242,12 @@ function DashboardPage() {
 
 function greetingByRole(role?: string) {
   switch (role) {
-    case "front_office": return "Front Office workspace";
-    case "back_office": return "Back Office validation desk";
-    case "risk_team": return "Risk monitoring center";
-    case "manager": return "Executive risk overview";
-    case "admin": return "Platform administration";
-    default: return "Operational dashboard";
+    case "front_office": return "Espace de travail Front Office";
+    case "back_office": return "Bureau de validation Back Office";
+    case "risk_team": return "Centre de surveillance des risques";
+    case "manager": return "Vue d'ensemble des risques";
+    case "admin": return "Administration de la plateforme";
+    default: return "Tableau de bord opérationnel";
   }
 }
 

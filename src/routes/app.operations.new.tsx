@@ -53,7 +53,7 @@ function NewOperation() {
       return toast.error(parsed.error.issues[0]?.message ?? "Invalid input");
     }
     if (parsed.data.buy_currency === parsed.data.sell_currency) {
-      return toast.error("Buy and sell currencies must differ");
+      return toast.error("Les devises d'achat et de vente doivent être différentes");
     }
     setSubmitting(true);
     const payload = {
@@ -68,7 +68,7 @@ function NewOperation() {
     setSubmitting(false);
     if (error) return toast.error(error.message);
     await logAudit("create_operation", "operations", { ref: data?.operation_ref, status });
-    toast.success(`Operation ${data?.operation_ref} ${status === "draft" ? "saved" : "submitted"} (risk ${data?.risk_score}/100)`);
+    toast.success(`Opération ${data?.operation_ref} ${status === "draft" ? "sauvegardée" : "soumise"} (risque ${data?.risk_score}/100)`);
     navigate({ to: "/app/operations" });
   };
 
@@ -77,64 +77,64 @@ function NewOperation() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-display font-bold">New FX operation</h1>
-        <p className="text-sm text-muted-foreground mt-1">Enter a spot foreign exchange transaction. Risk score and alerts are computed automatically.</p>
+        <h1 className="text-2xl sm:text-3xl font-display font-bold">Nouvelle opération FX</h1>
+        <p className="text-sm text-muted-foreground mt-1">Saisissez une transaction de change au comptant. Le score de risque et les alertes sont calculés automatiquement.</p>
       </div>
 
       <form onSubmit={(e) => { e.preventDefault(); submit("pending"); }} className="space-y-6">
         <section className="stat-card space-y-4">
-          <h2 className="font-display font-semibold">Counterparty</h2>
+          <h2 className="font-display font-semibold">Contrepartie</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Field label="Client name" required>
+            <Field label="Nom du client" required>
               <Input value={form.client_name} onChange={(e) => update("client_name")(e.target.value)} placeholder="International Trading Co." required />
             </Field>
-            <Field label="Counterparty (bank)" required>
+            <Field label="Contrepartie (banque)" required>
               <Input value={form.counterparty} onChange={(e) => update("counterparty")(e.target.value)} placeholder="HSBC London" required />
             </Field>
           </div>
         </section>
 
         <section className="stat-card space-y-4">
-          <h2 className="font-display font-semibold">Trade details</h2>
+          <h2 className="font-display font-semibold">Détails de la transaction</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <Field label="Buy currency">
+            <Field label="Devise achetée">
               <Select value={form.buy_currency} onValueChange={update("buy_currency")}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>{CURRENCIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
               </Select>
             </Field>
-            <Field label="Sell currency">
+            <Field label="Devise vendue">
               <Select value={form.sell_currency} onValueChange={update("sell_currency")}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>{CURRENCIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
               </Select>
             </Field>
-            <Field label="Amount" required>
+            <Field label="Montant" required>
               <Input type="number" step="0.01" value={form.amount} onChange={(e) => update("amount")(e.target.value)} placeholder="500000" required />
             </Field>
-            <Field label="Value date" required>
+            <Field label="Date valeur" required>
               <Input type="date" value={form.value_date} onChange={(e) => update("value_date")(e.target.value)} required />
             </Field>
-            <Field label="Exchange rate" required>
+            <Field label="Taux de change" required>
               <Input type="number" step="0.0001" value={form.exchange_rate} onChange={(e) => update("exchange_rate")(e.target.value)} placeholder="1.0853" required />
             </Field>
-            <Field label="Market reference rate" hint="Used for deviation checks">
+            <Field label="Taux de marché de référence" hint="Utilisé pour les contrôles de déviation">
               <Input type="number" step="0.0001" value={form.market_rate} onChange={(e) => update("market_rate")(e.target.value)} placeholder="1.0850" />
             </Field>
-            <Field label="SWIFT reference" hint="11-char BIC ideally">
+            <Field label="Référence SWIFT" hint="Code BIC de 11 caractères idéalement">
               <Input value={form.swift_reference} onChange={(e) => update("swift_reference")(e.target.value.toUpperCase())} placeholder="HSBCGB2LXXX" />
             </Field>
           </div>
         </section>
 
         <section className="stat-card space-y-4">
-          <h2 className="font-display font-semibold">Comments</h2>
-          <Textarea rows={3} value={form.comments} onChange={(e) => update("comments")(e.target.value)} placeholder="Optional operational notes…" />
+          <h2 className="font-display font-semibold">Commentaires</h2>
+          <Textarea rows={3} value={form.comments} onChange={(e) => update("comments")(e.target.value)} placeholder="Notes opérationnelles optionnelles…" />
         </section>
 
         <div className="flex flex-wrap gap-3 justify-end">
-          <Button type="button" variant="outline" onClick={() => submit("draft")} disabled={submitting}>Save draft</Button>
-          <Button type="submit" disabled={submitting}>Submit for validation</Button>
+          <Button type="button" variant="outline" onClick={() => submit("draft")} disabled={submitting}>Sauvegarder brouillon</Button>
+          <Button type="submit" disabled={submitting}>Soumettre pour validation</Button>
         </div>
       </form>
     </div>

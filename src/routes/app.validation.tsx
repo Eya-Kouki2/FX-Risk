@@ -36,15 +36,15 @@ function ValidationQueue() {
     const { error } = await supabase.from("operations").update(update).eq("id", id);
     if (error) return toast.error(error.message);
     await logAudit(`${status}_operation`, "validation", { ref });
-    toast.success(`Operation ${ref} ${status}`);
+    toast.success(`Opération ${ref} ${status === "validated" ? "validée" : status === "rejected" ? "rejetée" : "escaladée"}`);
     qc.invalidateQueries({ queryKey: ["pending-ops"] });
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-display font-bold">Validation Queue</h1>
-        <p className="text-sm text-muted-foreground mt-1">Review pending operations · sorted by risk score</p>
+        <h1 className="text-2xl sm:text-3xl font-display font-bold">File de validation</h1>
+        <p className="text-sm text-muted-foreground mt-1">Examiner les opérations en attente · triées par score de risque</p>
       </div>
 
       <div className="space-y-3">
@@ -57,7 +57,7 @@ function ValidationQueue() {
                   <RiskBadge level={o.risk_level as RiskLevel} />
                   {!o.swift_reference && (
                     <span className="inline-flex items-center gap-1 text-xs text-destructive">
-                      <AlertTriangle className="h-3 w-3" /> No SWIFT
+                      <AlertTriangle className="h-3 w-3" /> SWIFT manquant
                     </span>
                   )}
                 </div>
@@ -66,10 +66,10 @@ function ValidationQueue() {
                   <span className="text-sm text-muted-foreground">via {o.counterparty}</span>
                 </div>
                 <div className="flex items-center gap-6 text-sm flex-wrap">
-                  <div><span className="text-muted-foreground">Pair:</span> <span className="font-mono">{o.buy_currency}/{o.sell_currency}</span></div>
-                  <div><span className="text-muted-foreground">Amount:</span> {formatCurrency(Number(o.amount), o.buy_currency)}</div>
-                  <div><span className="text-muted-foreground">Rate:</span> <span className="font-mono">{Number(o.exchange_rate).toFixed(4)}</span></div>
-                  <div><span className="text-muted-foreground">Value:</span> {format(new Date(o.value_date), "MMM d, yyyy")}</div>
+                  <div><span className="text-muted-foreground">Paire :</span> <span className="font-mono">{o.buy_currency}/{o.sell_currency}</span></div>
+                  <div><span className="text-muted-foreground">Montant :</span> {formatCurrency(Number(o.amount), o.buy_currency)}</div>
+                  <div><span className="text-muted-foreground">Taux :</span> <span className="font-mono">{Number(o.exchange_rate).toFixed(4)}</span></div>
+                  <div><span className="text-muted-foreground">Valeur :</span> {format(new Date(o.value_date), "d MMM yyyy")}</div>
                 </div>
                 {o.comments && <p className="text-sm text-muted-foreground italic">"{o.comments}"</p>}
                 <div className="max-w-xs"><RiskBar score={o.risk_score} /></div>
@@ -77,20 +77,20 @@ function ValidationQueue() {
               {(user?.role === "back_office" || user?.role === "manager" || user?.role === "admin") && (
                 <div className="flex flex-col gap-2 min-w-[140px]">
                   <Button size="sm" onClick={() => act(o.id, "validated", o.operation_ref)}>
-                    <CheckCircle2 className="h-4 w-4 mr-1.5" /> Validate
+                    <CheckCircle2 className="h-4 w-4 mr-1.5" /> Valider
                   </Button>
                   <Button size="sm" variant="outline" onClick={() => act(o.id, "escalated", o.operation_ref)}>
-                    <AlertTriangle className="h-4 w-4 mr-1.5" /> Escalate
+                    <AlertTriangle className="h-4 w-4 mr-1.5" /> Escalader
                   </Button>
                   <Button size="sm" variant="destructive" onClick={() => act(o.id, "rejected", o.operation_ref)}>
-                    <XCircle className="h-4 w-4 mr-1.5" /> Reject
+                    <XCircle className="h-4 w-4 mr-1.5" /> Rejeter
                   </Button>
                 </div>
               )}
             </div>
           </div>
         ))}
-        {!ops.length && <div className="stat-card text-center text-muted-foreground py-12">Validation queue is clear.</div>}
+        {!ops.length && <div className="stat-card text-center text-muted-foreground py-12">File de validation vide.</div>}
       </div>
     </div>
   );

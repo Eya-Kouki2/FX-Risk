@@ -16,8 +16,8 @@ function AuditPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-display font-bold">Audit Logs</h1>
-        <p className="text-sm text-muted-foreground mt-1">Full traceability of user actions across modules</p>
+        <h1 className="text-2xl sm:text-3xl font-display font-bold">Journaux d'audit</h1>
+        <p className="text-sm text-muted-foreground mt-1">Traçabilité complète des actions utilisateur par module</p>
       </div>
 
       <div className="stat-card !p-0 overflow-hidden">
@@ -25,12 +25,12 @@ function AuditPage() {
           <table className="w-full text-sm">
             <thead className="bg-muted/40">
               <tr className="text-xs uppercase tracking-wide text-muted-foreground">
-                <th className="text-left font-medium px-4 py-3">Timestamp</th>
-                <th className="text-left font-medium px-4 py-3">User</th>
+                <th className="text-left font-medium px-4 py-3">Horodatage</th>
+                <th className="text-left font-medium px-4 py-3">Utilisateur</th>
                 <th className="text-left font-medium px-4 py-3">Action</th>
                 <th className="text-left font-medium px-4 py-3">Module</th>
-                <th className="text-left font-medium px-4 py-3">Result</th>
-                <th className="text-left font-medium px-4 py-3">Details</th>
+                <th className="text-left font-medium px-4 py-3">Résultat</th>
+                <th className="text-left font-medium px-4 py-3">Détails</th>
               </tr>
             </thead>
             <tbody>
@@ -46,7 +46,7 @@ function AuditPage() {
                   </td>
                 </tr>
               ))}
-              {!logs.length && <tr><td colSpan={6} className="text-center text-muted-foreground py-12">No audit events recorded.</td></tr>}
+              {!logs.length && <tr><td colSpan={6} className="text-center text-muted-foreground py-12">Aucun événement d'audit enregistré.</td></tr>}
             </tbody>
           </table>
         </div>

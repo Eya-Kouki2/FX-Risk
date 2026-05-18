@@ -48,16 +48,16 @@ function HeatmapPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-display font-bold">Risk Cartography</h1>
-        <p className="text-sm text-muted-foreground mt-1">Probability × impact distribution across the FX book</p>
+        <h1 className="text-2xl sm:text-3xl font-display font-bold">Cartographie des risques</h1>
+        <p className="text-sm text-muted-foreground mt-1">Distribution Probabilité × Impact sur le portefeuille FX</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="stat-card lg:col-span-2">
-          <h3 className="font-display font-semibold mb-4">Heatmap matrix</h3>
+          <h3 className="font-display font-semibold mb-4">Matrice de risques</h3>
           <div className="flex">
             <div className="flex flex-col-reverse justify-around pr-3 text-xs text-muted-foreground writing-vertical-rl" style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}>
-              Probability →
+              Probabilité →
             </div>
             <div className="flex-1">
               <div className="grid grid-cols-3 gap-2">
@@ -82,7 +82,7 @@ function HeatmapPage() {
         </div>
 
         <div className="stat-card">
-          <h3 className="font-display font-semibold mb-3">Top risky operations</h3>
+          <h3 className="font-display font-semibold mb-3">Opérations les plus risquées</h3>
           <div className="space-y-2">
             {top.map((o, i) => (
               <div key={i} className="flex items-center justify-between text-sm border-b border-border last:border-0 pb-2">
@@ -97,7 +97,7 @@ function HeatmapPage() {
                 }`}>{o.risk_score}</div>
               </div>
             ))}
-            {!top.length && <p className="text-sm text-muted-foreground text-center py-6">No data yet</p>}
+            {!top.length && <p className="text-sm text-muted-foreground text-center py-6">Pas encore de données</p>}
           </div>
         </div>
       </div>

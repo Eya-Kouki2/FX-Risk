@@ -52,12 +52,12 @@ function OperationsList() {
     <div className="space-y-6">
       <div className="flex items-end justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-display font-bold">FX Operations</h1>
-          <p className="text-sm text-muted-foreground mt-1">All spot foreign exchange transactions</p>
+          <h1 className="text-2xl sm:text-3xl font-display font-bold">Opérations FX</h1>
+          <p className="text-sm text-muted-foreground mt-1">Toutes les transactions de change au comptant</p>
         </div>
         {(user?.role === "front_office" || user?.role === "admin") && (
           <Button asChild>
-            <Link to="/app/operations/new"><Plus className="h-4 w-4 mr-2" />New operation</Link>
+            <Link to="/app/operations/new"><Plus className="h-4 w-4 mr-2" />Nouvelle opération</Link>
           </Button>
         )}
       </div>
@@ -66,23 +66,23 @@ function OperationsList() {
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
           <div className="sm:col-span-2 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search by client, reference, counterparty…" value={q} onChange={(e) => setQ(e.target.value)} className="pl-9" />
+            <Input placeholder="Rechercher par client, référence, contrepartie…" value={q} onChange={(e) => setQ(e.target.value)} className="pl-9" />
           </div>
           <Select value={status} onValueChange={setStatus}>
             <SelectTrigger><Filter className="h-3.5 w-3.5 mr-1" /><SelectValue placeholder="Status" /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All statuses</SelectItem>
-              {["draft","pending","validated","rejected","escalated","settled"].map((s) => (
-                <SelectItem key={s} value={s}>{s[0].toUpperCase()+s.slice(1)}</SelectItem>
+              <SelectItem value="all">Tous les statuts</SelectItem>
+              {(["draft","pending","validated","rejected","escalated","settled"] as const).map((s) => (
+                <SelectItem key={s} value={s}>{{ draft: "Brouillon", pending: "En attente", validated: "Validé", rejected: "Rejeté", escalated: "Escaladé", settled: "Réglé" }[s]}</SelectItem>
               ))}
             </SelectContent>
           </Select>
           <Select value={risk} onValueChange={setRisk}>
             <SelectTrigger><SelectValue placeholder="Risk level" /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All risk levels</SelectItem>
-              {["low","moderate","high","critical"].map((s) => (
-                <SelectItem key={s} value={s}>{s[0].toUpperCase()+s.slice(1)}</SelectItem>
+              <SelectItem value="all">Tous les niveaux</SelectItem>
+              {(["low","moderate","high","critical"] as const).map((s) => (
+                <SelectItem key={s} value={s}>{{ low: "Faible", moderate: "Modéré", high: "Élevé", critical: "Critique" }[s]}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -122,14 +122,14 @@ function OperationsList() {
                   </td>
                   <td className="px-4 py-3"><StatusBadge status={o.status as OpStatus} /></td>
                   <td className="px-4 py-3 font-mono text-xs">
-                    {o.swift_reference ? <span className="text-success">{o.swift_reference}</span> : <span className="text-destructive">Missing</span>}
+                    {o.swift_reference ? <span className="text-success">{o.swift_reference}</span> : <span className="text-destructive">Manquant</span>}
                   </td>
                 </tr>
               ))}
               {!filtered.length && !isLoading && (
-                <tr><td colSpan={9} className="text-center text-muted-foreground py-12">No operations match the filters.</td></tr>
+                <tr><td colSpan={9} className="text-center text-muted-foreground py-12">Aucune opération ne correspond aux filtres.</td></tr>
               )}
-              {isLoading && <tr><td colSpan={9} className="text-center text-muted-foreground py-12">Loading…</td></tr>}
+              {isLoading && <tr><td colSpan={9} className="text-center text-muted-foreground py-12">Chargement…</td></tr>}
             </tbody>
           </table>
         </div>
