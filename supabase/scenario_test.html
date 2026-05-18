@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Scénario de Test de Bout en Bout — FX Risk Platform</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #111827;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --primary: #6366f1;
+      --primary-glow: rgba(99, 102, 241, 0.15);
+      --border: #1f2937;
+      
+      --risk-low: #10b981;
+      --risk-moderate: #f59e0b;
+      --risk-high: #ef4444;
+      --risk-critical: #7f1d1d;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .page-break {
+        page-break-before: always;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .card, .step, table {
+        border: 1px solid #ddd !important;
+        background: #fff !important;
+        box-shadow: none !important;
+      }
+      th {
+        background-color: #f3f4f6 !important;
+        color: #000000 !important;
+      }
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      margin: 0;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+      position: relative;
+    }
+
+    .badge-top {
+      background: var(--primary-glow);
+      color: var(--primary);
+      padding: 6px 16px;
+      border-radius: 99px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      display: inline-block;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin: 0 0 10px 0;
+      background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      font-weight: 400;
+    }
+
+    .no-print-banner {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: #4f46e5;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-top: 0;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background-color: rgba(255, 255, 255, 0.03);
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge-low { background: rgba(16, 185, 129, 0.1); color: var(--risk-low); border: 1px solid rgba(16, 185, 129, 0.2); }
+    .badge-moderate { background: rgba(245, 158, 11, 0.1); color: var(--risk-moderate); border: 1px solid rgba(245, 158, 11, 0.2); }
+    .badge-high { background: rgba(239, 68, 68, 0.1); color: var(--risk-high); border: 1px solid rgba(239, 68, 68, 0.2); }
+    .badge-critical { background: rgba(127, 29, 29, 0.2); color: #fca5a5; border: 1px solid rgba(127, 29, 29, 0.4); }
+
+    .badge-status {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    .step {
+      border-left: 4px solid var(--primary);
+      padding-left: 20px;
+      margin-bottom: 40px;
+    }
+
+    .step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .step-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .step-role {
+      font-size: 0.85rem;
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--primary);
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-weight: 600;
+    }
+
+    .code-block {
+      background: #030712;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      margin: 15px 0;
+      color: #38bdf8;
+    }
+
+    .highlight {
+      background: rgba(245, 158, 11, 0.1);
+      border-left: 3px solid var(--risk-moderate);
+      padding: 12px;
+      border-radius: 0 8px 8px 0;
+      margin: 15px 0;
+    }
+
+    .flow-diagram {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 30px 0;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .flow-node {
+      text-align: center;
+      flex: 1;
+    }
+
+    .flow-node .node-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+
+    .flow-node .node-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .flow-arrow {
+      color: var(--text-muted);
+      font-weight: bold;
+      padding: 0 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="no-print no-print-banner">
+    <div>
+      <strong>📄 Prêt à imprimer ou télécharger en PDF !</strong>
+      <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Utilisez le raccourci <strong>Ctrl + P</strong> (ou Cmd + P) pour enregistrer ce document au format PDF.</div>
+    </div>
+    <button class="btn" onclick="window.print()">Imprimer / Enregistrer en PDF</button>
+  </div>
+
+  <header>
+    <div class="badge-top">Scénario d'Audit Institutionnel</div>
+    <h1>Plateforme FX Risk</h1>
+    <div class="subtitle">Scénario de Test de Bout en Bout de la Gestion des Risques FX (Spot)</div>
+  </header>
+
+  <div class="card">
+    <div class="card-title">🌐 Contexte du Test</div>
+    <p>
+      Ce scénario valide l'ensemble du cycle de vie d'une transaction de change au comptant (Spot-FX) à haut risque. Le test couvre le parcours complet d'une anomalie détectée automatiquement par le moteur de base de données PostgreSQL, de sa création par le Front Office jusqu'à sa validation définitive, l'approbation managériale, l'acquittement des alertes par l'équipe des risques et l'audit final.
+    </p>
+
+    <div class="flow-diagram">
+      <div class="flow-node">
+        <div class="node-title" style="color: #6366f1;">Front Office</div>
+        <div class="node-desc">Création (Risque Critique)</div>
+      </div>
+      <div class="flow-arrow">➔</div>
+      <div class="flow-node">
+        <div class="node-title" style="color: #ef4444;">Back Office</div>
+        <div class="node-desc">Rejet & Correction</div>
+      </div>
+      <div class="flow-arrow">➔</div>
+      <div class="flow-node">
+        <div class="node-title" style="color: #10b981;">Back Office</div>
+        <div class="node-desc">Validation (Risque Modéré)</div>
+      </div>
+      <div class="flow-arrow">➔</div>
+      <div class="flow-node">
+        <div class="node-title" style="color: #f59e0b;">Manager</div>
+        <div class="node-desc">Double Contrôle</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">👥 Comptes de Démo Utilisables</div>
+    <p>Tous les comptes de démonstration utilisent le mot de passe : <strong style="color: #a5b4fc;">Demo!2026</strong></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Utilisateur</th>
+          <th>Identifiant (Email)</th>
+          <th>Rôle Applicatif</th>
+          <th>Département</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Front Office Operator</strong></td>
+          <td>`front@fxrisk.demo`</td>
+          <td>`front_office`</td>
+          <td>Front Office Trading Desk</td>
+        </tr>
+        <tr>
+          <td><strong>Back Office Validator</strong></td>
+          <td>`back@fxrisk.demo`</td>
+          <td>`back_office`</td>
+          <td>Règlement et Livraison</td>
+        </tr>
+        <tr>
+          <td><strong>Responsible Manager</strong></td>
+          <td>`manager@fxrisk.demo`</td>
+          <td>`manager`</td>
+          <td>Direction des Opérations</td>
+        </tr>
+        <tr>
+          <td><strong>Risk Team Analyst</strong></td>
+          <td>`risk@fxrisk.demo`</td>
+          <td>`risk_team`</td>
+          <td>Contrôle des Risques</td>
+        </tr>
+        <tr>
+          <td><strong>Administrator</strong></td>
+          <td>`admin@fxrisk.demo`</td>
+          <td>`admin`</td>
+          <td>Sécurité et IT</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-break"></div>
+
+  <h2 style="font-family: 'Plus Jakarta Sans'; margin-top: 40px; margin-bottom: 30px;">🚀 Déroulement détaillé du scénario</h2>
+
+  <!-- ETAPE 1 -->
+  <div class="step">
+    <div class="step-header">
+      <h3 class="step-title">Étape 1 : Soumission d'une transaction suspecte</h3>
+      <span class="step-role">FRONT OFFICE</span>
+    </div>
+    <p><strong>Action :</strong> Connectez-vous avec le compte Front Office et créez une nouvelle transaction Spot-FX avec des paramètres de risque hors-limites.</p>
+    
+    <div class="highlight">
+      <strong>Paramètres à saisir dans le formulaire "New Operation" :</strong>
+      <table style="margin: 10px 0 0 0;">
+        <tr><td><strong>Client Name :</strong> `Gulf Trading Corp`</td><td><strong>Value Date :</strong> *(Date de demain)*</td></tr>
+        <tr><td><strong>Buy Currency :</strong> `USD`</td><td><strong>Sell Currency :</strong> `AED`</td></tr>
+        <tr><td><strong>Amount :</strong> `1800000` (1.8M USD)</td><td><strong>Exchange Rate :</strong> `3.72`</td></tr>
+        <tr><td><strong>Market Rate :</strong> `3.672` (Déviation > 1%)</td><td><strong>Counterparty :</strong> `Emirates NBD`</td></tr>
+        <tr><td colspan="2"><strong>SWIFT Reference :</strong> *(Laisser VIDE)*</td></tr>
+        <tr><td colspan="2"><strong>Comments :</strong> `Urgent funding for Dubai project — SWIFT reference to follow`</td></tr>
+      </table>
+    </div>
+
+    <p><strong>Résultat attendu :</strong></p>
+    <ul>
+      <li>La transaction est enregistrée à l'état <span class="badge badge-status">pending</span>.</li>
+      <li>Le score de risque calculé par la base de données est de <strong>~70</strong> (<span class="badge badge-critical">CRITICAL</span>).</li>
+      <li><strong>3 alertes</strong> sont créées automatiquement : Référence SWIFT manquante, Montant supérieur à 1M$, et Risque critique général.</li>
+    </ul>
+  </div>
+
+  <!-- ETAPE 2 -->
+  <div class="step">
+    <div class="step-header">
+      <h3 class="step-title">Étape 2 : Détection et rejet du dossier</h3>
+      <span class="step-role">BACK OFFICE</span>
+    </div>
+    <p><strong>Action :</strong> Connectez-vous avec le compte Back Office, accédez à la <strong>Validation Queue</strong>, examinez la transaction critique de <em>Gulf Trading Corp</em> et rejetez-la.</p>
+    
+    <div class="highlight">
+      <strong>Message de rejet à renseigner :</strong><br>
+      `Référence SWIFT manquante pour une transaction supérieure au seuil réglementaire de 500k USD. Merci de soumettre à nouveau avec un code SWIFT valide.`
+    </div>
+
+    <p><strong>Résultat attendu :</strong></p>
+    <ul>
+      <li>Le statut passe à <span class="badge badge-status" style="color: var(--risk-high); border-color: rgba(239, 68, 68, 0.3);">rejected</span>.</li>
+      <li>La raison de rejet est sauvegardée et visible dans l'historique du dossier.</li>
+    </ul>
+  </div>
+
+  <!-- ETAPE 3 -->
+  <div class="step">
+    <div class="step-header">
+      <h3 class="step-title">Étape 3 : Correction et resoumission du dossier</h3>
+      <span class="step-role">FRONT OFFICE</span>
+    </div>
+    <p><strong>Action :</strong> Reconnectez-vous en tant que Front Office. Allez dans <strong>FX Operations</strong>, repérez le dossier rejeté, cliquez sur <strong>Edit</strong> et mettez à jour les informations.</p>
+    
+    <div class="highlight">
+      <strong>Modifications à appliquer :</strong><br>
+      <ul>
+        <li><strong>SWIFT Reference :</strong> Renseigner `EBILAEAD` (Code SWIFT valide)</li>
+        <li><strong>Exchange Rate :</strong> Corriger à `3.675` (Déviation ramenée dans la marge autorisée < 1%)</li>
+      </ul>
+    </div>
+
+    <p><strong>Résultat attendu :</strong></p>
+    <ul>
+      <li>Le statut repasse en <span class="badge badge-status">pending</span>.</li>
+      <li>Le score de risque de la transaction descend à <strong>30</strong> (<span class="badge badge-moderate">MODERATE</span>) car les anomalies bloquantes ont été corrigées.</li>
+    </ul>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- ETAPE 4 -->
+  <div class="step" style="margin-top: 40px;">
+    <div class="step-header">
+      <h3 class="step-title">Étape 4 : Validation des contrôles de conformité</h3>
+      <span class="step-role">BACK OFFICE</span>
+    </div>
+    <p><strong>Action :</strong> Reconnectez-vous en tant que Back Office. Retournez dans la <strong>Validation Queue</strong>. Examinez le dossier mis à jour (maintenant au statut de risque modéré) et cliquez sur <strong>Validate</strong>.</p>
+    <p><strong>Résultat attendu :</strong> La transaction est validée au niveau conformité opérationnelle et est transmise à la file d'attente managériale.</p>
+  </div>
+
+  <!-- ETAPE 5 -->
+  <div class="step">
+    <div class="step-header">
+      <h3 class="step-title">Étape 5 : Double contrôle managérial</h3>
+      <span class="step-role">RESPONSIBLE MANAGER</span>
+    </div>
+    <p><strong>Action :</strong> Connectez-vous avec le compte Manager. Accédez à la file d'attente <strong>Approval Queue</strong>. Recherchez la transaction de <em>Gulf Trading Corp</em> de 1.8M$ et validez-la définitivement (Approve).</p>
+    <p><strong>Résultat attendu :</strong> La transaction passe au statut final de règlement-livraison (<span class="badge badge-status" style="color: var(--risk-low); border-color: rgba(16, 185, 129, 0.3);">validated</span> / `settled`).</p>
+  </div>
+
+  <!-- ETAPE 6 -->
+  <div class="step">
+    <div class="step-header">
+      <h3 class="step-title">Étape 6 : Traitement et acquittement des alertes</h3>
+      <span class="step-role">RISK TEAM</span>
+    </div>
+    <p><strong>Action :</strong> Connectez-vous avec le compte Risk Team. Accédez au <strong>Alerts Center</strong>. Vous y trouverez les alertes créées lors de la première soumission. Cliquez sur <strong>Acknowledge</strong> pour clore chaque alerte.</p>
+    <div class="highlight">
+      <strong>Note d'acquittement suggérée :</strong><br>
+      `Dossier corrigé par le Front Office. Code SWIFT valide renseigné. Niveau de risque final validé à 30 (modéré).`
+    </div>
+  </div>
+
+  <!-- ETAPE 7 -->
+  <div class="step">
+    <div class="step-header">
+      <h3 class="step-title">Étape 7 : Audit de sécurité et traçabilité</h3>
+      <span class="step-role">ADMINISTRATOR</span>
+    </div>
+    <p><strong>Action :</strong> Connectez-vous avec le compte Administrateur. Accédez aux <strong>Audit Logs</strong> pour inspecter la piste d'audit générée automatiquement par le système pendant le scénario.</p>
+    <p><strong>Résultat attendu :</strong> L'ensemble des connexions, déconnexions et modifications d'état est historisé avec horodatage précis et identifiant de l'opérateur.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔍 Vérifications en Base de Données (SQL)</div>
+    <p>Vous pouvez exécuter cette requête dans l'éditeur SQL de Supabase pour confirmer la réussite opérationnelle complète du test :</p>
+    <div class="code-block">
+SELECT 
+  operation_ref, 
+  client_name, 
+  status, 
+  risk_score, 
+  risk_level, 
+  swift_reference,
+  validated_by
+FROM public.operations
+WHERE client_name = 'Gulf Trading Corp';
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
