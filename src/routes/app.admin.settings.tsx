@@ -1,61 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
-import { useQueryClient } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Database, Loader2 } from "lucide-react";
-import { seedDemoData } from "@/lib/seed.functions";
 
 export const Route = createFileRoute("/app/admin/settings")({
   component: AdminSettings,
 });
 
 function AdminSettings() {
-  const seedFn = useServerFn(seedDemoData);
-  const qc = useQueryClient();
-  const [seeding, setSeeding] = useState(false);
-
-  const runSeed = async () => {
-    setSeeding(true);
-    try {
-      const res = await seedFn();
-      toast.success(`Seeded ${res.inserted} demo operations`);
-      qc.invalidateQueries();
-    } catch (e: any) {
-      toast.error(e?.message ?? "Seed failed");
-    } finally {
-      setSeeding(false);
-    }
-  };
 
   return (
     <div className="space-y-6 max-w-3xl">
       <div>
         <h1 className="text-2xl sm:text-3xl font-display font-bold">Platform Settings</h1>
-        <p className="text-sm text-muted-foreground mt-1">Risk thresholds, alert configuration and demo data</p>
+        <p className="text-sm text-muted-foreground mt-1">Risk thresholds and alert configuration</p>
       </div>
 
-      <section className="stat-card space-y-4 border-primary/30">
-        <div className="flex items-start gap-3">
-          <div className="h-10 w-10 rounded-md bg-primary/10 text-primary flex items-center justify-center">
-            <Database className="h-5 w-5" />
-          </div>
-          <div className="flex-1">
-            <h2 className="font-display font-semibold">Demo data</h2>
-            <p className="text-sm text-muted-foreground mt-1">
-              Populate the platform with 40 realistic FX operations including high-amount trades, missing SWIFT references, off-hours entries and rate-deviation anomalies. Existing operations and alerts will be replaced.
-            </p>
-          </div>
-        </div>
-        <Button onClick={runSeed} disabled={seeding}>
-          {seeding ? <Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> : <Database className="h-4 w-4 mr-1.5" />}
-          {seeding ? "Seeding…" : "Generate demo data"}
-        </Button>
-      </section>
 
       <section className="stat-card space-y-4">
         <h2 className="font-display font-semibold">Risk thresholds</h2>
