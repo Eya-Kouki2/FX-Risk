@@ -1,72 +1,58 @@
-# 💱 FX Risk Platform — Spot-FX Operational Risk Monitoring System
+# 💱 FX Risk Platform (Beginner's Guide)
 
-[![Vite](https://img.shields.io/badge/Vite-7.x-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![React 19](https://img.shields.io/badge/React-19.x-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
-[![TanStack Router](https://img.shields.io/badge/TanStack_Router-1.x-FF4154?style=for-the-badge&logo=react&logoColor=white)](https://tanstack.com/router)
-[![Supabase](https://img.shields.io/badge/Supabase-Database-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
+Welcome to the **FX Risk Platform**! This project is a web application built for financial institutions to monitor the risk of foreign exchange (FX) trades. 
 
-An enterprise-grade, high-performance **Spot-FX Operational Risk Monitoring System** designed for financial institutions. Featuring a state-of-the-art UI built on React 19, Vite, Tailwind CSS, and TanStack Router.
-
-The platform is backed by **Supabase** (PostgreSQL + GoTrue Auth) with fully automated real-time risk assessment scoring engines, security guards, and audit systems running entirely inside the database engine via custom PL/pgSQL triggers and row-level security (RLS) policies.
+If you are new to web development, don't worry! This guide is written specifically for beginners and will walk you through setting up the project on your computer step-by-step.
 
 ---
 
-## 🛠️ Required Tools & Prerequisites
+## 🛠️ What You Need to Install First
 
-Before you begin, you **must** have the following tools installed on your machine:
+Before we start, make sure you have these free tools installed on your computer:
 
-1. **[Node.js](https://nodejs.org/en/)** (v18.x or v20.x LTS recommended)
-   - Required to run the local development server and manage packages.
-   - *Verify installation: Run `node -v` in your terminal.*
-2. **Package Manager (npm, pnpm, or bun)**
-   - **npm** comes pre-installed with Node.js.
-   - **[Bun](https://bun.sh/)** is highly recommended for faster installations.
-   - *Verify installation: Run `npm -v` or `bun -v` in your terminal.*
-3. **[Git](https://git-scm.com/)**
-   - Required for cloning the repository and version control.
-   - *Verify installation: Run `git --version` in your terminal.*
+1. **[Node.js](https://nodejs.org/en/) (Version 18 or 20)**
+   - *Why do I need this?* It allows your computer to run JavaScript outside of a web browser and is required to run our web server.
+   - *How to check if you have it:* Open your terminal and type `node -v`.
+2. **[Git](https://git-scm.com/)**
+   - *Why do I need this?* It lets you download (clone) the project code from the internet.
+   - *How to check if you have it:* Type `git --version` in your terminal.
+3. **A Code Editor (like [VS Code](https://code.visualstudio.com/))**
+   - *Why do I need this?* To open the project files and read the code easily.
 4. **A [Supabase](https://supabase.com/) Account**
-   - You need a free Supabase project to host the database, authentication, and execute backend triggers.
-5. **A Code Editor**
-   - [VS Code](https://code.visualstudio.com/) or [Cursor](https://cursor.sh/) is recommended for the best TypeScript support.
+   - *Why do I need this?* Supabase provides our database (where data is saved) and handles user logins for free.
 
 ---
 
-## 🚀 Step-by-Step Installation Guide
+## 🚀 Step-by-Step Setup Instructions
 
-Follow these instructions exactly to get the project running locally.
-
-### Step 1: Clone the Repository
-Open your terminal and clone the project to your local machine:
+### Step 1: Download the Code
+Open your terminal (or Command Prompt) and run this command to download the code to your computer:
 ```bash
 git clone <your-repository-url>
 cd fx-risk-platform
 ```
+*(Replace `<your-repository-url>` with the actual link to your Git repository).*
 
-### Step 2: Install Dependencies
-Install all the required Node.js packages for the frontend:
+### Step 2: Install Project Files (Dependencies)
+Our project relies on some external code libraries. To download them, run this command inside the project folder:
 ```bash
-# If using npm
 npm install
-
-# If using bun (recommended)
-bun install
 ```
 
-### Step 3: Setup Environment Variables
-You need to connect your local frontend to your Supabase project.
+### Step 3: Set Up the Database Connection
+The application needs to know how to connect to your Supabase database. We do this using a hidden file called `.env`.
 
-1. Copy the example environment file to create your own local `.env` file. Run this command in your terminal:
+1. Create your `.env` file by copying our template. Run this in your terminal:
    ```bash
    cp .env.example .env
    ```
-   *(On Windows Command Prompt, use `copy .env.example .env`)*
+   *(If you are on Windows Command Prompt, use `copy .env.example .env` instead).*
 
-2. Open the newly created `.env` file in your code editor.
-3. Replace the placeholder values with your actual Supabase project credentials. You can find these in your Supabase Dashboard under **Project Settings ⚙️ → API**.
+2. Open the new `.env` file in your code editor (like VS Code).
+3. Go to your **Supabase Dashboard**, click on the **Settings ⚙️** icon, and then select **API**.
+4. Copy your `Project URL` and `anon public` key, and paste them into your `.env` file so it looks like this:
 
    ```env
-   # Your .env file should look like this:
    SUPABASE_URL=https://your-project-id.supabase.co
    SUPABASE_PUBLISHABLE_KEY=your-anon-public-key
    
@@ -75,55 +61,46 @@ You need to connect your local frontend to your Supabase project.
    VITE_SUPABASE_PROJECT_ID=your-project-id
    ```
 
-### Step 4: Setup the Supabase Database Schema
-Your Supabase database needs the correct tables, roles, and security triggers.
+### Step 4: Create the Database Tables
+Now we need to tell Supabase how to structure our data (creating tables for Users, Operations, Alerts, etc.).
 
 1. Go to your **Supabase Dashboard**.
-2. Navigate to the **SQL Editor** on the left sidebar.
-3. Open the file `supabase/migrations/20260518073627_9eb4f19f-59c9-44eb-866d-e2ca57fd3af7.sql` from your code editor, copy all the text, paste it into the Supabase SQL Editor, and click **Run**.
-4. Do the exact same for the second file: `supabase/migrations/20260518075414_4c6f60d1-637e-4e03-8be2-caa27102b9b7.sql`.
+2. Click on the **SQL Editor** (the terminal icon on the left menu).
+3. Click **New Query**.
+4. In your code editor, open the file located at: `supabase/migrations/20260518073627_9eb4f19f-59c9-44eb-866d-e2ca57fd3af7.sql`.
+5. Copy **all** the text from that file, paste it into the Supabase SQL Editor, and click the **Run** button.
+6. Do the exact same thing for the second file: `supabase/migrations/20260518075414_4c6f60d1-637e-4e03-8be2-caa27102b9b7.sql`.
 
-### Step 5: Seed Demo Data and Users (Optional but Recommended)
-To fully test the application, you can inject realistic FX operations and configure the demo user roles.
+### Step 5: Add Demo Data (Optional but highly recommended)
+Let's add some fake data so the application isn't empty when you open it.
 
-1. Open `supabase/seed_operations.sql` from your code editor.
-2. Copy the entire contents.
-3. Paste it into the **Supabase SQL Editor** and click **Run**.
-4. Go to **Authentication -> Users** in Supabase and ensure you have created users with the following emails (Password: `Demo!2026`):
+1. In your code editor, open `supabase/seed_operations.sql`.
+2. Copy all the text, paste it into the **Supabase SQL Editor**, and click **Run**.
+3. Now, go to **Authentication -> Users** in your Supabase Dashboard. 
+4. Click **Add User -> Create New User**.
+5. Add these 5 users (Make sure to check "Auto Confirm User" and use the password `Demo!2026` for all of them):
    - `admin@fxrisk.demo`
    - `back@fxrisk.demo`
    - `manager@fxrisk.demo`
    - `risk@fxrisk.demo`
    - `front@fxrisk.demo`
 
-### Step 6: Start the Development Server
-You are now ready to run the app! Execute this command in your terminal:
+### Step 6: Start the App!
+You are all set! To start the website, run this command in your terminal:
 ```bash
-# If using npm
 npm run dev
-
-# If using bun
-bun run dev
 ```
 
-Open your browser and navigate to **`http://localhost:5173`** (or the port specified in your console).
+Finally, open your web browser (like Chrome or Safari) and go to: **`http://localhost:5173`**
+
+🎉 **Congratulations! You should now see the login page for the FX Risk Platform.** 
 
 ---
 
-## 🏛️ System Architecture Overview
+## 📚 How It Works (For Beginners)
 
-### Real-Time Database Analytics & Automation
-The platform relies heavily on PostgreSQL's advanced features:
-* **Multi-Role RBAC (Row-Level Security):** Access is guarded directly inside PostgreSQL using Row Level Security (RLS) policies ensuring users only see what their role (`front_office`, `back_office`, etc.) permits.
-* **Auto Risk Computation Engine (`compute_risk()`):** A trigger runs `BEFORE INSERT OR UPDATE` on the `operations` table to evaluate security parameters (amount size, missing SWIFT, off-hours) and assign an immediate risk score (`0` to `100+`) and severity level.
-* **Automatic Alert Generation (`generate_alerts()`):** An `AFTER INSERT` trigger parses risk scores and automatically logs security alerts into the `alerts` table if high-exposure thresholds are breached.
+If you are curious about what is happening under the hood:
 
-### Code Quality & Deployment
-Ensure consistency across code modules before committing:
-```bash
-# Auto-format codebase styles (using Prettier)
-npm run format
-
-# Run ESLint diagnostics
-npm run lint
-```
+* **Frontend (What you see):** We use **React** and **Vite** to build the website interface. **Tailwind CSS** makes it look pretty.
+* **Backend (Where data lives):** We use **Supabase** (which uses a PostgreSQL database). 
+* **The Magic (Triggers):** When a user creates a new "Operation", the database automatically runs a special script (called a Trigger) that calculates a "Risk Score". If the score is too high, it automatically creates an "Alert". This means the database is doing the heavy lifting to keep the application secure!
