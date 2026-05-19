@@ -14,7 +14,7 @@ export const Route = createFileRoute("/app/operations/new")({
   component: NewOperation,
 });
 
-const CURRENCIES = ["EUR", "USD", "GBP", "JPY", "CHF", "CAD", "AUD", "CNY", "MAD", "AED"];
+const CURRENCIES = ["TND", "EUR", "USD", "GBP", "JPY", "CHF", "CAD", "AUD", "CNY", "MAD", "AED"];
 
 const schema = z.object({
   client_name: z.string().trim().min(2).max(120),

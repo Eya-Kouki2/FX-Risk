@@ -6,7 +6,7 @@ export type AppRole = "front_office" | "back_office" | "risk_team" | "manager" |
 export const ROLE_LABELS: Record<AppRole, string> = {
   front_office: "Front Office",
   back_office: "Back Office",
-  risk_team: "Équipe des Risques",
+  risk_team: "Middle Office",
   manager: "Responsable",
   admin: "Administrateur",
 };

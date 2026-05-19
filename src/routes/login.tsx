@@ -18,7 +18,7 @@ export const Route = createFileRoute("/login")({
 const DEMO_USERS: { role: AppRole; email: string; label: string }[] = [
   { role: "front_office", email: "front@fxrisk.demo", label: "Opérateur Front Office" },
   { role: "back_office", email: "back@fxrisk.demo", label: "Validateur Back Office" },
-  { role: "risk_team", email: "risk@fxrisk.demo", label: "Analyste Équipe des Risques" },
+  { role: "risk_team", email: "risk@fxrisk.demo", label: "Analyste Middle Office" },
   { role: "manager", email: "manager@fxrisk.demo", label: "Responsable" },
   { role: "admin", email: "admin@fxrisk.demo", label: "Administrateur" },
 ];

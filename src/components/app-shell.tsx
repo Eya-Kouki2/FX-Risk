@@ -12,15 +12,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; roles: AppRole[] };
 
 const NAV: NavItem[] = [
-  { to: "/app", label: "Tableau de bord", icon: LayoutDashboard, roles: ["front_office","back_office","risk_team","manager","admin"] },
-  { to: "/app/operations", label: "Opérations FX", icon: ArrowLeftRight, roles: ["front_office","back_office","risk_team","manager","admin"] },
-  { to: "/app/operations/new", label: "Nouvelle opération", icon: ArrowLeftRight, roles: ["front_office","admin"] },
-  { to: "/app/validation", label: "File de validation", icon: CheckCircle2, roles: ["back_office","admin"] },
-  { to: "/app/approvals", label: "File d'approbation", icon: CheckCircle2, roles: ["manager","admin"] },
-  { to: "/app/alerts", label: "Centre d'alertes", icon: Bell, roles: ["back_office","risk_team","manager","admin"] },
-  { to: "/app/heatmap", label: "Cartographie des risques", icon: Map, roles: ["risk_team","manager","admin"] },
-  { to: "/app/reports", label: "Rapports", icon: FileBarChart, roles: ["risk_team","manager","admin"] },
-  { to: "/app/audit", label: "Journaux d'audit", icon: ScrollText, roles: ["manager","admin"] },
+  { to: "/app", label: "Tableau de bord", icon: LayoutDashboard, roles: ["front_office", "back_office", "risk_team", "manager", "admin"] },
+  { to: "/app/operations", label: "Opérations FX", icon: ArrowLeftRight, roles: ["front_office", "back_office", "risk_team", "manager", "admin"] },
+  { to: "/app/operations/new", label: "Nouvelle opération", icon: ArrowLeftRight, roles: ["front_office", "admin"] },
+  { to: "/app/validation", label: "File de validation", icon: CheckCircle2, roles: ["back_office", "admin"] },
+  { to: "/app/approvals", label: "File d'approbation", icon: CheckCircle2, roles: ["manager", "admin"] },
+  { to: "/app/alerts", label: "Centre d'alertes", icon: Bell, roles: ["back_office", "risk_team", "manager", "admin"] },
+  { to: "/app/heatmap", label: "Cartographie des risques", icon: Map, roles: ["risk_team", "manager", "admin"] },
+  { to: "/app/reports", label: "Rapports", icon: FileBarChart, roles: ["risk_team", "manager", "admin"] },
+  { to: "/app/audit", label: "Journaux d'audit", icon: ScrollText, roles: ["manager", "admin"] },
   { to: "/app/admin/users", label: "Gestion des utilisateurs", icon: Users, roles: ["admin"] },
   { to: "/app/admin/settings", label: "Paramètres", icon: Settings, roles: ["admin"] },
 ];
@@ -61,7 +61,7 @@ export function AppShell() {
             </div>
             <div>
               <div className="font-display font-bold text-sm leading-tight">FX Risk</div>
-              <div className="text-xs text-sidebar-foreground/60">Console Opérationnelle</div>
+              <div className="text-xs text-sidebar-foreground/60">STB FX Intelligence</div>
             </div>
           </div>
         </div>
@@ -73,9 +73,8 @@ export function AppShell() {
               <Link
                 key={item.to}
                 to={item.to}
-                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
-                  active ? "bg-sidebar-accent text-sidebar-accent-foreground" : "text-sidebar-foreground/80 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
-                }`}
+                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${active ? "bg-sidebar-accent text-sidebar-accent-foreground" : "text-sidebar-foreground/80 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                  }`}
               >
                 <Icon className="h-4 w-4" />
                 <span>{item.label}</span>
