@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { ROLE_LABELS, logAudit, type AppRole } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Connexion — FX Risk Console" }] }),
+  head: () => ({ meta: [{ title: "Connexion — FX Risk STB" }] }),
   component: LoginPage,
 });
 
@@ -122,7 +122,7 @@ function LoginPage() {
               <ShieldAlert className="h-5 w-5 text-sidebar-primary-foreground" />
             </div>
             <div>
-              <div className="font-display font-bold">FX Risk Console</div>
+              <div className="font-display font-bold">FX Risk STB</div>
               <div className="text-xs text-sidebar-foreground/60">Gestion des Risques Opérationnels</div>
             </div>
           </div>
@@ -161,7 +161,7 @@ function LoginPage() {
             <div className="h-9 w-9 rounded-md bg-primary flex items-center justify-center">
               <ShieldAlert className="h-5 w-5 text-primary-foreground" />
             </div>
-            <div className="font-display font-bold">FX Risk Console</div>
+            <div className="font-display font-bold">FX Risk STB</div>
           </div>
 
           <h2 className="text-2xl font-display font-bold">Accéder à votre console</h2>

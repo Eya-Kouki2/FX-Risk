@@ -62,7 +62,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Console FX Risk — Gestion des Risques Opérationnels" },
+      { title: "FX Risk STB — Gestion des Risques Opérationnels" },
       { name: "description", content: "Plateforme intelligente de gestion des risques opérationnels sur les transactions Spot-FX : scoring, alertes, tableaux de bord, audit." },
     ],
     links: [
