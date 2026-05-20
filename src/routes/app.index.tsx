@@ -48,11 +48,17 @@ function DashboardPage() {
   const avgScore = total ? Math.round(ops.reduce((s, o) => s + o.risk_score, 0) / total) : 0;
   const exposure = ops.filter((o) => o.status !== "rejected").reduce((s, o) => s + Number(o.amount), 0);
 
-  // 14-day trend
+  // 14-day trend — parse created_at as Date so local timezone is respected
   const days = Array.from({ length: 14 }, (_, i) => subDays(new Date(), 13 - i));
   const trend = days.map((d) => {
     const key = format(d, "yyyy-MM-dd");
-    const dayOps = ops.filter((o) => o.created_at.startsWith(key));
+    const dayOps = ops.filter((o) => {
+      try {
+        return format(new Date(o.created_at), "yyyy-MM-dd") === key;
+      } catch {
+        return false;
+      }
+    });
     return {
       date: format(d, "MMM d"),
       operations: dayOps.length,
