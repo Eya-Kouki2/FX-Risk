@@ -1,106 +1,248 @@
-# 💱 FX Risk Platform (Beginner's Guide)
+<div align="center">
 
-Welcome to the **FX Risk Platform**! This project is a web application built for financial institutions to monitor the risk of foreign exchange (FX) trades. 
+# FX Risk STB — Plateforme de Gestion des Risques Opérationnels
 
-If you are new to web development, don't worry! This guide is written specifically for beginners and will walk you through setting up the project on your computer step-by-step.
+**A professional-grade, role-based foreign exchange risk management system built for financial institutions.**
 
----
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)
+![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?style=flat-square&logo=supabase&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
 
-## 🛠️ What You Need to Install First
-
-Before we start, make sure you have these free tools installed on your computer:
-
-1. **[Node.js](https://nodejs.org/en/) (Version 18 or 20)**
-   - *Why do I need this?* It allows your computer to run JavaScript outside of a web browser and is required to run our web server.
-   - *How to check if you have it:* Open your terminal and type `node -v`.
-2. **[Git](https://git-scm.com/)**
-   - *Why do I need this?* It lets you download (clone) the project code from the internet.
-   - *How to check if you have it:* Type `git --version` in your terminal.
-3. **A Code Editor (like [VS Code](https://code.visualstudio.com/))**
-   - *Why do I need this?* To open the project files and read the code easily.
-4. **A [Supabase](https://supabase.com/) Account**
-   - *Why do I need this?* Supabase provides our database (where data is saved) and handles user logins for free.
+</div>
 
 ---
 
-## 🚀 Step-by-Step Setup Instructions
+## Overview
 
-### Step 1: Download the Code
-Open your terminal (or Command Prompt) and run this command to download the code to your computer:
+**FX Risk STB** is a full-stack web application designed for the operational risk management of foreign exchange transactions. It provides a real-time, multi-role workflow covering the complete lifecycle of an FX spot operation — from Front Office entry through Back Office validation to Risk Team monitoring and Management oversight.
+
+The platform leverages **PostgreSQL server-side triggers** to automatically compute risk scores and generate compliance alerts the moment a transaction is recorded, removing any reliance on client-side business logic for critical risk calculations.
+
+---
+
+## Key Features
+
+| Feature | Description |
+|---|---|
+| **RBAC (5 Roles)** | Granular access control enforced at the database level via Row Level Security (RLS) |
+| **Automated Risk Scoring** | PostgreSQL trigger computes a 0–100 risk score on every operation insert/update |
+| **Real-time Alert Generation** | Alerts dispatched automatically for missing SWIFT codes, high amounts, off-hours trades and critical risk scores |
+| **Full Audit Trail** | Every user action is logged with timestamp, role, module and result |
+| **FX Workflow Engine** | Operations follow a strict lifecycle: `draft → pending → validated / rejected → settled` |
+| **Risk Heatmap** | Visual currency-pair risk exposure matrix |
+| **Interactive Dashboard** | 14-day risk trend chart, KPI cards, currency pair distribution and live alerts feed |
+
+---
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    React Frontend (Vite)                 │
+│   TanStack Router · TanStack Query · Recharts · shadcn  │
+└────────────────────────┬────────────────────────────────┘
+                         │ REST / Realtime
+┌────────────────────────▼────────────────────────────────┐
+│                  Supabase (Backend-as-a-Service)         │
+│                                                         │
+│  ┌──────────────┐  ┌─────────────┐  ┌───────────────┐  │
+│  │  Auth (JWT)  │  │  REST API   │  │   Realtime    │  │
+│  └──────────────┘  └─────────────┘  └───────────────┘  │
+│                                                         │
+│  ┌─────────────────────────────────────────────────┐    │
+│  │              PostgreSQL Database                │    │
+│  │  ┌──────────┐ ┌──────────┐ ┌─────────────────┐ │    │
+│  │  │ profiles │ │user_roles│ │   operations    │ │    │
+│  │  └──────────┘ └──────────┘ └────────┬────────┘ │    │
+│  │                                     │ triggers  │    │
+│  │  ┌──────────┐ ┌──────────────────────────────┐  │    │
+│  │  │  alerts  │ │  compute_risk + gen_alerts   │  │    │
+│  │  └──────────┘ └──────────────────────────────┘  │    │
+│  │  ┌─────────────┐    Row Level Security (RLS)     │    │
+│  │  │ audit_logs  │    enforced on all tables       │    │
+│  │  └─────────────┘                                │    │
+│  └─────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Role-Based Access Control
+
+| Role | Access |
+|---|---|
+| **Front Office** | Create & track own operations (draft / submit) |
+| **Back Office** | Validate or reject pending operations |
+| **Risk Team** | Monitor all operations, manage and acknowledge alerts |
+| **Manager** | Approve escalated/critical operations, full oversight |
+| **Administrator** | User management, audit logs, all platform access |
+
+> Access is enforced at the **PostgreSQL RLS policy level** — not just the UI. Each role can only read and write rows it is authorized for, regardless of how the API is called.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | React 18 + Vite |
+| Language | TypeScript |
+| Routing | TanStack Router |
+| Data Fetching | TanStack Query |
+| UI Components | shadcn/ui + Radix UI |
+| Charts | Recharts |
+| Backend | Supabase (PostgreSQL 15, GoTrue Auth) |
+| Styling | Tailwind CSS |
+| Notifications | Sonner |
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) v18 or v20
+- [Git](https://git-scm.com/)
+- A [Supabase](https://supabase.com/) account (free tier is sufficient)
+
+### 1. Clone the repository
+
 ```bash
 git clone <your-repository-url>
 cd fx-risk-platform
 ```
-*(Replace `<your-repository-url>` with the actual link to your Git repository).*
 
-### Step 2: Install Project Files (Dependencies)
-Our project relies on some external code libraries. To download them, run this command inside the project folder:
+### 2. Install dependencies
+
 ```bash
 npm install
 ```
 
-### Step 3: Set Up the Database Connection
-The application needs to know how to connect to your Supabase database. We do this using a hidden file called `.env`.
+### 3. Configure environment variables
 
-1. Create your `.env` file by copying our template. Run this in your terminal:
-   ```bash
-   cp .env.example .env
-   ```
-   *(If you are on Windows Command Prompt, use `copy .env.example .env` instead).*
+Create a `.env` file at the project root:
 
-2. Open the new `.env` file in your code editor (like VS Code).
-3. Go to your **Supabase Dashboard**, click on the **Settings ⚙️** icon, and then select **API**.
-4. Copy your `Project URL` and `anon public` key, and paste them into your `.env` file so it looks like this:
+```env
+VITE_SUPABASE_URL=https://your-project-id.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=your-anon-public-key
+```
 
-   ```env
-   SUPABASE_URL=https://your-project-id.supabase.co
-   SUPABASE_PUBLISHABLE_KEY=your-anon-public-key
-   
-   VITE_SUPABASE_URL=https://your-project-id.supabase.co
-   VITE_SUPABASE_PUBLISHABLE_KEY=your-anon-public-key
-   VITE_SUPABASE_PROJECT_ID=your-project-id
-   ```
+> Find these values in your Supabase Dashboard under **Settings → API**.
 
-### Step 4: Create the Database Tables
-Now we need to tell Supabase how to structure our data (creating tables for Users, Operations, Alerts, etc.).
+### 4. Initialize the database
 
-1. Go to your **Supabase Dashboard**.
-2. Click on the **SQL Editor** (the terminal icon on the left menu).
-3. Click **New Query**.
-4. In your code editor, open the file located at: `supabase/migrations/20260518073627_9eb4f19f-59c9-44eb-866d-e2ca57fd3af7.sql`.
-5. Copy **all** the text from that file, paste it into the Supabase SQL Editor, and click the **Run** button.
-6. Do the exact same thing for the second file: `supabase/migrations/20260518075414_4c6f60d1-637e-4e03-8be2-caa27102b9b7.sql`.
+Open the **Supabase SQL Editor** and run the following script in full — it creates all tables, enums, RLS policies, and triggers from scratch:
 
-### Step 5: Add Demo Data (Optional but highly recommended)
-Let's add some fake data so the application isn't empty when you open it.
+```sql
+-- Drop and recreate everything cleanly
+-- (see supabase/migrations/ for the full versioned scripts)
+```
 
-1. In your code editor, open `supabase/seed_operations.sql`.
-2. Copy all the text, paste it into the **Supabase SQL Editor**, and click **Run**.
-3. Now, go to **Authentication -> Users** in your Supabase Dashboard. 
-4. Click **Add User -> Create New User**.
-5. Add these 5 users (Make sure to check "Auto Confirm User" and use the password `Demo!2026` for all of them):
-   - `admin@fxrisk.demo`
-   - `back@fxrisk.demo`
-   - `manager@fxrisk.demo`
-   - `risk@fxrisk.demo`
-   - `front@fxrisk.demo`
+> The complete schema SQL is available in `supabase/migrations/`. Run the files in chronological order.
 
-### Step 6: Start the App!
-You are all set! To start the website, run this command in your terminal:
+### 5. Disable email confirmations *(required for demo accounts)*
+
+In your Supabase Dashboard:
+**Authentication → Settings → Email Auth → uncheck "Enable email confirmations" → Save**
+
+This allows the 5 demo role accounts to be created and confirmed instantly on first login without requiring email delivery.
+
+### 6. Start the development server
+
 ```bash
 npm run dev
 ```
 
-Finally, open your web browser (like Chrome or Safari) and go to: **`http://localhost:5173`**
-
-🎉 **Congratulations! You should now see the login page for the FX Risk Platform.** 
+Open **`http://localhost:8081`** in your browser. Use the **Quick Demo** buttons on the login page to instantly sign in as any of the 5 roles.
 
 ---
 
-## 📚 How It Works (For Beginners)
+## Demo Accounts
 
-If you are curious about what is happening under the hood:
+All demo accounts use the password **`Demo!2026`** and are created automatically on first login.
 
-* **Frontend (What you see):** We use **React** and **Vite** to build the website interface. **Tailwind CSS** makes it look pretty.
-* **Backend (Where data lives):** We use **Supabase** (which uses a PostgreSQL database). 
-* **The Magic (Triggers):** When a user creates a new "Operation", the database automatically runs a special script (called a Trigger) that calculates a "Risk Score". If the score is too high, it automatically creates an "Alert". This means the database is doing the heavy lifting to keep the application secure!
+| Role | Email |
+|---|---|
+| Front Office Operator | `front@fxrisk.demo` |
+| Back Office Validator | `back@fxrisk.demo` |
+| Risk Team Analyst | `risk@fxrisk.demo` |
+| Responsible Manager | `manager@fxrisk.demo` |
+| Administrator | `admin@fxrisk.demo` |
+
+---
+
+## Database Schema
+
+```
+auth.users (Supabase managed)
+    │
+    ├── public.profiles         (full_name, department)
+    ├── public.user_roles       (user_id, role: app_role enum)
+    │
+    └── public.operations       (FX transaction records)
+            │
+            ├── [TRIGGER] trg_operations_risk      → computes risk_score + risk_level
+            ├── [TRIGGER] trg_operations_alerts    → dispatches alerts on anomalies
+            │
+            ├── public.alerts       (auto-generated risk notifications)
+            └── public.audit_logs   (action history written by client)
+```
+
+### Risk Scoring Engine
+
+The `compute_risk()` trigger function evaluates each operation against 4 criteria:
+
+| Criterion | Points |
+|---|---|
+| Amount exceeds 1,000,000 | +20 |
+| Missing or malformed SWIFT reference | +25 / +30 |
+| Transaction submitted outside trading hours (07h–20h) | +15 |
+| Exchange rate deviates >2% from market rate | +20 |
+| Uncommon currency pair | +10 |
+
+**Score → Level mapping:** `0–20 = Low` · `21–40 = Moderate` · `41–60 = High` · `61+ = Critical`
+
+---
+
+## Project Structure
+
+```
+fx-risk-platform/
+├── src/
+│   ├── components/          # Reusable UI components
+│   │   ├── app-shell.tsx    # Navigation & layout wrapper
+│   │   ├── risk-indicators.tsx
+│   │   └── operation-detail-dialog.tsx
+│   ├── routes/              # Page components (file-based routing)
+│   │   ├── app.index.tsx        # Dashboard
+│   │   ├── app.operations.*.tsx # Operations list & new form
+│   │   ├── app.alerts.tsx       # Alert centre
+│   │   ├── app.validation.tsx   # Back Office queue
+│   │   ├── app.approvals.tsx    # Manager escalation queue
+│   │   ├── app.heatmap.tsx      # Risk heatmap
+│   │   ├── app.audit.tsx        # Audit logs
+│   │   └── app.admin.*.tsx      # Admin panel
+│   ├── lib/
+│   │   ├── auth.ts          # Session management & role resolution
+│   │   └── risk.ts          # Risk utilities & formatters
+│   └── integrations/
+│       └── supabase/        # Supabase client & type definitions
+├── supabase/
+│   └── migrations/          # Versioned SQL schema files
+├── .env                     # Environment variables (not committed)
+└── README.md
+```
+
+---
+
+## License
+
+This project is released under the [MIT License](LICENSE).
+
+---
+
+<div align="center">
+  <sub>Built for the STB — Société Tunisienne de Banque · FX Operational Risk Division</sub>
+</div>
