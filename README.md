@@ -1,248 +1,80 @@
-<div align="center">
+# FX Risk — Plateforme de Gestion des Risques de Change
 
-# FX Risk STB — Plateforme de Gestion des Risques Opérationnels
+**FX Risk** est une application web professionnelle conçue pour les institutions financières afin de gérer et de surveiller les risques liés aux opérations de change (Foreign Exchange). 
 
-**A professional-grade, role-based foreign exchange risk management system built for financial institutions.**
-
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
-![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)
-![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?style=flat-square&logo=supabase&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
-
-</div>
+Elle offre un environnement complet où différents rôles (Front Office, Back Office, Risk Team, Manager, Admin) peuvent interagir pour créer, valider et surveiller les transactions en temps réel.
 
 ---
 
-## Overview
+## 🎯 Fonctionnalités Principales
 
-**FX Risk STB** is a full-stack web application designed for the operational risk management of foreign exchange transactions. It provides a real-time, multi-role workflow covering the complete lifecycle of an FX spot operation — from Front Office entry through Back Office validation to Risk Team monitoring and Management oversight.
-
-The platform leverages **PostgreSQL server-side triggers** to automatically compute risk scores and generate compliance alerts the moment a transaction is recorded, removing any reliance on client-side business logic for critical risk calculations.
-
----
-
-## Key Features
-
-| Feature | Description |
-|---|---|
-| **RBAC (5 Roles)** | Granular access control enforced at the database level via Row Level Security (RLS) |
-| **Automated Risk Scoring** | PostgreSQL trigger computes a 0–100 risk score on every operation insert/update |
-| **Real-time Alert Generation** | Alerts dispatched automatically for missing SWIFT codes, high amounts, off-hours trades and critical risk scores |
-| **Full Audit Trail** | Every user action is logged with timestamp, role, module and result |
-| **FX Workflow Engine** | Operations follow a strict lifecycle: `draft → pending → validated / rejected → settled` |
-| **Risk Heatmap** | Visual currency-pair risk exposure matrix |
-| **Interactive Dashboard** | 14-day risk trend chart, KPI cards, currency pair distribution and live alerts feed |
+* **Système de Rôles (RBAC)** : 5 rôles distincts (Front Office, Back Office, Risk Team, Manager, Admin) avec des permissions strictes.
+* **Calcul Automatique des Risques** : Chaque opération reçoit un score de risque (0-100) calculé automatiquement en base de données selon plusieurs critères (montant élevé, absence de SWIFT, horaires atypiques, etc.).
+* **Alertes en Temps Réel** : Génération immédiate d'alertes pour les transactions suspectes ou critiques.
+* **Tableau de Bord Interactif** : Visualisation des tendances de risques sur 14 jours, répartition par devise, et fil d'actualité des alertes.
+* **Traçabilité Complète** : Historique (Audit Log) de toutes les actions effectuées par les utilisateurs.
 
 ---
 
-## Architecture
+## 🛠️ Technologies Utilisées
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    React Frontend (Vite)                 │
-│   TanStack Router · TanStack Query · Recharts · shadcn  │
-└────────────────────────┬────────────────────────────────┘
-                         │ REST / Realtime
-┌────────────────────────▼────────────────────────────────┐
-│                  Supabase (Backend-as-a-Service)         │
-│                                                         │
-│  ┌──────────────┐  ┌─────────────┐  ┌───────────────┐  │
-│  │  Auth (JWT)  │  │  REST API   │  │   Realtime    │  │
-│  └──────────────┘  └─────────────┘  └───────────────┘  │
-│                                                         │
-│  ┌─────────────────────────────────────────────────┐    │
-│  │              PostgreSQL Database                │    │
-│  │  ┌──────────┐ ┌──────────┐ ┌─────────────────┐ │    │
-│  │  │ profiles │ │user_roles│ │   operations    │ │    │
-│  │  └──────────┘ └──────────┘ └────────┬────────┘ │    │
-│  │                                     │ triggers  │    │
-│  │  ┌──────────┐ ┌──────────────────────────────┐  │    │
-│  │  │  alerts  │ │  compute_risk + gen_alerts   │  │    │
-│  │  └──────────┘ └──────────────────────────────┘  │    │
-│  │  ┌─────────────┐    Row Level Security (RLS)     │    │
-│  │  │ audit_logs  │    enforced on all tables       │    │
-│  │  └─────────────┘                                │    │
-│  └─────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────┘
-```
+* **Frontend** : React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui
+* **Backend & Base de données** : Supabase (PostgreSQL, Authentification, Row Level Security)
+* **Graphiques** : Recharts
 
 ---
 
-## Role-Based Access Control
+## 🚀 Guide d'Installation Étape par Étape
 
-| Role | Access |
-|---|---|
-| **Front Office** | Create & track own operations (draft / submit) |
-| **Back Office** | Validate or reject pending operations |
-| **Risk Team** | Monitor all operations, manage and acknowledge alerts |
-| **Manager** | Approve escalated/critical operations, full oversight |
-| **Administrator** | User management, audit logs, all platform access |
+Suivez ces étapes simples pour lancer le projet sur votre machine.
 
-> Access is enforced at the **PostgreSQL RLS policy level** — not just the UI. Each role can only read and write rows it is authorized for, regardless of how the API is called.
+### Prérequis
+* Avoir [Node.js](https://nodejs.org/) installé sur votre ordinateur.
+* Avoir un compte [Supabase](https://supabase.com/) (gratuit).
 
----
+### Étape 1 : Cloner et installer le projet
+1. Ouvrez votre terminal et clonez le dossier (si ce n'est pas déjà fait).
+2. Ouvrez le dossier du projet dans votre terminal :
+   ```bash
+   cd FX-Risk
+   ```
+3. Installez toutes les dépendances nécessaires en tapant :
+   ```bash
+   npm install
+   ```
 
-## Tech Stack
+### Étape 2 : Configurer Supabase
+1. Créez un nouveau projet sur Supabase.
+2. Allez dans les paramètres de votre projet Supabase (**Project Settings > API**) pour trouver votre `Project URL` et votre `anon public key`.
+3. Dans le dossier de votre projet sur votre ordinateur, créez un fichier nommé `.env` et collez-y vos identifiants comme ceci :
+   ```env
+   VITE_SUPABASE_URL=https://votre-projet.supabase.co
+   VITE_SUPABASE_PUBLISHABLE_KEY=votre-clef-publique-anon
+   ```
 
-| Layer | Technology |
-|---|---|
-| Framework | React 18 + Vite |
-| Language | TypeScript |
-| Routing | TanStack Router |
-| Data Fetching | TanStack Query |
-| UI Components | shadcn/ui + Radix UI |
-| Charts | Recharts |
-| Backend | Supabase (PostgreSQL 15, GoTrue Auth) |
-| Styling | Tailwind CSS |
-| Notifications | Sonner |
+### Étape 3 : Configurer la base de données
+1. Sur Supabase, allez dans le **SQL Editor**.
+2. Copiez le contenu du fichier `supabase/migrations/20260518073627_9eb4f19f-59c9-44eb-866d-e2ca57fd3af7.sql` (qui se trouve dans votre dossier de projet).
+3. Collez-le dans le SQL Editor de Supabase et cliquez sur **Run** pour créer toutes les tables et règles de sécurité.
+4. *Important pour la démo* : Allez dans **Authentication > Settings** sur Supabase, cherchez "Confirm email" ou "Enable email confirmations" et **décochez** cette option. Cela permet aux comptes démo de fonctionner immédiatement.
 
----
-
-## Getting Started
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) v18 or v20
-- [Git](https://git-scm.com/)
-- A [Supabase](https://supabase.com/) account (free tier is sufficient)
-
-### 1. Clone the repository
-
-```bash
-git clone <your-repository-url>
-cd fx-risk-platform
-```
-
-### 2. Install dependencies
-
-```bash
-npm install
-```
-
-### 3. Configure environment variables
-
-Create a `.env` file at the project root:
-
-```env
-VITE_SUPABASE_URL=https://your-project-id.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=your-anon-public-key
-```
-
-> Find these values in your Supabase Dashboard under **Settings → API**.
-
-### 4. Initialize the database
-
-Open the **Supabase SQL Editor** and run the following script in full — it creates all tables, enums, RLS policies, and triggers from scratch:
-
-```sql
--- Drop and recreate everything cleanly
--- (see supabase/migrations/ for the full versioned scripts)
-```
-
-> The complete schema SQL is available in `supabase/migrations/`. Run the files in chronological order.
-
-### 5. Disable email confirmations *(required for demo accounts)*
-
-In your Supabase Dashboard:
-**Authentication → Settings → Email Auth → uncheck "Enable email confirmations" → Save**
-
-This allows the 5 demo role accounts to be created and confirmed instantly on first login without requiring email delivery.
-
-### 6. Start the development server
-
-```bash
-npm run dev
-```
-
-Open **`http://localhost:8081`** in your browser. Use the **Quick Demo** buttons on the login page to instantly sign in as any of the 5 roles.
+### Étape 4 : Lancer l'application
+1. Dans votre terminal, lancez le serveur de développement :
+   ```bash
+   npm run dev
+   ```
+2. Ouvrez votre navigateur et allez sur `http://localhost:8081` (ou le lien affiché dans votre terminal).
 
 ---
 
-## Demo Accounts
+## 👥 Comptes de Démo
 
-All demo accounts use the password **`Demo!2026`** and are created automatically on first login.
+Vous n'avez pas besoin de créer des comptes manuellement. Sur la page de connexion, utilisez les boutons "Quick Demo" pour vous connecter instantanément avec l'un des rôles préconfigurés. 
 
-| Role | Email |
-|---|---|
-| Front Office Operator | `front@fxrisk.demo` |
-| Back Office Validator | `back@fxrisk.demo` |
-| Risk Team Analyst | `risk@fxrisk.demo` |
-| Responsible Manager | `manager@fxrisk.demo` |
-| Administrator | `admin@fxrisk.demo` |
+Le mot de passe par défaut pour tous les comptes démo est : **`Demo!2026`**
 
----
-
-## Database Schema
-
-```
-auth.users (Supabase managed)
-    │
-    ├── public.profiles         (full_name, department)
-    ├── public.user_roles       (user_id, role: app_role enum)
-    │
-    └── public.operations       (FX transaction records)
-            │
-            ├── [TRIGGER] trg_operations_risk      → computes risk_score + risk_level
-            ├── [TRIGGER] trg_operations_alerts    → dispatches alerts on anomalies
-            │
-            ├── public.alerts       (auto-generated risk notifications)
-            └── public.audit_logs   (action history written by client)
-```
-
-### Risk Scoring Engine
-
-The `compute_risk()` trigger function evaluates each operation against 4 criteria:
-
-| Criterion | Points |
-|---|---|
-| Amount exceeds 1,000,000 | +20 |
-| Missing or malformed SWIFT reference | +25 / +30 |
-| Transaction submitted outside trading hours (07h–20h) | +15 |
-| Exchange rate deviates >2% from market rate | +20 |
-| Uncommon currency pair | +10 |
-
-**Score → Level mapping:** `0–20 = Low` · `21–40 = Moderate` · `41–60 = High` · `61+ = Critical`
-
----
-
-## Project Structure
-
-```
-fx-risk-platform/
-├── src/
-│   ├── components/          # Reusable UI components
-│   │   ├── app-shell.tsx    # Navigation & layout wrapper
-│   │   ├── risk-indicators.tsx
-│   │   └── operation-detail-dialog.tsx
-│   ├── routes/              # Page components (file-based routing)
-│   │   ├── app.index.tsx        # Dashboard
-│   │   ├── app.operations.*.tsx # Operations list & new form
-│   │   ├── app.alerts.tsx       # Alert centre
-│   │   ├── app.validation.tsx   # Back Office queue
-│   │   ├── app.approvals.tsx    # Manager escalation queue
-│   │   ├── app.heatmap.tsx      # Risk heatmap
-│   │   ├── app.audit.tsx        # Audit logs
-│   │   └── app.admin.*.tsx      # Admin panel
-│   ├── lib/
-│   │   ├── auth.ts          # Session management & role resolution
-│   │   └── risk.ts          # Risk utilities & formatters
-│   └── integrations/
-│       └── supabase/        # Supabase client & type definitions
-├── supabase/
-│   └── migrations/          # Versioned SQL schema files
-├── .env                     # Environment variables (not committed)
-└── README.md
-```
-
----
-
-## License
-
-This project is released under the [MIT License](LICENSE).
-
----
-
-<div align="center">
-  <sub>Built for the STB — Société Tunisienne de Banque · FX Operational Risk Division</sub>
-</div>
+* **Front Office** : `front@fxrisk.demo` (Saisit les opérations)
+* **Back Office** : `back@fxrisk.demo` (Valide les opérations)
+* **Analyste Risques** : `risk@fxrisk.demo` (Surveille les alertes)
+* **Manager** : `manager@fxrisk.demo` (Approuve les exceptions)
+* **Admin** : `admin@fxrisk.demo` (Accès total)
