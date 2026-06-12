@@ -11,7 +11,8 @@ import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip,
   BarChart, Bar, CartesianGrid, PieChart, Pie, Cell, Legend,
 } from "recharts";
-import { format, subDays } from "date-fns";
+import { useState, useMemo } from "react";
+import { format, subDays, subMonths } from "date-fns";
 
 export const Route = createFileRoute("/app/")({
   component: DashboardPage,
@@ -48,23 +49,48 @@ function DashboardPage() {
   const avgScore = total ? Math.round(ops.reduce((s, o) => s + o.risk_score, 0) / total) : 0;
   const exposure = ops.filter((o) => o.status !== "rejected").reduce((s, o) => s + Number(o.amount), 0);
 
-  // 14-day trend — parse created_at as Date so local timezone is respected
-  const days = Array.from({ length: 14 }, (_, i) => subDays(new Date(), 13 - i));
-  const trend = days.map((d) => {
-    const key = format(d, "yyyy-MM-dd");
-    const dayOps = ops.filter((o) => {
-      try {
-        return format(new Date(o.created_at), "yyyy-MM-dd") === key;
-      } catch {
-        return false;
-      }
-    });
-    return {
-      date: format(d, "MMM d"),
-      operations: dayOps.length,
-      avgRisk: dayOps.length ? Math.round(dayOps.reduce((s, o) => s + o.risk_score, 0) / dayOps.length) : 0,
-    };
-  });
+  const [timeframe, setTimeframe] = useState<"14d" | "30d" | "1y">("14d");
+
+  // Trend data based on selected timeframe
+  const trend = useMemo(() => {
+    if (timeframe === "14d" || timeframe === "30d") {
+      const count = timeframe === "14d" ? 14 : 30;
+      const days = Array.from({ length: count }, (_, i) => subDays(new Date(), count - 1 - i));
+      return days.map((d) => {
+        const key = format(d, "yyyy-MM-dd");
+        const dayOps = ops.filter((o) => {
+          try {
+            return format(new Date(o.created_at), "yyyy-MM-dd") === key;
+          } catch {
+            return false;
+          }
+        });
+        return {
+          date: format(d, "MMM d"),
+          operations: dayOps.length,
+          avgRisk: dayOps.length ? Math.round(dayOps.reduce((s, o) => s + o.risk_score, 0) / dayOps.length) : 0,
+        };
+      });
+    } else {
+      // "1y" -> 12 months
+      const months = Array.from({ length: 12 }, (_, i) => subMonths(new Date(), 11 - i));
+      return months.map((m) => {
+        const key = format(m, "yyyy-MM");
+        const monthOps = ops.filter((o) => {
+          try {
+            return format(new Date(o.created_at), "yyyy-MM") === key;
+          } catch {
+            return false;
+          }
+        });
+        return {
+          date: format(m, "MMM yyyy"),
+          operations: monthOps.length,
+          avgRisk: monthOps.length ? Math.round(monthOps.reduce((s, o) => s + o.risk_score, 0) / monthOps.length) : 0,
+        };
+      });
+    }
+  }, [ops, timeframe]);
 
   // by currency pair
   const pairMap = new Map<string, number>();
@@ -110,12 +136,48 @@ function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="stat-card lg:col-span-2">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="font-display font-semibold">Tendance des risques — 14 jours</h3>
-              <p className="text-xs text-muted-foreground">Volume des opérations vs. score de risque moyen</p>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            <div className="flex items-start sm:items-center gap-3 flex-wrap">
+              <div>
+                <h3 className="font-display font-semibold">
+                  Tendance des risques — {timeframe === "14d" ? "14 jours" : timeframe === "30d" ? "30 jours" : "12 mois"}
+                </h3>
+                <p className="text-xs text-muted-foreground">Volume des opérations vs. score de risque moyen</p>
+              </div>
+              <div className="flex items-center gap-1 bg-muted p-0.5 rounded-lg text-xs sm:ml-2">
+                <button
+                  onClick={() => setTimeframe("14d")}
+                  className={`px-2.5 py-1 rounded-md transition-all ${
+                    timeframe === "14d"
+                      ? "bg-card text-foreground font-medium shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  14 J
+                </button>
+                <button
+                  onClick={() => setTimeframe("30d")}
+                  className={`px-2.5 py-1 rounded-md transition-all ${
+                    timeframe === "30d"
+                      ? "bg-card text-foreground font-medium shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  30 J
+                </button>
+                <button
+                  onClick={() => setTimeframe("1y")}
+                  className={`px-2.5 py-1 rounded-md transition-all ${
+                    timeframe === "1y"
+                      ? "bg-card text-foreground font-medium shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  12 M
+                </button>
+              </div>
             </div>
-            <div className="text-right">
+            <div className="text-left sm:text-right">
               <div className="text-xs text-muted-foreground">Exposition opérationnelle</div>
               <div className="font-display font-bold text-lg">{formatCurrency(exposure)}</div>
             </div>
