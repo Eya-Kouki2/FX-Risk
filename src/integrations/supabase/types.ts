@@ -58,6 +58,36 @@ export type Database = {
           },
         ]
       }
+      clients: {
+        Row: {
+          cin: string | null
+          client_type: string
+          created_at: string
+          created_by: string | null
+          id: string
+          matricule_fiscal: string | null
+          name: string
+        }
+        Insert: {
+          cin?: string | null
+          client_type?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          matricule_fiscal?: string | null
+          name: string
+        }
+        Update: {
+          cin?: string | null
+          client_type?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          matricule_fiscal?: string | null
+          name?: string
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           action: string
@@ -98,6 +128,7 @@ export type Database = {
         Row: {
           amount: number
           buy_currency: string
+          client_id: string | null
           client_name: string
           comments: string | null
           counterparty: string
@@ -121,6 +152,7 @@ export type Database = {
         Insert: {
           amount: number
           buy_currency: string
+          client_id?: string | null
           client_name: string
           comments?: string | null
           counterparty: string
@@ -144,6 +176,7 @@ export type Database = {
         Update: {
           amount?: number
           buy_currency?: string
+          client_id?: string | null
           client_name?: string
           comments?: string | null
           counterparty?: string
@@ -164,7 +197,15 @@ export type Database = {
           validated_by?: string | null
           value_date?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "operations_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       profiles: {
         Row: {

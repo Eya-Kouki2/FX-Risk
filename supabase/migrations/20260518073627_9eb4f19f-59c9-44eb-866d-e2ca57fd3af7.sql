@@ -116,7 +116,7 @@ CREATE POLICY "admin manage roles" ON public.user_roles FOR ALL USING (public.ha
 
 -- operations
 CREATE POLICY "view operations by role" ON public.operations FOR SELECT USING (
-  created_by = auth.uid()
+  public.has_role(auth.uid(), 'front_office')
   OR public.has_role(auth.uid(), 'back_office')
   OR public.has_role(auth.uid(), 'risk_team')
   OR public.has_role(auth.uid(), 'manager')

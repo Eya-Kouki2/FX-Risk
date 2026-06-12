@@ -20,7 +20,9 @@ import { Route as AppAuditRouteImport } from './routes/app.audit'
 import { Route as AppApprovalsRouteImport } from './routes/app.approvals'
 import { Route as AppAlertsRouteImport } from './routes/app.alerts'
 import { Route as AppOperationsIndexRouteImport } from './routes/app.operations.index'
+import { Route as AppClientsIndexRouteImport } from './routes/app.clients.index'
 import { Route as AppOperationsNewRouteImport } from './routes/app.operations.new'
+import { Route as AppClientsClientIdRouteImport } from './routes/app.clients.$clientId'
 import { Route as AppAdminUsersRouteImport } from './routes/app.admin.users'
 import { Route as AppAdminSettingsRouteImport } from './routes/app.admin.settings'
 
@@ -79,9 +81,19 @@ const AppOperationsIndexRoute = AppOperationsIndexRouteImport.update({
   path: '/operations/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppClientsIndexRoute = AppClientsIndexRouteImport.update({
+  id: '/clients/',
+  path: '/clients/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppOperationsNewRoute = AppOperationsNewRouteImport.update({
   id: '/operations/new',
   path: '/operations/new',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppClientsClientIdRoute = AppClientsClientIdRouteImport.update({
+  id: '/clients/$clientId',
+  path: '/clients/$clientId',
   getParentRoute: () => AppRoute,
 } as any)
 const AppAdminUsersRoute = AppAdminUsersRouteImport.update({
@@ -108,7 +120,9 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AppIndexRoute
   '/app/admin/settings': typeof AppAdminSettingsRoute
   '/app/admin/users': typeof AppAdminUsersRoute
+  '/app/clients/$clientId': typeof AppClientsClientIdRoute
   '/app/operations/new': typeof AppOperationsNewRoute
+  '/app/clients/': typeof AppClientsIndexRoute
   '/app/operations/': typeof AppOperationsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -123,7 +137,9 @@ export interface FileRoutesByTo {
   '/app': typeof AppIndexRoute
   '/app/admin/settings': typeof AppAdminSettingsRoute
   '/app/admin/users': typeof AppAdminUsersRoute
+  '/app/clients/$clientId': typeof AppClientsClientIdRoute
   '/app/operations/new': typeof AppOperationsNewRoute
+  '/app/clients': typeof AppClientsIndexRoute
   '/app/operations': typeof AppOperationsIndexRoute
 }
 export interface FileRoutesById {
@@ -140,7 +156,9 @@ export interface FileRoutesById {
   '/app/': typeof AppIndexRoute
   '/app/admin/settings': typeof AppAdminSettingsRoute
   '/app/admin/users': typeof AppAdminUsersRoute
+  '/app/clients/$clientId': typeof AppClientsClientIdRoute
   '/app/operations/new': typeof AppOperationsNewRoute
+  '/app/clients/': typeof AppClientsIndexRoute
   '/app/operations/': typeof AppOperationsIndexRoute
 }
 export interface FileRouteTypes {
@@ -158,7 +176,9 @@ export interface FileRouteTypes {
     | '/app/'
     | '/app/admin/settings'
     | '/app/admin/users'
+    | '/app/clients/$clientId'
     | '/app/operations/new'
+    | '/app/clients/'
     | '/app/operations/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -173,7 +193,9 @@ export interface FileRouteTypes {
     | '/app'
     | '/app/admin/settings'
     | '/app/admin/users'
+    | '/app/clients/$clientId'
     | '/app/operations/new'
+    | '/app/clients'
     | '/app/operations'
   id:
     | '__root__'
@@ -189,7 +211,9 @@ export interface FileRouteTypes {
     | '/app/'
     | '/app/admin/settings'
     | '/app/admin/users'
+    | '/app/clients/$clientId'
     | '/app/operations/new'
+    | '/app/clients/'
     | '/app/operations/'
   fileRoutesById: FileRoutesById
 }
@@ -278,11 +302,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppOperationsIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/clients/': {
+      id: '/app/clients/'
+      path: '/clients'
+      fullPath: '/app/clients/'
+      preLoaderRoute: typeof AppClientsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/operations/new': {
       id: '/app/operations/new'
       path: '/operations/new'
       fullPath: '/app/operations/new'
       preLoaderRoute: typeof AppOperationsNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/clients/$clientId': {
+      id: '/app/clients/$clientId'
+      path: '/clients/$clientId'
+      fullPath: '/app/clients/$clientId'
+      preLoaderRoute: typeof AppClientsClientIdRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/admin/users': {
@@ -312,7 +350,9 @@ interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppAdminSettingsRoute: typeof AppAdminSettingsRoute
   AppAdminUsersRoute: typeof AppAdminUsersRoute
+  AppClientsClientIdRoute: typeof AppClientsClientIdRoute
   AppOperationsNewRoute: typeof AppOperationsNewRoute
+  AppClientsIndexRoute: typeof AppClientsIndexRoute
   AppOperationsIndexRoute: typeof AppOperationsIndexRoute
 }
 
@@ -326,7 +366,9 @@ const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppAdminSettingsRoute: AppAdminSettingsRoute,
   AppAdminUsersRoute: AppAdminUsersRoute,
+  AppClientsClientIdRoute: AppClientsClientIdRoute,
   AppOperationsNewRoute: AppOperationsNewRoute,
+  AppClientsIndexRoute: AppClientsIndexRoute,
   AppOperationsIndexRoute: AppOperationsIndexRoute,
 }
 

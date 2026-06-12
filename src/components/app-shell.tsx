@@ -2,7 +2,7 @@ import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-route
 import { useEffect } from "react";
 import {
   LayoutDashboard, ArrowLeftRight, ShieldAlert, Map, FileBarChart,
-  ScrollText, Users, Settings, LogOut, Bell, CheckCircle2,
+  ScrollText, Users, Settings, LogOut, Bell, CheckCircle2, Building2
 } from "lucide-react";
 import { useSession, ROLE_LABELS, type AppRole, logAudit } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +13,7 @@ type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; roles:
 
 const NAV: NavItem[] = [
   { to: "/app", label: "Tableau de bord", icon: LayoutDashboard, roles: ["front_office", "back_office", "risk_team", "manager", "admin"] },
+  { to: "/app/clients", label: "Annuaire des clients", icon: Building2, roles: ["front_office", "back_office", "risk_team", "manager", "admin"] },
   { to: "/app/operations", label: "Opérations FX", icon: ArrowLeftRight, roles: ["front_office", "back_office", "risk_team", "manager", "admin"] },
   { to: "/app/operations/new", label: "Nouvelle opération", icon: ArrowLeftRight, roles: ["front_office", "admin"] },
   { to: "/app/validation", label: "File de validation", icon: CheckCircle2, roles: ["back_office", "admin"] },
