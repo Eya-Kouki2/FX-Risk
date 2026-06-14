@@ -4,13 +4,20 @@ import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { RiskBadge, StatusBadge, RiskBar } from "@/components/risk-indicators";
 import { OperationDetailDialog } from "@/components/operation-detail-dialog";
 import { formatCurrency, type OpStatus, type RiskLevel } from "@/lib/risk";
 import { Search, Plus, Filter } from "lucide-react";
 import { format } from "date-fns";
 import { useSession } from "@/lib/auth";
+import { useRealtimeInvalidate } from "@/hooks/useRealtimeInvalidate";
 
 export const Route = createFileRoute("/app/operations/")({
   component: OperationsList,
@@ -23,12 +30,17 @@ function OperationsList() {
   const [risk, setRisk] = useState<string>("all");
   const [openId, setOpenId] = useState<string | null>(null);
 
+  // 🔴 Realtime: auto-refresh on any operation change
+  useRealtimeInvalidate("operations", [["ops-list"]]);
+
   const { data: ops = [], isLoading } = useQuery({
     queryKey: ["ops-list"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("operations").select("*")
-        .order("created_at", { ascending: false }).limit(500);
+        .from("operations")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(500);
       if (error) throw error;
       return data ?? [];
     },
@@ -40,9 +52,12 @@ function OperationsList() {
       if (risk !== "all" && o.risk_level !== risk) return false;
       if (q) {
         const t = q.toLowerCase();
-        if (!o.client_name.toLowerCase().includes(t)
-          && !o.operation_ref.toLowerCase().includes(t)
-          && !o.counterparty.toLowerCase().includes(t)) return false;
+        if (
+          !o.client_name.toLowerCase().includes(t) &&
+          !o.operation_ref.toLowerCase().includes(t) &&
+          !o.counterparty.toLowerCase().includes(t)
+        )
+          return false;
       }
       return true;
     });
@@ -53,11 +68,16 @@ function OperationsList() {
       <div className="flex items-end justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl sm:text-3xl font-display font-bold">Opérations FX</h1>
-          <p className="text-sm text-muted-foreground mt-1">Toutes les transactions de change au comptant</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Toutes les transactions de change au comptant
+          </p>
         </div>
         {(user?.role === "front_office" || user?.role === "admin") && (
           <Button asChild>
-            <Link to="/app/operations/new"><Plus className="h-4 w-4 mr-2" />Nouvelle opération</Link>
+            <Link to="/app/operations/new">
+              <Plus className="h-4 w-4 mr-2" />
+              Nouvelle opération
+            </Link>
           </Button>
         )}
       </div>
@@ -66,23 +86,48 @@ function OperationsList() {
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
           <div className="sm:col-span-2 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Rechercher par client, référence, contrepartie…" value={q} onChange={(e) => setQ(e.target.value)} className="pl-9" />
+            <Input
+              placeholder="Rechercher par client, référence, contrepartie…"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              className="pl-9"
+            />
           </div>
           <Select value={status} onValueChange={setStatus}>
-            <SelectTrigger><Filter className="h-3.5 w-3.5 mr-1" /><SelectValue placeholder="Status" /></SelectTrigger>
+            <SelectTrigger>
+              <Filter className="h-3.5 w-3.5 mr-1" />
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tous les statuts</SelectItem>
-              {(["draft","pending","validated","rejected","escalated","settled"] as const).map((s) => (
-                <SelectItem key={s} value={s}>{{ draft: "Brouillon", pending: "En attente", validated: "Validé", rejected: "Rejeté", escalated: "Escaladé", settled: "Réglé" }[s]}</SelectItem>
-              ))}
+              {(["draft", "pending", "validated", "rejected", "escalated", "settled"] as const).map(
+                (s) => (
+                  <SelectItem key={s} value={s}>
+                    {
+                      {
+                        draft: "Brouillon",
+                        pending: "En attente",
+                        validated: "Validé",
+                        rejected: "Rejeté",
+                        escalated: "Escaladé",
+                        settled: "Réglé",
+                      }[s]
+                    }
+                  </SelectItem>
+                ),
+              )}
             </SelectContent>
           </Select>
           <Select value={risk} onValueChange={setRisk}>
-            <SelectTrigger><SelectValue placeholder="Risk level" /></SelectTrigger>
+            <SelectTrigger>
+              <SelectValue placeholder="Risk level" />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tous les niveaux</SelectItem>
-              {(["low","moderate","high","critical"] as const).map((s) => (
-                <SelectItem key={s} value={s}>{{ low: "Faible", moderate: "Modéré", high: "Élevé", critical: "Critique" }[s]}</SelectItem>
+              {(["low", "moderate", "high", "critical"] as const).map((s) => (
+                <SelectItem key={s} value={s}>
+                  {{ low: "Faible", moderate: "Modéré", high: "Élevé", critical: "Critique" }[s]}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -107,29 +152,57 @@ function OperationsList() {
             </thead>
             <tbody>
               {filtered.map((o) => (
-                <tr key={o.id} onClick={() => setOpenId(o.id)} className="border-t border-border hover:bg-muted/30 cursor-pointer">
+                <tr
+                  key={o.id}
+                  onClick={() => setOpenId(o.id)}
+                  className="border-t border-border hover:bg-muted/30 cursor-pointer"
+                >
                   <td className="px-4 py-3 font-mono text-xs">{o.operation_ref}</td>
                   <td className="px-4 py-3 font-medium">{o.client_name}</td>
-                  <td className="px-4 py-3 font-mono text-xs">{o.buy_currency}/{o.sell_currency}</td>
-                  <td className="px-4 py-3 text-right tabular-nums">{formatCurrency(Number(o.amount), o.buy_currency)}</td>
-                  <td className="px-4 py-3 text-right font-mono text-xs tabular-nums">{Number(o.exchange_rate).toFixed(4)}</td>
-                  <td className="px-4 py-3 text-xs text-muted-foreground">{format(new Date(o.value_date), "MMM d, yyyy")}</td>
+                  <td className="px-4 py-3 font-mono text-xs">
+                    {o.buy_currency}/{o.sell_currency}
+                  </td>
+                  <td className="px-4 py-3 text-right tabular-nums">
+                    {formatCurrency(Number(o.amount), o.buy_currency)}
+                  </td>
+                  <td className="px-4 py-3 text-right font-mono text-xs tabular-nums">
+                    {Number(o.exchange_rate).toFixed(4)}
+                  </td>
+                  <td className="px-4 py-3 text-xs text-muted-foreground">
+                    {format(new Date(o.value_date), "MMM d, yyyy")}
+                  </td>
                   <td className="px-4 py-3">
                     <div className="flex flex-col gap-1">
                       <RiskBadge level={o.risk_level as RiskLevel} />
                       <RiskBar score={o.risk_score} />
                     </div>
                   </td>
-                  <td className="px-4 py-3"><StatusBadge status={o.status as OpStatus} /></td>
+                  <td className="px-4 py-3">
+                    <StatusBadge status={o.status as OpStatus} />
+                  </td>
                   <td className="px-4 py-3 font-mono text-xs">
-                    {o.swift_reference ? <span className="text-success">{o.swift_reference}</span> : <span className="text-destructive">Manquant</span>}
+                    {o.swift_reference ? (
+                      <span className="text-success">{o.swift_reference}</span>
+                    ) : (
+                      <span className="text-destructive">Manquant</span>
+                    )}
                   </td>
                 </tr>
               ))}
               {!filtered.length && !isLoading && (
-                <tr><td colSpan={9} className="text-center text-muted-foreground py-12">Aucune opération ne correspond aux filtres.</td></tr>
+                <tr>
+                  <td colSpan={9} className="text-center text-muted-foreground py-12">
+                    Aucune opération ne correspond aux filtres.
+                  </td>
+                </tr>
               )}
-              {isLoading && <tr><td colSpan={9} className="text-center text-muted-foreground py-12">Chargement…</td></tr>}
+              {isLoading && (
+                <tr>
+                  <td colSpan={9} className="text-center text-muted-foreground py-12">
+                    Chargement…
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

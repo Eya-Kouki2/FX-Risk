@@ -1,234 +1,293 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Comprendre le Projet : Plateforme de Risque FX</title>
     <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      h1 {
+        color: #2c3e50;
+        text-align: center;
+        border-bottom: 3px solid #3498db;
+        padding-bottom: 10px;
+        margin-bottom: 30px;
+      }
+
+      h2 {
+        color: #2980b9;
+        margin-top: 40px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+      }
+
+      h3 {
+        color: #16a085;
+      }
+
+      p {
+        margin-bottom: 15px;
+        text-align: justify;
+      }
+
+      .concept-box {
+        background-color: #f8f9fa;
+        border-left: 4px solid #3498db;
+        padding: 15px 20px;
+        margin: 20px 0;
+        border-radius: 0 5px 5px 0;
+      }
+
+      .analogy {
+        background-color: #fcf3cf;
+        border-left: 4px solid #f1c40f;
+        padding: 15px 20px;
+        margin: 20px 0;
+        border-radius: 0 5px 5px 0;
+        font-style: italic;
+      }
+
+      ul {
+        margin-bottom: 20px;
+      }
+
+      li {
+        margin-bottom: 10px;
+      }
+
+      .command {
+        background-color: #2c3e50;
+        color: #ecf0f1;
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-family: "Courier New", Courier, monospace;
+        display: inline-block;
+        margin: 10px 0;
+      }
+
+      .btn-print {
+        display: block;
+        width: 250px;
+        margin: 40px auto;
+        padding: 15px;
+        text-align: center;
+        background: #e74c3c;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        cursor: pointer;
+        border: none;
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .btn-print:hover {
+        background: #c0392b;
+      }
+
+      @media print {
+        .no-print {
+          display: none;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 40px 20px;
+          padding: 0;
+          margin: 0;
         }
-
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            border-bottom: 3px solid #3498db;
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-        }
-
-        h2 {
-            color: #2980b9;
-            margin-top: 40px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
-        }
-
-        h3 {
-            color: #16a085;
-        }
-
-        p {
-            margin-bottom: 15px;
-            text-align: justify;
-        }
-
-        .concept-box {
-            background-color: #f8f9fa;
-            border-left: 4px solid #3498db;
-            padding: 15px 20px;
-            margin: 20px 0;
-            border-radius: 0 5px 5px 0;
-        }
-
-        .analogy {
-            background-color: #fcf3cf;
-            border-left: 4px solid #f1c40f;
-            padding: 15px 20px;
-            margin: 20px 0;
-            border-radius: 0 5px 5px 0;
-            font-style: italic;
-        }
-
-        ul {
-            margin-bottom: 20px;
-        }
-
-        li {
-            margin-bottom: 10px;
-        }
-
-        .command {
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-family: 'Courier New', Courier, monospace;
-            display: inline-block;
-            margin: 10px 0;
-        }
-
-        .btn-print {
-            display: block;
-            width: 250px;
-            margin: 40px auto;
-            padding: 15px;
-            text-align: center;
-            background: #e74c3c;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            cursor: pointer;
-            border: none;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .btn-print:hover {
-            background: #c0392b;
-        }
-
-        @media print {
-            .no-print {
-                display: none;
-            }
-
-            body {
-                padding: 0;
-                margin: 0;
-            }
-        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <button class="btn-print no-print" onclick="window.print()">🖨️ Sauvegarder en PDF</button>
 
     <h1>Guide du Débutant : La Plateforme FX Risk</h1>
 
     <div class="concept-box">
-        <strong>Bonjour !</strong> Ce document est écrit pour vous, même si vous n'avez <em>aucune</em> connaissance en
-        informatique. Nous allons utiliser des mots simples et des comparaisons avec la vie de tous les jours pour vous
-        expliquer ce qu'est ce projet, comment il fonctionne et pourquoi on l'utilise.
+      <strong>Bonjour !</strong> Ce document est écrit pour vous, même si vous n'avez
+      <em>aucune</em> connaissance en informatique. Nous allons utiliser des mots simples et des
+      comparaisons avec la vie de tous les jours pour vous expliquer ce qu'est ce projet, comment il
+      fonctionne et pourquoi on l'utilise.
     </div>
 
     <h2>1. Qu'est-ce que ce projet (FX Risk Platform) ?</h2>
-    <p>Imaginez une grande banque qui gère l'argent de ses clients. Parfois, ces clients veulent échanger de l'argent
-        d'un pays contre de l'argent d'un autre pays (par exemple, échanger des Euros contre des Dollars). C'est ce
-        qu'on appelle une opération de <strong>Change</strong> (ou <strong>FX</strong> pour <em>Foreign Exchange</em> en
-        anglais).</p>
+    <p>
+      Imaginez une grande banque qui gère l'argent de ses clients. Parfois, ces clients veulent
+      échanger de l'argent d'un pays contre de l'argent d'un autre pays (par exemple, échanger des
+      Euros contre des Dollars). C'est ce qu'on appelle une opération de <strong>Change</strong> (ou
+      <strong>FX</strong> pour <em>Foreign Exchange</em> en anglais).
+    </p>
 
-    <p>Ces opérations impliquent parfois des millions d'euros. Si quelqu'un fait une erreur de frappe, ou si un client
-        n'a pas les fonds nécessaires, la banque peut perdre beaucoup d'argent. C'est un <strong>Risque</strong>.</p>
+    <p>
+      Ces opérations impliquent parfois des millions d'euros. Si quelqu'un fait une erreur de
+      frappe, ou si un client n'a pas les fonds nécessaires, la banque peut perdre beaucoup
+      d'argent. C'est un <strong>Risque</strong>.
+    </p>
 
-    <p>Notre projet, la <strong>FX Risk Platform (Plateforme de Risque FX)</strong>, est comme un super-vigile
-        intelligent pour la banque. C'est un site web sécurisé qui surveille toutes ces transactions en direct, analyse
-        si elles sont dangereuses ou non, et avertit les bonnes personnes en cas de problème.</p>
+    <p>
+      Notre projet, la <strong>FX Risk Platform (Plateforme de Risque FX)</strong>, est comme un
+      super-vigile intelligent pour la banque. C'est un site web sécurisé qui surveille toutes ces
+      transactions en direct, analyse si elles sont dangereuses ou non, et avertit les bonnes
+      personnes en cas de problème.
+    </p>
 
     <h2>2. Qui utilise ce programme ? (Les rôles)</h2>
-    <p>Dans une banque, tout le monde ne fait pas la même chose. Notre plateforme sépare les utilisateurs en 5 grandes
-        équipes :</p>
+    <p>
+      Dans une banque, tout le monde ne fait pas la même chose. Notre plateforme sépare les
+      utilisateurs en 5 grandes équipes :
+    </p>
     <ul>
-        <li><strong>Le Front Office (Les Vendeurs) :</strong> Ce sont ceux qui parlent aux clients et enregistrent les
-            demandes d'échange d'argent. <em>(Exemple : Le caissier du supermarché qui scanne les articles).</em></li>
-        <li><strong>Le Back Office (Les Vérificateurs) :</strong> Ils s'assurent que les informations entrées par le
-            Front Office sont correctes avant d'envoyer l'argent. <em>(Exemple : Le vigile qui vérifie votre ticket de
-                caisse à la sortie).</em></li>
-        <li><strong>Le Middle Office (Risk Team) :</strong> Ce sont les experts qui surveillent la plateforme toute
-            la journée pour voir s'il y a des "Alertes Rouges" (comme une transaction anormalement grosse). Ils peuvent
-            bloquer une opération.</li>
-        <li><strong>Le Manager :</strong> Le chef qui regarde les statistiques générales pour voir si tout se passe bien
-            (il a accès à un grand tableau de bord).</li>
-        <li><strong>L'Administrateur :</strong> Le technicien qui s'occupe de donner les accès (mots de passe) aux
-            autres employés.</li>
+      <li>
+        <strong>Le Front Office (Les Vendeurs) :</strong> Ce sont ceux qui parlent aux clients et
+        enregistrent les demandes d'échange d'argent.
+        <em>(Exemple : Le caissier du supermarché qui scanne les articles).</em>
+      </li>
+      <li>
+        <strong>Le Back Office (Les Vérificateurs) :</strong> Ils s'assurent que les informations
+        entrées par le Front Office sont correctes avant d'envoyer l'argent.
+        <em>(Exemple : Le vigile qui vérifie votre ticket de caisse à la sortie).</em>
+      </li>
+      <li>
+        <strong>Le Middle Office (Risk Team) :</strong> Ce sont les experts qui surveillent la
+        plateforme toute la journée pour voir s'il y a des "Alertes Rouges" (comme une transaction
+        anormalement grosse). Ils peuvent bloquer une opération.
+      </li>
+      <li>
+        <strong>Le Manager :</strong> Le chef qui regarde les statistiques générales pour voir si
+        tout se passe bien (il a accès à un grand tableau de bord).
+      </li>
+      <li>
+        <strong>L'Administrateur :</strong> Le technicien qui s'occupe de donner les accès (mots de
+        passe) aux autres employés.
+      </li>
     </ul>
 
     <h2>3. C'est quoi "npm run dev" ? Pourquoi doit-on taper ça ?</h2>
-    <p>Si vous avez déjà ouvert ce projet, on vous a sûrement dit de taper la commande suivante dans une fenêtre noire
-        (le terminal) :</p>
+    <p>
+      Si vous avez déjà ouvert ce projet, on vous a sûrement dit de taper la commande suivante dans
+      une fenêtre noire (le terminal) :
+    </p>
     <div class="command">npm run dev</div>
 
     <div class="analogy">
-        <strong>L'analogie du restaurant :</strong><br>
-        Imaginez que ce projet informatique est un <strong>restaurant</strong>.<br>
-        - Les fichiers du code que vous avez sur votre ordinateur sont la <strong>cuisine, les tables et les
-            ingrédients</strong>.<br>
-        - Mais un restaurant ne sert à rien si on n'allume pas les lumières, les fours et si on n'ouvre pas la porte
-        d'entrée !
+      <strong>L'analogie du restaurant :</strong><br />
+      Imaginez que ce projet informatique est un <strong>restaurant</strong>.<br />
+      - Les fichiers du code que vous avez sur votre ordinateur sont la
+      <strong>cuisine, les tables et les ingrédients</strong>.<br />
+      - Mais un restaurant ne sert à rien si on n'allume pas les lumières, les fours et si on
+      n'ouvre pas la porte d'entrée !
     </div>
 
-    <p>La commande <strong><code>npm run dev</code></strong> signifie en langage humain : <em>"S'il te plaît, allume le
-            moteur du site web pour que je puisse l'utiliser sur mon ordinateur."</em></p>
+    <p>
+      La commande <strong><code>npm run dev</code></strong> signifie en langage humain :
+      <em
+        >"S'il te plaît, allume le moteur du site web pour que je puisse l'utiliser sur mon
+        ordinateur."</em
+      >
+    </p>
 
     <p>Voici l'explication mot à mot :</p>
     <ul>
-        <li><strong>npm</strong> : C'est le nom du robot à tout faire de notre ordinateur (Node Package Manager). C'est
-            lui qui écoute nos ordres.</li>
-        <li><strong>run</strong> : C'est le mot anglais pour "Lancer" ou "Faire tourner".</li>
-        <li><strong>dev</strong> : C'est l'abréviation de "Développement". Cela dit au robot d'allumer le site web en
-            "mode privé/atelier", ce qui vous permet de voir le site sur votre propre écran sans qu'il ne soit visible
-            par tout le monde sur internet.</li>
+      <li>
+        <strong>npm</strong> : C'est le nom du robot à tout faire de notre ordinateur (Node Package
+        Manager). C'est lui qui écoute nos ordres.
+      </li>
+      <li><strong>run</strong> : C'est le mot anglais pour "Lancer" ou "Faire tourner".</li>
+      <li>
+        <strong>dev</strong> : C'est l'abréviation de "Développement". Cela dit au robot d'allumer
+        le site web en "mode privé/atelier", ce qui vous permet de voir le site sur votre propre
+        écran sans qu'il ne soit visible par tout le monde sur internet.
+      </li>
     </ul>
 
-    <p>Une fois que vous avez tapé ça et appuyé sur "Entrée", l'ordinateur travaille quelques secondes, puis il vous
-        donne une adresse web qui ressemble à <code>http://localhost:5173</code>.</p>
-    <p><strong>Localhost</strong> veut dire "Mon propre ordinateur". C'est comme si le site web était diffusé uniquement
-        sur votre téléviseur privé. Vous pouvez alors ouvrir Google Chrome, taper cette adresse en haut, et le site
-        apparaît !</p>
+    <p>
+      Une fois que vous avez tapé ça et appuyé sur "Entrée", l'ordinateur travaille quelques
+      secondes, puis il vous donne une adresse web qui ressemble à
+      <code>http://localhost:5173</code>.
+    </p>
+    <p>
+      <strong>Localhost</strong> veut dire "Mon propre ordinateur". C'est comme si le site web était
+      diffusé uniquement sur votre téléviseur privé. Vous pouvez alors ouvrir Google Chrome, taper
+      cette adresse en haut, et le site apparaît !
+    </p>
 
     <h2>4. Comment le site se souvient-il des informations ? (Supabase)</h2>
-    <p>Si vous ajoutez une nouvelle transaction sur le site, comment fait-il pour s'en souvenir le lendemain ? Il
-        utilise une <strong>Base de données</strong>.</p>
+    <p>
+      Si vous ajoutez une nouvelle transaction sur le site, comment fait-il pour s'en souvenir le
+      lendemain ? Il utilise une <strong>Base de données</strong>.
+    </p>
     <p>Dans ce projet, nous utilisons un outil qui s'appelle <strong>Supabase</strong>.</p>
     <div class="analogy">
-        Imaginez Supabase comme une immense <strong>armoire à tiroirs (un classeur)</strong> ultra-sécurisée qui se
-        trouve dans un bâtiment lointain (le cloud). Quand vous tapez une nouvelle opération sur votre écran, votre
-        ordinateur envoie instantanément une petite lettre à Supabase qui range l'information dans le bon tiroir. Le
-        lendemain, quand vous vous connectez, Supabase vous renvoie le contenu du tiroir pour l'afficher sur votre
-        écran.
+      Imaginez Supabase comme une immense
+      <strong>armoire à tiroirs (un classeur)</strong> ultra-sécurisée qui se trouve dans un
+      bâtiment lointain (le cloud). Quand vous tapez une nouvelle opération sur votre écran, votre
+      ordinateur envoie instantanément une petite lettre à Supabase qui range l'information dans le
+      bon tiroir. Le lendemain, quand vous vous connectez, Supabase vous renvoie le contenu du
+      tiroir pour l'afficher sur votre écran.
     </div>
 
     <h2>5. De quoi est fabriqué ce projet ? (Les Outils)</h2>
-    <p>Même si vous n'avez pas besoin de les modifier, il est intéressant de savoir quels "matériaux" ont été utilisés
-        pour construire cette plateforme. Voici les principaux :</p>
+    <p>
+      Même si vous n'avez pas besoin de les modifier, il est intéressant de savoir quels "matériaux"
+      ont été utilisés pour construire cette plateforme. Voici les principaux :
+    </p>
     <ul>
-        <li><strong>React :</strong> C'est comme les briques LEGO du site. Au lieu de dessiner toute la page d'un coup,
-            on crée des petits blocs (un bouton, un tableau, un menu) qu'on assemble ensuite. Cela permet de construire
-            des choses très complexes mais solides.</li>
-        <li><strong>Tailwind CSS :</strong> C'est la boîte de peinture et de décoration. C'est grâce à Tailwind que le
-            site a de belles couleurs, que les boutons sont arrondis et que le texte est bien aligné.</li>
-        <li><strong>TypeScript :</strong> C'est le correcteur d'orthographe strict pour les développeurs. Il vérifie que
-            le code n'a pas d'erreurs avant même qu'on allume le site, ce qui évite beaucoup de pannes inattendues.</li>
-        <li><strong>Vite :</strong> C'est le moteur ultra-rapide. C'est lui qui fait le lien entre tous les fichiers de
-            code et votre navigateur internet pour que le site s'affiche en une fraction de seconde quand vous tapez
-            <code>npm run dev</code>.</li>
-        <li><strong>Supabase :</strong> Comme vu plus haut, c'est l'immense armoire forte (la base de données) qui
-            stocke vos informations (utilisateurs, alertes, montants d'argent) en toute sécurité sur internet.</li>
+      <li>
+        <strong>React :</strong> C'est comme les briques LEGO du site. Au lieu de dessiner toute la
+        page d'un coup, on crée des petits blocs (un bouton, un tableau, un menu) qu'on assemble
+        ensuite. Cela permet de construire des choses très complexes mais solides.
+      </li>
+      <li>
+        <strong>Tailwind CSS :</strong> C'est la boîte de peinture et de décoration. C'est grâce à
+        Tailwind que le site a de belles couleurs, que les boutons sont arrondis et que le texte est
+        bien aligné.
+      </li>
+      <li>
+        <strong>TypeScript :</strong> C'est le correcteur d'orthographe strict pour les
+        développeurs. Il vérifie que le code n'a pas d'erreurs avant même qu'on allume le site, ce
+        qui évite beaucoup de pannes inattendues.
+      </li>
+      <li>
+        <strong>Vite :</strong> C'est le moteur ultra-rapide. C'est lui qui fait le lien entre tous
+        les fichiers de code et votre navigateur internet pour que le site s'affiche en une fraction
+        de seconde quand vous tapez <code>npm run dev</code>.
+      </li>
+      <li>
+        <strong>Supabase :</strong> Comme vu plus haut, c'est l'immense armoire forte (la base de
+        données) qui stocke vos informations (utilisateurs, alertes, montants d'argent) en toute
+        sécurité sur internet.
+      </li>
     </ul>
 
     <h2>Résumé</h2>
     <p>Pour faire simple, ce que vous avez sous les yeux, c'est :</p>
     <ol>
-        <li>Un outil métier (<strong>FX Risk Platform</strong>) pour surveiller et sécuriser de gros échanges d'argent
-            dans une banque.</li>
-        <li>Une clé de contact (<strong>npm run dev</strong>) qui permet de démarrer le moteur de cet outil sur votre
-            ordinateur.</li>
-        <li>Des comptes de démonstration (comme <em>front@fxrisk.demo</em>) pour que vous puissiez tester l'outil en
-            vous mettant dans la peau des différents employés de la banque.</li>
+      <li>
+        Un outil métier (<strong>FX Risk Platform</strong>) pour surveiller et sécuriser de gros
+        échanges d'argent dans une banque.
+      </li>
+      <li>
+        Une clé de contact (<strong>npm run dev</strong>) qui permet de démarrer le moteur de cet
+        outil sur votre ordinateur.
+      </li>
+      <li>
+        Des comptes de démonstration (comme <em>front@fxrisk.demo</em>) pour que vous puissiez
+        tester l'outil en vous mettant dans la peau des différents employés de la banque.
+      </li>
     </ol>
 
     <div class="concept-box">
-        <strong>Et voilà !</strong> Vous savez maintenant l'essentiel sur ce projet. Il a été conçu pour être très
-        facile à utiliser à l'écran, même si sa mécanique interne (le code) est très sophistiquée.
+      <strong>Et voilà !</strong> Vous savez maintenant l'essentiel sur ce projet. Il a été conçu
+      pour être très facile à utiliser à l'écran, même si sa mécanique interne (le code) est très
+      sophistiquée.
     </div>
-
-</body>
-
+  </body>
 </html>

@@ -39,7 +39,9 @@ export function useSession() {
       }
     };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_e, session) => {
       if (session?.user) {
         setTimeout(() => load(session.user.id, session.user.email ?? ""), 0);
       } else {
@@ -53,14 +55,19 @@ export function useSession() {
       else setLoading(false);
     });
 
-    return () => { mounted = false; subscription.unsubscribe(); };
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   return { user, loading };
 }
 
 export async function logAudit(action: string, module: string, metadata?: Record<string, unknown>) {
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) return;
   await supabase.from("audit_logs").insert({
     user_id: user.id,

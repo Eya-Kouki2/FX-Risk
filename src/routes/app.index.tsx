@@ -5,14 +5,32 @@ import { useSession, ROLE_LABELS } from "@/lib/auth";
 import { RiskBadge, StatusBadge, RiskBar } from "@/components/risk-indicators";
 import { formatCurrency, type OpStatus, type RiskLevel } from "@/lib/risk";
 import {
-  ArrowUpRight, TrendingUp, AlertTriangle, CheckCircle2, Activity, Clock,
+  ArrowUpRight,
+  TrendingUp,
+  AlertTriangle,
+  Bell,
+  CheckCircle2,
+  Activity,
+  Clock,
 } from "lucide-react";
 import {
-  ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip,
-  BarChart, Bar, CartesianGrid, PieChart, Pie, Cell, Legend,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  BarChart,
+  Bar,
+  CartesianGrid,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
 } from "recharts";
 import { useState, useMemo } from "react";
 import { format, subDays, subMonths } from "date-fns";
+import { useRealtimeInvalidate } from "@/hooks/useRealtimeInvalidate";
 
 export const Route = createFileRoute("/app/")({
   component: DashboardPage,
@@ -21,14 +39,32 @@ export const Route = createFileRoute("/app/")({
 function DashboardPage() {
   const { user } = useSession();
 
+  // 🔴 Realtime: auto-refresh dashboard on any DB change
+  useRealtimeInvalidate("operations", [["ops-dash"], ["ops-total-count"]]);
+  useRealtimeInvalidate("alerts", [["alerts-dash"]]);
+
   const { data: ops = [] } = useQuery({
     queryKey: ["ops-dash"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("operations").select("*")
-        .order("created_at", { ascending: false }).limit(500);
+        .from("operations")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(500);
       if (error) throw error;
       return data ?? [];
+    },
+  });
+
+  // Separate exact count — not limited by the 500 fetch cap
+  const { data: countData } = useQuery({
+    queryKey: ["ops-total-count"],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from("operations")
+        .select("*", { count: "exact", head: true });
+      if (error) throw error;
+      return count ?? 0;
     },
   });
 
@@ -36,18 +72,25 @@ function DashboardPage() {
     queryKey: ["alerts-dash"],
     queryFn: async () => {
       const { data } = await supabase
-        .from("alerts").select("*")
-        .order("created_at", { ascending: false }).limit(100);
+        .from("alerts")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(100);
       return data ?? [];
     },
   });
 
-  const total = ops.length;
+  const total = countData ?? ops.length; // true total, not limited by the 500 fetch cap
   const highRisk = ops.filter((o) => o.risk_level === "high" || o.risk_level === "critical").length;
+  const openAlerts = alerts.filter((a) => !a.acknowledged).length;
   const critical = alerts.filter((a) => a.severity === "critical" && !a.acknowledged).length;
   const pending = ops.filter((o) => o.status === "pending").length;
-  const avgScore = total ? Math.round(ops.reduce((s, o) => s + o.risk_score, 0) / total) : 0;
-  const exposure = ops.filter((o) => o.status !== "rejected").reduce((s, o) => s + Number(o.amount), 0);
+  const avgScore = ops.length
+    ? Math.round(ops.reduce((s, o) => s + o.risk_score, 0) / ops.length)
+    : 0;
+  const exposure = ops
+    .filter((o) => o.status !== "rejected")
+    .reduce((s, o) => s + Number(o.amount), 0);
 
   const [timeframe, setTimeframe] = useState<"14d" | "30d" | "1y">("14d");
 
@@ -68,7 +111,9 @@ function DashboardPage() {
         return {
           date: format(d, "MMM d"),
           operations: dayOps.length,
-          avgRisk: dayOps.length ? Math.round(dayOps.reduce((s, o) => s + o.risk_score, 0) / dayOps.length) : 0,
+          avgRisk: dayOps.length
+            ? Math.round(dayOps.reduce((s, o) => s + o.risk_score, 0) / dayOps.length)
+            : 0,
         };
       });
     } else {
@@ -86,7 +131,9 @@ function DashboardPage() {
         return {
           date: format(m, "MMM yyyy"),
           operations: monthOps.length,
-          avgRisk: monthOps.length ? Math.round(monthOps.reduce((s, o) => s + o.risk_score, 0) / monthOps.length) : 0,
+          avgRisk: monthOps.length
+            ? Math.round(monthOps.reduce((s, o) => s + o.risk_score, 0) / monthOps.length)
+            : 0,
         };
       });
     }
@@ -100,7 +147,8 @@ function DashboardPage() {
   });
   const byPair = Array.from(pairMap.entries())
     .map(([pair, count]) => ({ pair, count }))
-    .sort((a, b) => b.count - a.count).slice(0, 6);
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 6);
 
   // risk distribution
   const riskDist = (["low", "moderate", "high", "critical"] as RiskLevel[]).map((lvl) => ({
@@ -117,7 +165,10 @@ function DashboardPage() {
           <h1 className="text-2xl sm:text-3xl font-display font-bold mt-1">
             {greetingByRole(user?.role)}
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">Aperçu des risques opérationnels en temps réel · {format(new Date(), "EEEE d MMMM yyyy")}</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Aperçu des risques opérationnels en temps réel ·{" "}
+            {format(new Date(), "EEEE d MMMM yyyy")}
+          </p>
         </div>
         <Link
           to="/app/operations"
@@ -127,11 +178,42 @@ function DashboardPage() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard icon={Activity} label="Total des opérations" value={total.toString()} sub="500 dernières suivies" tone="info" />
-        <KpiCard icon={AlertTriangle} label="Opérations à risque élevé" value={highRisk.toString()} sub={`${total ? Math.round((highRisk / total) * 100) : 0}% du portefeuille`} tone="warning" />
-        <KpiCard icon={TrendingUp} label="Score de risque moyen" value={`${avgScore}/100`} sub="Plus bas = plus sûr" tone="primary" />
-        <KpiCard icon={CheckCircle2} label="En attente de validation" value={pending.toString()} sub="En attente du Back Office" tone="success" />
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <KpiCard
+          icon={Activity}
+          label="Total des opérations"
+          value={total.toString()}
+          sub="Toutes opérations confondues"
+          tone="info"
+        />
+        <KpiCard
+          icon={AlertTriangle}
+          label="Opérations à risque élevé"
+          value={highRisk.toString()}
+          sub={`${ops.length ? Math.round((highRisk / ops.length) * 100) : 0}% des 500 dernières`}
+          tone="warning"
+        />
+        <KpiCard
+          icon={Bell}
+          label="Open Alerts"
+          value={openAlerts.toString()}
+          sub="Alertes non acquittées"
+          tone="warning"
+        />
+        <KpiCard
+          icon={TrendingUp}
+          label="Score de risque moyen"
+          value={`${avgScore}/100`}
+          sub="Plus bas = plus sûr"
+          tone="primary"
+        />
+        <KpiCard
+          icon={CheckCircle2}
+          label="En attente de validation"
+          value={pending.toString()}
+          sub="En attente du Back Office"
+          tone="success"
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -140,9 +222,12 @@ function DashboardPage() {
             <div className="flex items-start sm:items-center gap-3 flex-wrap">
               <div>
                 <h3 className="font-display font-semibold">
-                  Tendance des risques — {timeframe === "14d" ? "14 jours" : timeframe === "30d" ? "30 jours" : "12 mois"}
+                  Tendance des risques —{" "}
+                  {timeframe === "14d" ? "14 jours" : timeframe === "30d" ? "30 jours" : "12 mois"}
                 </h3>
-                <p className="text-xs text-muted-foreground">Volume des opérations vs. score de risque moyen</p>
+                <p className="text-xs text-muted-foreground">
+                  Volume des opérations vs. score de risque moyen
+                </p>
               </div>
               <div className="flex items-center gap-1 bg-muted p-0.5 rounded-lg text-xs sm:ml-2">
                 <button
@@ -197,9 +282,28 @@ function DashboardPage() {
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
               <XAxis dataKey="date" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} />
               <YAxis tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} />
-              <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }} />
-              <Area type="monotone" dataKey="operations" stroke="var(--primary-glow)" fill="url(#g1)" strokeWidth={2} />
-              <Area type="monotone" dataKey="avgRisk" stroke="var(--risk-high)" fill="url(#g2)" strokeWidth={2} />
+              <Tooltip
+                contentStyle={{
+                  background: "var(--card)",
+                  border: "1px solid var(--border)",
+                  borderRadius: 8,
+                  fontSize: 12,
+                }}
+              />
+              <Area
+                type="monotone"
+                dataKey="operations"
+                stroke="var(--primary-glow)"
+                fill="url(#g1)"
+                strokeWidth={2}
+              />
+              <Area
+                type="monotone"
+                dataKey="avgRisk"
+                stroke="var(--risk-high)"
+                fill="url(#g2)"
+                strokeWidth={2}
+              />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -209,11 +313,27 @@ function DashboardPage() {
           <p className="text-xs text-muted-foreground mb-4">Opérations par sévérité</p>
           <ResponsiveContainer width="100%" height={220}>
             <PieChart>
-              <Pie data={riskDist} dataKey="value" nameKey="name" innerRadius={50} outerRadius={80} paddingAngle={2}>
-                {riskDist.map((d) => <Cell key={d.name} fill={d.color} />)}
+              <Pie
+                data={riskDist}
+                dataKey="value"
+                nameKey="name"
+                innerRadius={50}
+                outerRadius={80}
+                paddingAngle={2}
+              >
+                {riskDist.map((d) => (
+                  <Cell key={d.name} fill={d.color} />
+                ))}
               </Pie>
               <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }} />
+              <Tooltip
+                contentStyle={{
+                  background: "var(--card)",
+                  border: "1px solid var(--border)",
+                  borderRadius: 8,
+                  fontSize: 12,
+                }}
+              />
             </PieChart>
           </ResponsiveContainer>
         </div>
@@ -227,8 +347,20 @@ function DashboardPage() {
             <BarChart data={byPair} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
               <XAxis type="number" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} />
-              <YAxis type="category" dataKey="pair" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} width={70} />
-              <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }} />
+              <YAxis
+                type="category"
+                dataKey="pair"
+                tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
+                width={70}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: "var(--card)",
+                  border: "1px solid var(--border)",
+                  borderRadius: 8,
+                  fontSize: 12,
+                }}
+              />
               <Bar dataKey="count" fill="var(--primary-glow)" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
@@ -261,14 +393,26 @@ function DashboardPage() {
                   <tr key={o.id} className="border-b border-border/50 hover:bg-muted/30">
                     <td className="px-2 py-2 font-mono text-xs">{o.operation_ref}</td>
                     <td className="px-2 py-2">{o.client_name}</td>
-                    <td className="px-2 py-2 font-mono text-xs">{o.buy_currency}/{o.sell_currency}</td>
-                    <td className="px-2 py-2 text-right tabular-nums">{formatCurrency(Number(o.amount), o.buy_currency)}</td>
-                    <td className="px-2 py-2"><RiskBadge level={o.risk_level as RiskLevel} /></td>
-                    <td className="px-2 py-2"><StatusBadge status={o.status as OpStatus} /></td>
+                    <td className="px-2 py-2 font-mono text-xs">
+                      {o.buy_currency}/{o.sell_currency}
+                    </td>
+                    <td className="px-2 py-2 text-right tabular-nums">
+                      {formatCurrency(Number(o.amount), o.buy_currency)}
+                    </td>
+                    <td className="px-2 py-2">
+                      <RiskBadge level={o.risk_level as RiskLevel} />
+                    </td>
+                    <td className="px-2 py-2">
+                      <StatusBadge status={o.status as OpStatus} />
+                    </td>
                   </tr>
                 ))}
                 {!ops.length && (
-                  <tr><td colSpan={6} className="text-center text-muted-foreground py-8">Aucune opération. Créez-en une pour voir les analyses.</td></tr>
+                  <tr>
+                    <td colSpan={6} className="text-center text-muted-foreground py-8">
+                      Aucune opération. Créez-en une pour voir les analyses.
+                    </td>
+                  </tr>
                 )}
               </tbody>
             </table>
@@ -278,29 +422,52 @@ function DashboardPage() {
 
       <div className="stat-card">
         <h3 className="font-display font-semibold mb-1">Alertes actives</h3>
-        <p className="text-xs text-muted-foreground mb-4">Problèmes critiques et élevés en attente de traitement</p>
+        <p className="text-xs text-muted-foreground mb-4">
+          Problèmes critiques et élevés en attente de traitement
+        </p>
         <div className="space-y-2">
-          {alerts.filter((a) => !a.acknowledged).slice(0, 5).map((a) => (
-            <div key={a.id} className="flex items-start gap-3 p-3 rounded-md border border-border bg-card">
-              <div className={`mt-0.5 h-2 w-2 rounded-full ${
-                a.severity === "critical" ? "bg-risk-critical" :
-                a.severity === "high" ? "bg-risk-high" :
-                a.severity === "moderate" ? "bg-risk-moderate" : "bg-info"
-              }`} />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium uppercase tracking-wide">{a.category}</span>
-                  <span className="text-xs text-muted-foreground">· {format(new Date(a.created_at), "MMM d, HH:mm")}</span>
+          {alerts
+            .filter((a) => !a.acknowledged)
+            .slice(0, 5)
+            .map((a) => (
+              <div
+                key={a.id}
+                className="flex items-start gap-3 p-3 rounded-md border border-border bg-card"
+              >
+                <div
+                  className={`mt-0.5 h-2 w-2 rounded-full ${
+                    a.severity === "critical"
+                      ? "bg-risk-critical"
+                      : a.severity === "high"
+                        ? "bg-risk-high"
+                        : a.severity === "moderate"
+                          ? "bg-risk-moderate"
+                          : "bg-info"
+                  }`}
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium uppercase tracking-wide">
+                      {a.category}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      · {format(new Date(a.created_at), "MMM d, HH:mm")}
+                    </span>
+                  </div>
+                  <p className="text-sm mt-0.5">{a.message}</p>
                 </div>
-                <p className="text-sm mt-0.5">{a.message}</p>
               </div>
-            </div>
-          ))}
+            ))}
           {alerts.filter((a) => !a.acknowledged).length === 0 && (
-            <p className="text-sm text-muted-foreground text-center py-4">Aucune alerte active. Tout est normal.</p>
+            <p className="text-sm text-muted-foreground text-center py-4">
+              Aucune alerte active. Tout est normal.
+            </p>
           )}
           {critical > 0 && (
-            <p className="text-xs text-risk-critical">{critical} alerte{critical > 1 ? "s" : ""} critique{critical > 1 ? "s" : ""} nécessite{critical > 1 ? "nt" : ""} une attention immédiate.</p>
+            <p className="text-xs text-risk-critical">
+              {critical} alerte{critical > 1 ? "s" : ""} critique{critical > 1 ? "s" : ""} nécessite
+              {critical > 1 ? "nt" : ""} une attention immédiate.
+            </p>
           )}
         </div>
       </div>
@@ -310,17 +477,32 @@ function DashboardPage() {
 
 function greetingByRole(role?: string) {
   switch (role) {
-    case "front_office": return "Espace de travail Front Office";
-    case "back_office": return "Bureau de validation Back Office";
-    case "risk_team": return "Centre de surveillance des risques";
-    case "manager": return "Vue d'ensemble des risques";
-    case "admin": return "Administration de la plateforme";
-    default: return "Tableau de bord opérationnel";
+    case "front_office":
+      return "Espace de travail Front Office";
+    case "back_office":
+      return "Bureau de validation Back Office";
+    case "risk_team":
+      return "Centre de surveillance des risques";
+    case "manager":
+      return "Vue d'ensemble des risques";
+    case "admin":
+      return "Administration de la plateforme";
+    default:
+      return "Tableau de bord opérationnel";
   }
 }
 
-function KpiCard({ icon: Icon, label, value, sub, tone }: {
-  icon: typeof Activity; label: string; value: string; sub: string;
+function KpiCard({
+  icon: Icon,
+  label,
+  value,
+  sub,
+  tone,
+}: {
+  icon: typeof Activity;
+  label: string;
+  value: string;
+  sub: string;
   tone: "primary" | "warning" | "success" | "info";
 }) {
   const toneCls = {

@@ -22,7 +22,8 @@ function ClientsList() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("clients")
-        .select(`
+        .select(
+          `
           id,
           name,
           cin,
@@ -30,7 +31,8 @@ function ClientsList() {
           matricule_fiscal,
           created_at,
           operations ( id, amount )
-        `)
+        `,
+        )
         .order("name");
       if (error) throw error;
       return data;
@@ -41,7 +43,7 @@ function ClientsList() {
     (c) =>
       c.name.toLowerCase().includes(search.toLowerCase()) ||
       (c.cin && c.cin.toLowerCase().includes(search.toLowerCase())) ||
-      (c.matricule_fiscal && c.matricule_fiscal.toLowerCase().includes(search.toLowerCase()))
+      (c.matricule_fiscal && c.matricule_fiscal.toLowerCase().includes(search.toLowerCase())),
   );
 
   return (
@@ -92,13 +94,13 @@ function ClientsList() {
             <tbody className="divide-y">
               {isLoading ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">
+                  <td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">
                     Chargement des clients...
                   </td>
                 </tr>
               ) : filtered?.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">
+                  <td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">
                     Aucun client trouvé.
                   </td>
                 </tr>
@@ -109,31 +111,35 @@ function ClientsList() {
                     c.operations?.reduce((sum, op) => sum + Number(op.amount), 0) || 0;
 
                   return (
-                    <tr
-                      key={c.id}
-                      className="hover:bg-muted/30 transition-colors group"
-                    >
+                    <tr key={c.id} className="hover:bg-muted/30 transition-colors group">
                       <td className="px-6 py-4">
                         <Link
-                          to={`/app/clients/${c.id}`}
+                          to="/app/clients/$clientId"
+                          params={{ clientId: c.id }}
                           className="font-medium text-primary hover:underline"
                         >
                           {c.name}
                         </Link>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                          c.client_type === "societe"
-                            ? "bg-blue-500/10 text-blue-500"
-                            : "bg-green-500/10 text-green-600"
-                        }`}>
+                        <span
+                          className={`text-xs px-2.5 py-1 rounded-full font-medium ${
+                            c.client_type === "societe"
+                              ? "bg-blue-500/10 text-blue-500"
+                              : "bg-green-500/10 text-green-600"
+                          }`}
+                        >
                           {c.client_type === "societe" ? "🏢 Société" : "👤 Particulier"}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-muted-foreground text-sm">
                         {c.client_type === "particulier"
-                          ? (c.cin ? `CIN: ${c.cin}` : "—")
-                          : (c.matricule_fiscal ? `MF: ${c.matricule_fiscal}` : "—")}
+                          ? c.cin
+                            ? `CIN: ${c.cin}`
+                            : "—"
+                          : c.matricule_fiscal
+                            ? `MF: ${c.matricule_fiscal}`
+                            : "—"}
                       </td>
                       <td className="px-6 py-4 text-right">
                         <span className="inline-flex items-center justify-center bg-primary/10 text-primary rounded-full px-2.5 py-0.5 text-xs font-medium">

@@ -10,14 +10,23 @@ export const Route = createFileRoute("/app/audit")({
 function AuditPage() {
   const { data: logs = [] } = useQuery({
     queryKey: ["audit-logs"],
-    queryFn: async () => (await supabase.from("audit_logs").select("*").order("created_at", { ascending: false }).limit(300)).data ?? [],
+    queryFn: async () =>
+      (
+        await supabase
+          .from("audit_logs")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(300)
+      ).data ?? [],
   });
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl sm:text-3xl font-display font-bold">Journaux d'audit</h1>
-        <p className="text-sm text-muted-foreground mt-1">Traçabilité complète des actions utilisateur par module</p>
+        <p className="text-sm text-muted-foreground mt-1">
+          Traçabilité complète des actions utilisateur par module
+        </p>
       </div>
 
       <div className="stat-card !p-0 overflow-hidden">
@@ -36,17 +45,35 @@ function AuditPage() {
             <tbody>
               {logs.map((l) => (
                 <tr key={l.id} className="border-t border-border hover:bg-muted/30">
-                  <td className="px-4 py-2.5 font-mono text-xs">{format(new Date(l.created_at), "MMM d HH:mm:ss")}</td>
+                  <td className="px-4 py-2.5 font-mono text-xs">
+                    {format(new Date(l.created_at), "MMM d HH:mm:ss")}
+                  </td>
                   <td className="px-4 py-2.5">{l.user_email ?? "—"}</td>
-                  <td className="px-4 py-2.5"><span className="font-mono text-xs px-2 py-0.5 rounded bg-muted">{l.action}</span></td>
+                  <td className="px-4 py-2.5">
+                    <span className="font-mono text-xs px-2 py-0.5 rounded bg-muted">
+                      {l.action}
+                    </span>
+                  </td>
                   <td className="px-4 py-2.5 text-muted-foreground">{l.module}</td>
-                  <td className="px-4 py-2.5"><span className={`text-xs ${l.result === "success" ? "text-success" : "text-destructive"}`}>{l.result}</span></td>
+                  <td className="px-4 py-2.5">
+                    <span
+                      className={`text-xs ${l.result === "success" ? "text-success" : "text-destructive"}`}
+                    >
+                      {l.result}
+                    </span>
+                  </td>
                   <td className="px-4 py-2.5 font-mono text-xs text-muted-foreground max-w-xs truncate">
                     {l.metadata ? JSON.stringify(l.metadata) : "—"}
                   </td>
                 </tr>
               ))}
-              {!logs.length && <tr><td colSpan={6} className="text-center text-muted-foreground py-12">Aucun événement d'audit enregistré.</td></tr>}
+              {!logs.length && (
+                <tr>
+                  <td colSpan={6} className="text-center text-muted-foreground py-12">
+                    Aucun événement d'audit enregistré.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

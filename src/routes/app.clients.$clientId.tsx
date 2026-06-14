@@ -3,15 +3,31 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { formatCurrency, type RiskLevel, type OpStatus } from "@/lib/risk";
 import { format } from "date-fns";
-import { ArrowLeft, Building2, CreditCard, Activity, ArrowRightLeft, Edit2, Check, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Building2,
+  CreditCard,
+  Activity,
+  ArrowRightLeft,
+  Edit2,
+  Check,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { OperationDetailDialog } from "@/components/operation-detail-dialog";
 import { RiskBadge, StatusBadge } from "@/components/risk-indicators";
+import { useRealtimeInvalidate } from "@/hooks/useRealtimeInvalidate";
 
 export const Route = createFileRoute("/app/clients/$clientId")({
   component: ClientProfile,
@@ -20,6 +36,13 @@ export const Route = createFileRoute("/app/clients/$clientId")({
 function ClientProfile() {
   const { clientId } = Route.useParams();
   const queryClient = useQueryClient();
+
+  // 🔴 Realtime: refresh this client's transactions on any change
+  useRealtimeInvalidate(
+    "operations",
+    [["client-operations", clientId]],
+    `client_id=eq.${clientId}`,
+  );
 
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState("");
@@ -47,7 +70,8 @@ function ClientProfile() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("operations")
-        .select(`
+        .select(
+          `
           id,
           operation_ref,
           buy_currency,
@@ -59,7 +83,8 @@ function ClientProfile() {
           risk_score,
           risk_level,
           created_at
-        `)
+        `,
+        )
         .eq("client_id", clientId)
         .eq("status", "validated")
         .order("created_at", { ascending: false });
@@ -89,8 +114,8 @@ function ClientProfile() {
         .update({
           name: editName,
           client_type: editType,
-          cin: editType === "particulier" ? (editCin || null) : null,
-          matricule_fiscal: editType === "societe" ? (editMf || null) : null,
+          cin: editType === "particulier" ? editCin || null : null,
+          matricule_fiscal: editType === "societe" ? editMf || null : null,
         })
         .eq("id", clientId);
 
@@ -111,23 +136,30 @@ function ClientProfile() {
       queryClient.invalidateQueries({ queryKey: ["client", clientId] });
       queryClient.invalidateQueries({ queryKey: ["client-operations", clientId] });
       queryClient.invalidateQueries({ queryKey: ["clients"] });
-    } catch (error: any) {
-      toast.error(error.message || "Erreur lors de la mise à jour.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Erreur lors de la mise à jour.");
     } finally {
       setIsSaving(false);
     }
   };
 
-  if (clientLoading || opsLoading) return <div className="p-8 text-center text-muted-foreground">Chargement...</div>;
+  if (clientLoading || opsLoading)
+    return <div className="p-8 text-center text-muted-foreground">Chargement...</div>;
   if (!client) return <div className="p-8 text-center text-destructive">Client introuvable.</div>;
 
   const totalVol = ops.reduce((sum, op) => sum + Number(op.amount), 0);
-  const avgRisk = ops.length > 0 ? Math.round(ops.reduce((sum, op) => sum + op.risk_score, 0) / ops.length) : 0;
+  const avgRisk =
+    ops.length > 0 ? Math.round(ops.reduce((sum, op) => sum + op.risk_score, 0) / ops.length) : 0;
 
   return (
     <div className="space-y-6 max-w-6xl">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <Button variant="ghost" size="sm" asChild className="-ml-3 text-muted-foreground self-start">
+        <Button
+          variant="ghost"
+          size="sm"
+          asChild
+          className="-ml-3 text-muted-foreground self-start"
+        >
           <Link to="/app/clients">
             <ArrowLeft className="w-4 h-4 mr-2" /> Retour à l'annuaire
           </Link>
@@ -144,11 +176,13 @@ function ClientProfile() {
               <div>
                 <div className="flex items-center gap-3 flex-wrap">
                   <h1 className="text-2xl sm:text-3xl font-display font-bold">{client.name}</h1>
-                  <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                    client.client_type === "societe"
-                      ? "bg-blue-500/10 text-blue-500"
-                      : "bg-green-500/10 text-green-600"
-                  }`}>
+                  <span
+                    className={`text-xs px-2.5 py-1 rounded-full font-medium ${
+                      client.client_type === "societe"
+                        ? "bg-blue-500/10 text-blue-500"
+                        : "bg-green-500/10 text-green-600"
+                    }`}
+                  >
                     {client.client_type === "societe" ? "Société" : "Particulier"}
                   </span>
                 </div>
@@ -156,9 +190,17 @@ function ClientProfile() {
                   <span className="flex items-center gap-1">
                     <CreditCard className="w-4 h-4" />
                     {client.client_type === "particulier" ? (
-                      <>CIN : <strong className="text-foreground">{client.cin || "Non renseigné"}</strong></>
+                      <>
+                        CIN :{" "}
+                        <strong className="text-foreground">{client.cin || "Non renseigné"}</strong>
+                      </>
                     ) : (
-                      <>Matricule Fiscal : <strong className="text-foreground">{client.matricule_fiscal || "Non renseigné"}</strong></>
+                      <>
+                        Matricule Fiscal :{" "}
+                        <strong className="text-foreground">
+                          {client.matricule_fiscal || "Non renseigné"}
+                        </strong>
+                      </>
                     )}
                   </span>
                   <span>•</span>
@@ -185,7 +227,10 @@ function ClientProfile() {
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="edit-type">Type de client</Label>
-                <Select value={editType} onValueChange={(val: "particulier" | "societe") => setEditType(val)}>
+                <Select
+                  value={editType}
+                  onValueChange={(val: "particulier" | "societe") => setEditType(val)}
+                >
                   <SelectTrigger id="edit-type">
                     <SelectValue />
                   </SelectTrigger>
@@ -242,7 +287,9 @@ function ClientProfile() {
             <Activity className="w-4 h-4" />
             <h3 className="font-medium text-sm uppercase tracking-wider">Volume Transigé</h3>
           </div>
-          <div className="text-3xl font-bold font-display text-primary">{formatCurrency(totalVol)} $</div>
+          <div className="text-3xl font-bold font-display text-primary">
+            {formatCurrency(totalVol)} $
+          </div>
         </div>
         <div className="stat-card">
           <div className="flex items-center gap-2 text-muted-foreground mb-2">

@@ -1,8 +1,18 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
 import {
-  LayoutDashboard, ArrowLeftRight, ShieldAlert, Map, FileBarChart,
-  ScrollText, Users, Settings, LogOut, Bell, CheckCircle2, Building2
+  LayoutDashboard,
+  ArrowLeftRight,
+  ShieldAlert,
+  Map,
+  FileBarChart,
+  ScrollText,
+  Users,
+  Settings,
+  LogOut,
+  Bell,
+  CheckCircle2,
+  Building2,
 } from "lucide-react";
 import { useSession, ROLE_LABELS, type AppRole, logAudit } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,15 +22,60 @@ import { Skeleton } from "@/components/ui/skeleton";
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; roles: AppRole[] };
 
 const NAV: NavItem[] = [
-  { to: "/app", label: "Tableau de bord", icon: LayoutDashboard, roles: ["front_office", "back_office", "risk_team", "manager", "admin"] },
-  { to: "/app/clients", label: "Annuaire des clients", icon: Building2, roles: ["front_office", "back_office", "risk_team", "manager", "admin"] },
-  { to: "/app/operations", label: "Opérations FX", icon: ArrowLeftRight, roles: ["front_office", "back_office", "risk_team", "manager", "admin"] },
-  { to: "/app/operations/new", label: "Nouvelle opération", icon: ArrowLeftRight, roles: ["front_office", "admin"] },
-  { to: "/app/validation", label: "File de validation", icon: CheckCircle2, roles: ["back_office", "admin"] },
-  { to: "/app/approvals", label: "File d'approbation", icon: CheckCircle2, roles: ["manager", "admin"] },
-  { to: "/app/alerts", label: "Centre d'alertes", icon: Bell, roles: ["back_office", "risk_team", "manager", "admin"] },
-  { to: "/app/heatmap", label: "Cartographie des risques", icon: Map, roles: ["risk_team", "manager", "admin"] },
-  { to: "/app/reports", label: "Rapports", icon: FileBarChart, roles: ["risk_team", "manager", "admin"] },
+  {
+    to: "/app",
+    label: "Tableau de bord",
+    icon: LayoutDashboard,
+    roles: ["front_office", "back_office", "risk_team", "manager", "admin"],
+  },
+  {
+    to: "/app/clients",
+    label: "Annuaire des clients",
+    icon: Building2,
+    roles: ["front_office", "back_office", "risk_team", "manager", "admin"],
+  },
+  {
+    to: "/app/operations",
+    label: "Opérations FX",
+    icon: ArrowLeftRight,
+    roles: ["front_office", "back_office", "risk_team", "manager", "admin"],
+  },
+  {
+    to: "/app/operations/new",
+    label: "Nouvelle opération",
+    icon: ArrowLeftRight,
+    roles: ["front_office", "admin"],
+  },
+  {
+    to: "/app/validation",
+    label: "File de validation",
+    icon: CheckCircle2,
+    roles: ["back_office", "risk_team", "manager", "admin"],
+  },
+  {
+    to: "/app/approvals",
+    label: "File d'approbation",
+    icon: CheckCircle2,
+    roles: ["manager", "admin"],
+  },
+  {
+    to: "/app/alerts",
+    label: "Centre d'alertes",
+    icon: Bell,
+    roles: ["back_office", "risk_team", "manager", "admin"],
+  },
+  {
+    to: "/app/heatmap",
+    label: "Cartographie des risques",
+    icon: Map,
+    roles: ["risk_team", "manager", "admin"],
+  },
+  {
+    to: "/app/reports",
+    label: "Rapports",
+    icon: FileBarChart,
+    roles: ["risk_team", "manager", "admin"],
+  },
   { to: "/app/audit", label: "Journaux d'audit", icon: ScrollText, roles: ["manager", "admin"] },
   { to: "/app/admin/users", label: "Gestion des utilisateurs", icon: Users, roles: ["admin"] },
   { to: "/app/admin/settings", label: "Paramètres", icon: Settings, roles: ["admin"] },
@@ -74,8 +129,11 @@ export function AppShell() {
               <Link
                 key={item.to}
                 to={item.to}
-                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${active ? "bg-sidebar-accent text-sidebar-accent-foreground" : "text-sidebar-foreground/80 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
-                  }`}
+                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
+                  active
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                    : "text-sidebar-foreground/80 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                }`}
               >
                 <Icon className="h-4 w-4" />
                 <span>{item.label}</span>
@@ -88,7 +146,11 @@ export function AppShell() {
             <div className="text-sm font-medium truncate">{user.fullName ?? user.email}</div>
             <div className="text-xs text-sidebar-foreground/60">{ROLE_LABELS[user.role]}</div>
           </div>
-          <Button onClick={signOut} variant="ghost" className="w-full justify-start text-sidebar-foreground/80 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground">
+          <Button
+            onClick={signOut}
+            variant="ghost"
+            className="w-full justify-start text-sidebar-foreground/80 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+          >
             <LogOut className="h-4 w-4 mr-2" /> Déconnexion
           </Button>
         </div>
@@ -103,7 +165,9 @@ export function AppShell() {
             </div>
             <div className="font-display font-bold">FX Risk</div>
           </div>
-          <Button size="sm" variant="ghost" onClick={signOut}><LogOut className="h-4 w-4" /></Button>
+          <Button size="sm" variant="ghost" onClick={signOut}>
+            <LogOut className="h-4 w-4" />
+          </Button>
         </header>
         <div className="p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto">
           <Outlet />

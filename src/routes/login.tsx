@@ -5,7 +5,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { ROLE_LABELS, logAudit, type AppRole } from "@/lib/auth";
@@ -52,7 +58,8 @@ function LoginPage() {
     e.preventDefault();
     setLoading(true);
     const { error } = await supabase.auth.signUp({
-      email, password,
+      email,
+      password,
       options: {
         emailRedirectTo: `${window.location.origin}/app`,
         data: { full_name: fullName, role },
@@ -65,7 +72,7 @@ function LoginPage() {
     navigate({ to: "/app" });
   };
 
-  const quickDemo = async (u: typeof DEMO_USERS[number]) => {
+  const quickDemo = async (u: (typeof DEMO_USERS)[number]) => {
     setLoading(true);
     const pw = "Demo!2026";
 
@@ -83,10 +90,13 @@ function LoginPage() {
       if (up.error) {
         setLoading(false);
         // Give a helpful message for the most common Supabase free-tier issue
-        if (up.error.message.toLowerCase().includes("rate limit") || up.error.message.toLowerCase().includes("email")) {
+        if (
+          up.error.message.toLowerCase().includes("rate limit") ||
+          up.error.message.toLowerCase().includes("email")
+        ) {
           return toast.error(
-            "Email rate limit hit. In your Supabase dashboard go to Authentication → Settings → Email Auth and DISABLE \"Enable email confirmations\", then try again.",
-            { duration: 8000 }
+            'Email rate limit hit. In your Supabase dashboard go to Authentication → Settings → Email Auth and DISABLE "Enable email confirmations", then try again.',
+            { duration: 8000 },
           );
         }
         return toast.error(up.error.message);
@@ -96,8 +106,8 @@ function LoginPage() {
       if (!up.data.session) {
         setLoading(false);
         return toast.error(
-          "Email confirmation required. Please disable it: Supabase Dashboard → Authentication → Settings → Email Auth → uncheck \"Enable email confirmations\".",
-          { duration: 8000 }
+          'Email confirmation required. Please disable it: Supabase Dashboard → Authentication → Settings → Email Auth → uncheck "Enable email confirmations".',
+          { duration: 8000 },
         );
       }
 
@@ -115,7 +125,13 @@ function LoginPage() {
     <div className="min-h-screen grid lg:grid-cols-2">
       {/* Branding panel */}
       <div className="hidden lg:flex relative overflow-hidden bg-sidebar text-sidebar-foreground p-12 flex-col justify-between">
-        <div className="absolute inset-0 opacity-30" style={{ background: "radial-gradient(800px 400px at 20% 0%, oklch(0.42 0.14 250 / 0.4), transparent), radial-gradient(600px 400px at 80% 100%, oklch(0.6 0.13 235 / 0.3), transparent)" }} />
+        <div
+          className="absolute inset-0 opacity-30"
+          style={{
+            background:
+              "radial-gradient(800px 400px at 20% 0%, oklch(0.42 0.14 250 / 0.4), transparent), radial-gradient(600px 400px at 80% 100%, oklch(0.6 0.13 235 / 0.3), transparent)",
+          }}
+        />
         <div className="relative">
           <div className="flex items-center gap-2.5">
             <div className="h-10 w-10 rounded-lg bg-sidebar-primary flex items-center justify-center">
@@ -123,7 +139,9 @@ function LoginPage() {
             </div>
             <div>
               <div className="font-display font-bold">FX Risk STB</div>
-              <div className="text-xs text-sidebar-foreground/60">Gestion des Risques Opérationnels</div>
+              <div className="text-xs text-sidebar-foreground/60">
+                Gestion des Risques Opérationnels
+              </div>
             </div>
           </div>
         </div>
@@ -142,7 +160,10 @@ function LoginPage() {
               { k: "Alertes critiques", v: "4" },
               { k: "SLA de validation", v: "12 min" },
             ].map((s) => (
-              <div key={s.k} className="rounded-lg border border-sidebar-border/40 bg-sidebar-accent/40 p-3">
+              <div
+                key={s.k}
+                className="rounded-lg border border-sidebar-border/40 bg-sidebar-accent/40 p-3"
+              >
                 <div className="text-xs text-sidebar-foreground/60">{s.k}</div>
                 <div className="text-2xl font-display font-bold mt-1">{s.v}</div>
               </div>
@@ -165,7 +186,9 @@ function LoginPage() {
           </div>
 
           <h2 className="text-2xl font-display font-bold">Accéder à votre console</h2>
-          <p className="text-sm text-muted-foreground mt-1">Connectez-vous ou créez un compte de travail.</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Connectez-vous ou créez un compte de travail.
+          </p>
 
           <Tabs defaultValue="signin" className="mt-6">
             <TabsList className="grid w-full grid-cols-2">
@@ -178,14 +201,30 @@ function LoginPage() {
                   <Label htmlFor="email">Email</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="pl-9" placeholder="you@bank.com" />
+                    <Input
+                      id="email"
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-9"
+                      placeholder="you@bank.com"
+                    />
                   </div>
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="password">Password</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="pl-9" placeholder="••••••••" />
+                    <Input
+                      id="password"
+                      type="password"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="pl-9"
+                      placeholder="••••••••"
+                    />
                   </div>
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
@@ -197,28 +236,52 @@ function LoginPage() {
               <form onSubmit={signUp} className="space-y-4">
                 <div className="space-y-1.5">
                   <Label htmlFor="fullName">Nom complet</Label>
-                  <Input id="fullName" required value={fullName} onChange={(e) => setFullName(e.target.value)} />
+                  <Input
+                    id="fullName"
+                    required
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                  />
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="email2">Email</Label>
-                  <Input id="email2" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                  <Input
+                    id="email2"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="password2">Password</Label>
-                  <Input id="password2" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} />
+                  <Input
+                    id="password2"
+                    type="password"
+                    required
+                    minLength={6}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
                 </div>
                 <div className="space-y-1.5">
                   <Label>Département / Rôle</Label>
                   <Select value={role} onValueChange={(v) => setRole(v as AppRole)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       {(Object.keys(ROLE_LABELS) as AppRole[]).map((r) => (
-                        <SelectItem key={r} value={r}>{ROLE_LABELS[r]}</SelectItem>
+                        <SelectItem key={r} value={r}>
+                          {ROLE_LABELS[r]}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>Créer un compte</Button>
+                <Button type="submit" className="w-full" disabled={loading}>
+                  Créer un compte
+                </Button>
               </form>
             </TabsContent>
           </Tabs>
