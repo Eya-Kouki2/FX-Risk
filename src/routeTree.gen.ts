@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppValidationRouteImport } from './routes/app.validation'
 import { Route as AppReportsRouteImport } from './routes/app.reports'
+import { Route as AppPredictionsRouteImport } from './routes/app.predictions'
 import { Route as AppHeatmapRouteImport } from './routes/app.heatmap'
 import { Route as AppAuditRouteImport } from './routes/app.audit'
 import { Route as AppApprovalsRouteImport } from './routes/app.approvals'
@@ -54,6 +55,11 @@ const AppValidationRoute = AppValidationRouteImport.update({
 const AppReportsRoute = AppReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPredictionsRoute = AppPredictionsRouteImport.update({
+  id: '/predictions',
+  path: '/predictions',
   getParentRoute: () => AppRoute,
 } as any)
 const AppHeatmapRoute = AppHeatmapRouteImport.update({
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/app/approvals': typeof AppApprovalsRoute
   '/app/audit': typeof AppAuditRoute
   '/app/heatmap': typeof AppHeatmapRoute
+  '/app/predictions': typeof AppPredictionsRoute
   '/app/reports': typeof AppReportsRoute
   '/app/validation': typeof AppValidationRoute
   '/app/': typeof AppIndexRoute
@@ -132,6 +139,7 @@ export interface FileRoutesByTo {
   '/app/approvals': typeof AppApprovalsRoute
   '/app/audit': typeof AppAuditRoute
   '/app/heatmap': typeof AppHeatmapRoute
+  '/app/predictions': typeof AppPredictionsRoute
   '/app/reports': typeof AppReportsRoute
   '/app/validation': typeof AppValidationRoute
   '/app': typeof AppIndexRoute
@@ -151,6 +159,7 @@ export interface FileRoutesById {
   '/app/approvals': typeof AppApprovalsRoute
   '/app/audit': typeof AppAuditRoute
   '/app/heatmap': typeof AppHeatmapRoute
+  '/app/predictions': typeof AppPredictionsRoute
   '/app/reports': typeof AppReportsRoute
   '/app/validation': typeof AppValidationRoute
   '/app/': typeof AppIndexRoute
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/app/approvals'
     | '/app/audit'
     | '/app/heatmap'
+    | '/app/predictions'
     | '/app/reports'
     | '/app/validation'
     | '/app/'
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/app/approvals'
     | '/app/audit'
     | '/app/heatmap'
+    | '/app/predictions'
     | '/app/reports'
     | '/app/validation'
     | '/app'
@@ -206,6 +217,7 @@ export interface FileRouteTypes {
     | '/app/approvals'
     | '/app/audit'
     | '/app/heatmap'
+    | '/app/predictions'
     | '/app/reports'
     | '/app/validation'
     | '/app/'
@@ -265,6 +277,13 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/app/reports'
       preLoaderRoute: typeof AppReportsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/predictions': {
+      id: '/app/predictions'
+      path: '/predictions'
+      fullPath: '/app/predictions'
+      preLoaderRoute: typeof AppPredictionsRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/heatmap': {
@@ -345,6 +364,7 @@ interface AppRouteChildren {
   AppApprovalsRoute: typeof AppApprovalsRoute
   AppAuditRoute: typeof AppAuditRoute
   AppHeatmapRoute: typeof AppHeatmapRoute
+  AppPredictionsRoute: typeof AppPredictionsRoute
   AppReportsRoute: typeof AppReportsRoute
   AppValidationRoute: typeof AppValidationRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -361,6 +381,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppApprovalsRoute: AppApprovalsRoute,
   AppAuditRoute: AppAuditRoute,
   AppHeatmapRoute: AppHeatmapRoute,
+  AppPredictionsRoute: AppPredictionsRoute,
   AppReportsRoute: AppReportsRoute,
   AppValidationRoute: AppValidationRoute,
   AppIndexRoute: AppIndexRoute,

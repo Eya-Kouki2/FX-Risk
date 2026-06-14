@@ -7,6 +7,7 @@ import {
   Map,
   FileBarChart,
   ScrollText,
+  TrendingUp,
   Users,
   Settings,
   LogOut,
@@ -68,6 +69,12 @@ const NAV: NavItem[] = [
     to: "/app/heatmap",
     label: "Cartographie des risques",
     icon: Map,
+    roles: ["risk_team", "manager", "admin"],
+  },
+  {
+    to: "/app/predictions",
+    label: "Prédiction des risques",
+    icon: TrendingUp,
     roles: ["risk_team", "manager", "admin"],
   },
   {
