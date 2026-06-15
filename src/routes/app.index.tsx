@@ -29,12 +29,42 @@ import {
   Legend,
 } from "recharts";
 import { useState, useMemo } from "react";
-import { format, subDays, subMonths } from "date-fns";
+import { addDays, format, startOfDay, subDays, subMonths } from "date-fns";
 import { useRealtimeInvalidate } from "@/hooks/useRealtimeInvalidate";
 
 export const Route = createFileRoute("/app/")({
   component: DashboardPage,
 });
+
+const TREND_WINDOW_DAYS = 14;
+const TREND_FORECAST_DAYS = 14;
+
+function average(values: number[]) {
+  return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;
+}
+
+function clampScore(score: number) {
+  return Math.max(0, Math.min(100, Math.round(score)));
+}
+
+function regressionSlope(values: number[]) {
+  const n = values.length;
+  if (n < 2) return 0;
+
+  const meanX = (n - 1) / 2;
+  const meanY = average(values);
+  const numerator = values.reduce(
+    (sum, value, index) => sum + (index - meanX) * (value - meanY),
+    0,
+  );
+  const denominator = values.reduce((sum, _value, index) => sum + (index - meanX) ** 2, 0);
+
+  return denominator ? numerator / denominator : 0;
+}
+
+function isSameCalendarDay(a: Date, b: Date) {
+  return startOfDay(a).getTime() === startOfDay(b).getTime();
+}
 
 function DashboardPage() {
   const { user } = useSession();
@@ -50,7 +80,7 @@ function DashboardPage() {
         .from("operations")
         .select("*")
         .order("created_at", { ascending: false })
-        .limit(500);
+        .limit(5000);
       if (error) throw error;
       return data ?? [];
     },
@@ -92,52 +122,111 @@ function DashboardPage() {
     .filter((o) => o.status !== "rejected")
     .reduce((s, o) => s + Number(o.amount), 0);
 
-  const [timeframe, setTimeframe] = useState<"14d" | "30d" | "1y">("14d");
+  const [trendWindowOffset, setTrendWindowOffset] = useState(0);
+  const [trendMode, setTrendMode] = useState<"14d" | "30d" | "12m">("14d");
 
-  // Trend data based on selected timeframe
-  const trend = useMemo(() => {
-    if (timeframe === "14d" || timeframe === "30d") {
-      const count = timeframe === "14d" ? 14 : 30;
-      const days = Array.from({ length: count }, (_, i) => subDays(new Date(), count - 1 - i));
-      return days.map((d) => {
-        const key = format(d, "yyyy-MM-dd");
-        const dayOps = ops.filter((o) => {
-          try {
-            return format(new Date(o.created_at), "yyyy-MM-dd") === key;
-          } catch {
-            return false;
-          }
-        });
+  const trendWindow = useMemo(() => {
+    const today = startOfDay(new Date());
+    const baseStart = subDays(today, TREND_WINDOW_DAYS - 1);
+    const rangeStart = addDays(baseStart, trendWindowOffset);
+    const rangeEnd = addDays(rangeStart, TREND_WINDOW_DAYS - 1);
+    const latestPredictionEnd = addDays(today, TREND_FORECAST_DAYS);
+    const operationDates = ops
+      .map((op) => startOfDay(new Date(op.created_at)).getTime())
+      .filter((time) => Number.isFinite(time));
+    const earliestOperationDay = operationDates.length
+      ? new Date(Math.min(...operationDates))
+      : baseStart;
+
+    const historicalWindow = Array.from({ length: TREND_WINDOW_DAYS }, (_, index) => {
+      const day = subDays(today, TREND_WINDOW_DAYS - 1 - index);
+      const dayOps = ops.filter((op) => isSameCalendarDay(new Date(op.created_at), day));
+      return dayOps.length ? Math.round(average(dayOps.map((op) => op.risk_score))) : 0;
+    });
+
+    const riskSlope = regressionSlope(historicalWindow);
+    const currentAvgRisk = average(historicalWindow);
+    const projectedOperations = Math.round(
+      average(
+        Array.from({ length: TREND_WINDOW_DAYS }, (_, index) => {
+          const day = subDays(today, TREND_WINDOW_DAYS - 1 - index);
+          return ops.filter((op) => isSameCalendarDay(new Date(op.created_at), day)).length;
+        }),
+      ),
+    );
+
+    const windowData = Array.from({ length: TREND_WINDOW_DAYS }, (_, index) => {
+      const day = addDays(rangeStart, index);
+      const isFuture = day.getTime() > today.getTime();
+      const dayOps = isFuture
+        ? []
+        : ops.filter((op) => isSameCalendarDay(new Date(op.created_at), day));
+      const daysAhead = Math.max(1, Math.round((day.getTime() - today.getTime()) / 86400000));
+
+      return {
+        date: format(day, "dd/MM"),
+        operations: isFuture ? null : dayOps.length,
+        forecastOperations: isFuture ? projectedOperations : null,
+        avgRisk: isFuture
+          ? null
+          : dayOps.length
+            ? Math.round(average(dayOps.map((op) => op.risk_score)))
+            : 0,
+        forecastRisk: isFuture ? clampScore(currentAvgRisk + riskSlope * daysAhead) : null,
+      };
+    });
+
+    const previousRangeEnd = subDays(rangeStart, 1);
+    const nextRangeStart = addDays(rangeStart, TREND_WINDOW_DAYS);
+    const nextRangeEnd = addDays(nextRangeStart, TREND_WINDOW_DAYS - 1);
+
+    return {
+      data: windowData,
+      rangeLabel: `${format(rangeStart, "dd/MM/yyyy")} - ${format(rangeEnd, "dd/MM/yyyy")}`,
+      canGoPrevious: previousRangeEnd.getTime() >= earliestOperationDay.getTime(),
+      canGoNext: nextRangeEnd.getTime() <= latestPredictionEnd.getTime(),
+    };
+  }, [ops, trendWindowOffset]);
+
+  const trendQuickData = useMemo(() => {
+    if (trendMode === "14d") return trendWindow.data;
+
+    if (trendMode === "30d") {
+      return Array.from({ length: 30 }, (_, index) => {
+        const day = subDays(new Date(), 29 - index);
+        const dayOps = ops.filter((op) => isSameCalendarDay(new Date(op.created_at), day));
+
         return {
-          date: format(d, "MMM d"),
+          date: format(day, "dd/MM"),
           operations: dayOps.length,
-          avgRisk: dayOps.length
-            ? Math.round(dayOps.reduce((s, o) => s + o.risk_score, 0) / dayOps.length)
-            : 0,
-        };
-      });
-    } else {
-      // "1y" -> 12 months
-      const months = Array.from({ length: 12 }, (_, i) => subMonths(new Date(), 11 - i));
-      return months.map((m) => {
-        const key = format(m, "yyyy-MM");
-        const monthOps = ops.filter((o) => {
-          try {
-            return format(new Date(o.created_at), "yyyy-MM") === key;
-          } catch {
-            return false;
-          }
-        });
-        return {
-          date: format(m, "MMM yyyy"),
-          operations: monthOps.length,
-          avgRisk: monthOps.length
-            ? Math.round(monthOps.reduce((s, o) => s + o.risk_score, 0) / monthOps.length)
-            : 0,
+          forecastOperations: null,
+          avgRisk: dayOps.length ? Math.round(average(dayOps.map((op) => op.risk_score))) : 0,
+          forecastRisk: null,
         };
       });
     }
-  }, [ops, timeframe]);
+
+    return Array.from({ length: 12 }, (_, index) => {
+      const month = subMonths(new Date(), 11 - index);
+      const key = format(month, "yyyy-MM");
+      const monthOps = ops.filter((op) => format(new Date(op.created_at), "yyyy-MM") === key);
+
+      return {
+        date: format(month, "MMM yyyy"),
+        operations: monthOps.length,
+        forecastOperations: null,
+        avgRisk: monthOps.length ? Math.round(average(monthOps.map((op) => op.risk_score))) : 0,
+        forecastRisk: null,
+      };
+    });
+  }, [ops, trendMode, trendWindow.data]);
+
+  const trendRangeLabel =
+    trendMode === "14d"
+      ? trendWindow.rangeLabel
+      : trendMode === "30d"
+        ? `${format(subDays(new Date(), 29), "dd/MM/yyyy")} - ${format(new Date(), "dd/MM/yyyy")}`
+        : `${format(subMonths(new Date(), 11), "MM/yyyy")} - ${format(new Date(), "MM/yyyy")}`;
 
   // by currency pair
   const pairMap = new Map<string, number>();
@@ -190,7 +279,7 @@ function DashboardPage() {
           icon={AlertTriangle}
           label="Opérations à risque élevé"
           value={highRisk.toString()}
-          sub={`${ops.length ? Math.round((highRisk / ops.length) * 100) : 0}% des 500 dernières`}
+          sub={`${ops.length ? Math.round((highRisk / ops.length) * 100) : 0}% des opérations chargées`}
           tone="warning"
         />
         <KpiCard
@@ -223,43 +312,31 @@ function DashboardPage() {
               <div>
                 <h3 className="font-display font-semibold">
                   Tendance des risques —{" "}
-                  {timeframe === "14d" ? "14 jours" : timeframe === "30d" ? "30 jours" : "12 mois"}
+                  {trendMode === "14d" ? "14 jours" : trendMode === "30d" ? "30 jours" : "12 mois"}
                 </h3>
                 <p className="text-xs text-muted-foreground">
-                  Volume des opérations vs. score de risque moyen
+                  Volume et score moyen observés ou prévus
                 </p>
+                <p className="text-sm font-medium mt-1">{trendRangeLabel}</p>
               </div>
               <div className="flex items-center gap-1 bg-muted p-0.5 rounded-lg text-xs sm:ml-2">
-                <button
-                  onClick={() => setTimeframe("14d")}
-                  className={`px-2.5 py-1 rounded-md transition-all ${
-                    timeframe === "14d"
-                      ? "bg-card text-foreground font-medium shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  14 J
-                </button>
-                <button
-                  onClick={() => setTimeframe("30d")}
-                  className={`px-2.5 py-1 rounded-md transition-all ${
-                    timeframe === "30d"
-                      ? "bg-card text-foreground font-medium shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  30 J
-                </button>
-                <button
-                  onClick={() => setTimeframe("1y")}
-                  className={`px-2.5 py-1 rounded-md transition-all ${
-                    timeframe === "1y"
-                      ? "bg-card text-foreground font-medium shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  12 M
-                </button>
+                {[
+                  { value: "14d", label: "14 J" },
+                  { value: "30d", label: "30 J" },
+                  { value: "12m", label: "12 M" },
+                ].map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => setTrendMode(option.value as "14d" | "30d" | "12m")}
+                    className={`px-2.5 py-1 rounded-md transition-all ${
+                      trendMode === option.value
+                        ? "bg-card text-foreground font-medium shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
               </div>
             </div>
             <div className="text-left sm:text-right">
@@ -268,7 +345,7 @@ function DashboardPage() {
             </div>
           </div>
           <ResponsiveContainer width="100%" height={280}>
-            <AreaChart data={trend}>
+            <AreaChart data={trendQuickData}>
               <defs>
                 <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="var(--primary-glow)" stopOpacity={0.4} />
@@ -277,6 +354,10 @@ function DashboardPage() {
                 <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="var(--risk-high)" stopOpacity={0.3} />
                   <stop offset="100%" stopColor="var(--risk-high)" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="g3" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--warning)" stopOpacity={0.2} />
+                  <stop offset="100%" stopColor="var(--warning)" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
@@ -290,22 +371,65 @@ function DashboardPage() {
                   fontSize: 12,
                 }}
               />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
               <Area
                 type="monotone"
                 dataKey="operations"
+                name="Opérations observées"
                 stroke="var(--primary-glow)"
                 fill="url(#g1)"
                 strokeWidth={2}
+                connectNulls={false}
+              />
+              <Area
+                type="monotone"
+                dataKey="forecastOperations"
+                name="Opérations prévues"
+                stroke="var(--primary-glow)"
+                fill="url(#g1)"
+                strokeDasharray="5 5"
+                strokeWidth={2}
+                connectNulls={false}
               />
               <Area
                 type="monotone"
                 dataKey="avgRisk"
+                name="Risque observé"
                 stroke="var(--risk-high)"
                 fill="url(#g2)"
                 strokeWidth={2}
+                connectNulls={false}
+              />
+              <Area
+                type="monotone"
+                dataKey="forecastRisk"
+                name="Risque prévu"
+                stroke="var(--warning)"
+                fill="url(#g3)"
+                strokeDasharray="5 5"
+                strokeWidth={2}
+                connectNulls={false}
               />
             </AreaChart>
           </ResponsiveContainer>
+          {trendMode === "14d" && (
+            <div className="mt-3 flex flex-wrap items-center justify-end gap-2 text-xs">
+              <button
+                onClick={() => setTrendWindowOffset((offset) => offset - TREND_WINDOW_DAYS)}
+                disabled={!trendWindow.canGoPrevious}
+                className="rounded-md border border-border px-2.5 py-1 font-medium transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                ← 14 jours précédents
+              </button>
+              <button
+                onClick={() => setTrendWindowOffset((offset) => offset + TREND_WINDOW_DAYS)}
+                disabled={!trendWindow.canGoNext}
+                className="rounded-md border border-border px-2.5 py-1 font-medium transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                → 14 jours suivants
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="stat-card">
