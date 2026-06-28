@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FX Risk — Présentation du Projet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-light: #818cf8;
+      --primary-dark: #4f46e5;
+      --accent: #06b6d4;
+      --accent2: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --critical: #dc2626;
+      --bg-dark: #0f0f1a;
+      --bg-card: #161628;
+      --bg-card2: #1e1e35;
+      --border: rgba(99,102,241,0.2);
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --gradient-1: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+      --gradient-hero: linear-gradient(135deg, #0f0f1a 0%, #1a1a35 50%, #0f0f2a 100%);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* ======= SLIDES ======= */
+    .slide {
+      width: 297mm;
+      min-height: 210mm;
+      padding: 0;
+      page-break-after: always;
+      page-break-inside: avoid;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    .slide:last-child { page-break-after: avoid; }
+
+    /* ======= HERO SLIDE ======= */
+    .slide-hero {
+      background: var(--gradient-hero);
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 60px 80px;
+      position: relative;
+    }
+    .slide-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(99,102,241,0.18) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 30%, rgba(6,182,212,0.12) 0%, transparent 50%);
+    }
+    .hero-grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(99,102,241,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99,102,241,0.07) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(99,102,241,0.4);
+      background: rgba(99,102,241,0.12);
+      color: var(--primary-light);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-badge .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .hero-logo {
+      font-size: 72px;
+      font-weight: 900;
+      letter-spacing: -4px;
+      background: linear-gradient(135deg, #fff 0%, var(--primary-light) 40%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-subtitle {
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 40px;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-subtitle span { color: var(--primary-light); font-weight: 600; }
+    .hero-pills {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-pill {
+      padding: 8px 20px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .hero-pill.primary { background: var(--primary); color: #fff; }
+    .hero-pill.outline { border: 1px solid var(--border); color: var(--text-muted); background: rgba(255,255,255,0.04); }
+    .hero-meta {
+      position: absolute;
+      bottom: 32px;
+      left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 60px;
+      font-size: 11px;
+      color: var(--text-dim);
+      z-index: 1;
+    }
+    .hero-corner {
+      position: absolute;
+      top: 0; right: 0;
+      width: 300px; height: 300px;
+      border-radius: 0 0 0 300px;
+      background: linear-gradient(225deg, rgba(99,102,241,0.12), transparent);
+      z-index: 0;
+    }
+
+    /* ======= SECTION SLIDES ======= */
+    .slide-content {
+      background: var(--bg-dark);
+      padding: 50px 60px;
+      flex: 1;
+    }
+    .slide-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 36px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .slide-num {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--gradient-1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .slide-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+    .slide-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+    .section-label {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--primary);
+      border: 1px solid rgba(99,102,241,0.3);
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    /* ======= CARDS ======= */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+    }
+    .card-sm {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .card-body { font-size: 12px; color: var(--text-muted); line-height: 1.7; }
+
+    /* ======= GRIDS ======= */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+
+    /* ======= KPI CARDS ======= */
+    .kpi {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .kpi-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .kpi-value { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -1px; }
+    .kpi-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .kpi-sub { font-size: 10px; color: var(--text-dim); }
+    .kpi.primary .kpi-icon { background: rgba(99,102,241,0.15); }
+    .kpi.accent .kpi-icon { background: rgba(6,182,212,0.15); }
+    .kpi.success .kpi-icon { background: rgba(16,185,129,0.15); }
+    .kpi.warning .kpi-icon { background: rgba(245,158,11,0.15); }
+    .kpi.danger .kpi-icon { background: rgba(239,68,68,0.15); }
+
+    /* ======= RISK BADGES ======= */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .badge.low { background: rgba(16,185,129,0.15); color: #10b981; }
+    .badge.moderate { background: rgba(245,158,11,0.15); color: #f59e0b; }
+    .badge.high { background: rgba(239,68,68,0.15); color: #ef4444; }
+    .badge.critical { background: rgba(220,38,38,0.15); color: #dc2626; border: 1px solid rgba(220,38,38,0.3); }
+    .badge.role { background: rgba(99,102,241,0.15); color: var(--primary-light); }
+    .badge.tech { background: rgba(6,182,212,0.15); color: var(--accent); }
+
+    /* ======= DIVIDER ======= */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 20px 0;
+    }
+
+    /* ======= TABLE ======= */
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      font-size: 12px;
+      color: var(--text);
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(99,102,241,0.08);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(99,102,241,0.04); }
+
+    /* ======= CODE / MONO ======= */
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      background: rgba(0,0,0,0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--accent);
+    }
+    .code-block {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      background: #0a0a15;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      color: #a5b4fc;
+      line-height: 1.8;
+      overflow: hidden;
+    }
+    .code-block .kw { color: var(--primary-light); }
+    .code-block .fn { color: var(--accent); }
+    .code-block .str { color: var(--accent2); }
+    .code-block .cm { color: var(--text-dim); font-style: italic; }
+    .code-block .num { color: var(--warning); }
+
+    /* ======= WORKFLOW ======= */
+    .workflow {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      position: relative;
+    }
+    .wf-step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+    .wf-step:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      right: -10px;
+      top: 17px;
+      font-size: 16px;
+      color: var(--primary);
+      z-index: 2;
+    }
+    .wf-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--gradient-1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+    .wf-label { font-size: 11px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+    .wf-sub { font-size: 10px; color: var(--text-muted); line-height: 1.4; }
+
+    /* ======= SCORING RULE ======= */
+    .score-rule {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: var(--bg-card2);
+      border-radius: 8px;
+      border-left: 3px solid;
+    }
+    .score-rule.danger { border-color: var(--danger); }
+    .score-rule.warning { border-color: var(--warning); }
+    .score-rule.info { border-color: var(--accent); }
+    .score-pts {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      min-width: 50px;
+      text-align: center;
+    }
+    .score-pts.danger { color: var(--danger); }
+    .score-pts.warning { color: var(--warning); }
+    .score-pts.info { color: var(--accent); }
+    .score-label { font-size: 12px; font-weight: 600; color: #fff; }
+    .score-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+    /* ======= MATRIX ======= */
+    .matrix-cell {
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .matrix-cell.low { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+    .matrix-cell.moderate { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+    .matrix-cell.high { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+    .matrix-cell.critical { background: rgba(220,38,38,0.2); color: #dc2626; border: 1px solid rgba(220,38,38,0.4); }
+
+    /* ======= CHIP LIST ======= */
+    .chip-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .chip.purple { background: rgba(99,102,241,0.12); color: var(--primary-light); border: 1px solid rgba(99,102,241,0.2); }
+    .chip.cyan { background: rgba(6,182,212,0.12); color: var(--accent); border: 1px solid rgba(6,182,212,0.2); }
+    .chip.green { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.2); }
+    .chip.orange { background: rgba(245,158,11,0.12); color: var(--warning); border: 1px solid rgba(245,158,11,0.2); }
+    .chip.red { background: rgba(239,68,68,0.12); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); }
+
+    /* ======= HIGHLIGHT BOX ======= */
+    .highlight {
+      border-radius: 12px;
+      padding: 16px 20px;
+      border-left: 4px solid;
+    }
+    .highlight.primary { border-color: var(--primary); background: rgba(99,102,241,0.08); }
+    .highlight.accent { border-color: var(--accent); background: rgba(6,182,212,0.08); }
+    .highlight.success { border-color: var(--accent2); background: rgba(16,185,129,0.08); }
+    .highlight.warning { border-color: var(--warning); background: rgba(245,158,11,0.08); }
+    .highlight-title { font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .highlight-body { font-size: 11px; color: var(--text-muted); line-height: 1.7; }
+
+    /* ======= SLIDE FOOTER ======= */
+    .slide-footer {
+      padding: 14px 60px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      color: var(--text-dim);
+      background: var(--bg-dark);
+    }
+    .slide-footer .brand { font-weight: 700; color: var(--primary); }
+    .slide-footer .page { 
+      width: 24px; height: 24px; border-radius: 6px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600; color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    /* ======= PRINT ======= */
+    @page {
+      size: A4 landscape;
+      margin: 0;
+    }
+    @media print {
+      body { background: var(--bg-dark); }
+      .slide { page-break-after: always; }
+      .slide:last-child { page-break-after: avoid; }
+    }
+
+    /* util */
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .items-center { align-items: center; }
+    .items-start { align-items: flex-start; }
+    .justify-between { justify-content: space-between; }
+    .gap-2 { gap: 8px; }
+    .gap-3 { gap: 12px; }
+    .gap-4 { gap: 16px; }
+    .mt-1 { margin-top: 4px; }
+    .mt-2 { margin-top: 8px; }
+    .mt-3 { margin-top: 12px; }
+    .mt-4 { margin-top: 16px; }
+    .mt-5 { margin-top: 20px; }
+    .mb-1 { margin-bottom: 4px; }
+    .mb-2 { margin-bottom: 8px; }
+    .mb-3 { margin-bottom: 12px; }
+    .mb-4 { margin-bottom: 16px; }
+    .text-muted { color: var(--text-muted); }
+    .text-dim { color: var(--text-dim); }
+    .text-primary { color: var(--primary-light); }
+    .text-accent { color: var(--accent); }
+    .text-success { color: var(--accent2); }
+    .text-warning { color: var(--warning); }
+    .text-danger { color: var(--danger); }
+    .text-white { color: #fff; }
+    .font-bold { font-weight: 700; }
+    .font-semibold { font-weight: 600; }
+    .text-xs { font-size: 11px; }
+    .text-sm { font-size: 12px; }
+    .col-span-2 { grid-column: span 2; }
+    .rounded { border-radius: 8px; }
+    .p-3 { padding: 12px; }
+    .space-y-2 > * + * { margin-top: 8px; }
+    .space-y-3 > * + * { margin-top: 12px; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ SLIDE 1 — COVER ═══════════════════════════════ -->
+<div class="slide slide-hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-corner"></div>
+
+  <div class="hero-badge">
+    <span class="dot"></span>
+    Projet de fin d'études · Gestion des Risques Financiers
+  </div>
+
+  <div class="hero-logo">FX Risk</div>
+  <div class="hero-subtitle">
+    Plateforme de supervision des <span>risques opérationnels</span><br/>
+    liés aux opérations de change Spot FX
+  </div>
+
+  <div class="hero-pills">
+    <span class="hero-pill primary">⚡ Temps réel</span>
+    <span class="hero-pill outline">🤖 Scoring automatique</span>
+    <span class="hero-pill outline">🔐 Multi-rôles RBAC</span>
+    <span class="hero-pill outline">📊 KRI Dashboard</span>
+    <span class="hero-pill outline">🧠 Prédiction heuristique</span>
+  </div>
+
+  <div class="hero-meta">
+    <span>Eya Kouki · 2026</span>
+    <span>React 19 · TypeScript · Supabase · PostgreSQL</span>
+    <span>Confidentiel – Présentation interne</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ SLIDE 2 — CONTEXTE & OBJECTIFS ═══════════════════════════════ -->
+<div class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="slide-num">02</div>
+      <div>
+        <div class="slide-title">Contexte & Objectifs</div>
+        <div class="slide-desc">Problématique métier et réponse applicative</div>
+      </div>
+      <div class="section-label">Contexte</div>
+    </div>
+
+    <div class="grid-2" style="gap:20px; align-items:start;">
+      <div class="flex flex-col gap-3">
+        <div class="highlight primary">
+          <div class="highlight-title">📌 Problématique</div>
+          <div class="highlight-body">
+            Les établissements bancaires réalisent quotidiennement des opérations de change Spot FX
+            avec des risques opérationnels élevés : montants importants, absences de références SWIFT,
+            opérations hors-horaires, écarts de taux suspects. La traçabilité manuelle est insuffisante
+            pour détecter ces anomalies en temps réel.
+          </div>
+        </div>
+
+        <div class="highlight accent">
+          <div class="highlight-title">🎯 Objectif général</div>
+          <div class="highlight-body">
+            Fournir une plateforme web centralisée permettant de créer, contrôler, classifier, valider
+            et surveiller les opérations FX, avec un workflow multi-rôles, un scoring automatique,
+            des alertes, une cartographie et des prédictions.
+          </div>
+        </div>
+
+        <div class="highlight success">
+          <div class="highlight-title">✅ Valeur ajoutée</div>
+          <div class="highlight-body">
+            Réduction des risques opérationnels · Amélioration de la traçabilité · Accélération de la
+            prise de décision · Supervision en temps réel · Audit complet des actions
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <div class="card">
+          <div class="card-title mb-3">Objectifs spécifiques</div>
+          <div class="space-y-2">
+            <div class="card-sm flex items-center gap-3">
+              <span style="font-size:18px;">🔍</span>
+              <div><div class="card-title text-xs">Détection automatique des anomalies</div><div class="card-body">SWIFT manquant, montant élevé, écart de taux, hors-horaires</div></div>
+            </div>
+            <div class="card-sm flex items-center gap-3">
+              <span style="font-size:18px;">🏷️</span>
+              <div><div class="card-title text-xs">Classification des risques</div><div class="card-body">Scoring 0-100, niveaux : Low / Moderate / High / Critical</div></div>
+            </div>
+            <div class="card-sm flex items-center gap-3">
+              <span style="font-size:18px;">👥</span>
+              <div><div class="card-title text-xs">Workflow multi-rôles</div><div class="card-body">5 profils : Front Office, Back Office, Risk Team, Manager, Admin</div></div>
+            </div>
+            <div class="card-sm flex items-center gap-3">
+              <span style="font-size:18px;">📈</span>
+              <div><div class="card-title text-xs">Supervision et reporting</div><div class="card-body">Dashboard KRI, alertes, cartographie, exports PDF/CSV</div></div>
+            </div>
+            <div class="card-sm flex items-center gap-3">
+              <span style="font-size:18px;">🧠</span>
+              <div><div class="card-title text-xs">Module prédictif</div><div class="card-body">Projection heuristique du risque moyen sur 7 jours</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="brand">FX Risk</span> — Présentation du Projet</span>
+    <span class="page">2</span>
+    <span>Contexte & Objectifs</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ SLIDE 3 — ARCHITECTURE TECHNIQUE ═══════════════════════════════ -->
+<div class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="slide-num">03</div>
+      <div>
+        <div class="slide-title">Architecture Technique</div>
+        <div class="slide-desc">Stack technologique full-stack moderne</div>
+      </div>
+      <div class="section-label">Tech Stack</div>
+    </div>
+
+    <div class="grid-2" style="gap:20px; align-items:start;">
+      <div>
+        <div class="card mb-3">
+          <div class="card-title mb-3" style="font-size:14px;">🏗️ Vue d'ensemble de l'architecture</div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <!-- Layer Frontend -->
+            <div style="background: rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.2); border-radius:10px; padding:12px 16px;">
+              <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--primary-light); margin-bottom:8px;">Frontend — Client</div>
+              <div class="chip-list">
+                <span class="chip purple">React 19</span>
+                <span class="chip purple">TypeScript</span>
+                <span class="chip purple">Vite</span>
+                <span class="chip purple">TanStack Router</span>
+                <span class="chip purple">React Query</span>
+              </div>
+            </div>
+            <!-- Layer UI -->
+            <div style="background: rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.2); border-radius:10px; padding:12px 16px;">
+              <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--accent); margin-bottom:8px;">UI & Visualisation</div>
+              <div class="chip-list">
+                <span class="chip cyan">Tailwind CSS</span>
+                <span class="chip cyan">shadcn/ui</span>
+                <span class="chip cyan">Radix UI</span>
+                <span class="chip cyan">Recharts</span>
+                <span class="chip cyan">Lucide React</span>
+              </div>
+            </div>
+            <!-- Layer Backend -->
+            <div style="background: rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2); border-radius:10px; padding:12px 16px;">
+              <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--accent2); margin-bottom:8px;">Backend — BaaS Supabase</div>
+              <div class="chip-list">
+                <span class="chip green">Supabase</span>
+                <span class="chip green">PostgreSQL</span>
+                <span class="chip green">Auth JWT</span>
+                <span class="chip green">RLS Policies</span>
+                <span class="chip green">Realtime WS</span>
+              </div>
+            </div>
+            <!-- Layer Forms & Export -->
+            <div style="background: rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2); border-radius:10px; padding:12px 16px;">
+              <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--warning); margin-bottom:8px;">Formulaires & Export</div>
+              <div class="chip-list">
+                <span class="chip orange">Zod</span>
+                <span class="chip orange">React Hook Form</span>
+                <span class="chip orange">jsPDF</span>
+                <span class="chip orange">jsPDF AutoTable</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <div class="card">
+          <div class="card-title mb-3">📁 Structure du projet</div>
+          <div class="code-block">
+<span class="cm">src/</span>
+  <span class="fn">components/</span>      <span class="cm">← Composants UI & layout</span>
+  <span class="fn">hooks/</span>           <span class="cm">← useRealtimeInvalidate…</span>
+  <span class="fn">integrations/</span>
+    <span class="fn">supabase/</span>      <span class="cm">← Client, types, auth</span>
+  <span class="fn">lib/</span>             <span class="cm">← auth, risk, pdf, utils</span>
+  <span class="fn">routes/</span>          <span class="cm">← Pages TanStack Router</span>
+    <span class="str">app.index.tsx</span>  <span class="cm">← Dashboard</span>
+    <span class="str">app.operations.*</span>
+    <span class="str">app.validation.tsx</span>
+    <span class="str">app.heatmap.tsx</span>
+    <span class="str">app.predictions.tsx</span>
+    <span class="str">app.reports.tsx</span>
+<span class="cm">supabase/</span>
+  <span class="fn">migrations/</span>      <span class="cm">← Schéma SQL, triggers</span>
+  <span class="str">seed_operations.sql</span></div>
+        </div>
+
+        <div class="highlight primary">
+          <div class="highlight-title">⚡ Architecture en temps réel</div>
+          <div class="highlight-body">
+            Supabase Realtime WebSocket déclenche automatiquement l'invalidation
+            du cache React Query sur toute modification de la base de données,
+            assurant une mise à jour instantanée de tous les tableaux de bord.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="brand">FX Risk</span> — Présentation du Projet</span>
+    <span class="page">3</span>
+    <span>Architecture Technique</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ SLIDE 4 — BASE DE DONNÉES ═══════════════════════════════ -->
+<div class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="slide-num">04</div>
+      <div>
+        <div class="slide-title">Modèle de Données & Sécurité</div>
+        <div class="slide-desc">Schéma PostgreSQL, RLS, triggers automatiques</div>
+      </div>
+      <div class="section-label">Base de Données</div>
+    </div>
+
+    <div class="grid-2" style="gap:20px; align-items:start;">
+      <div>
+        <div class="card mb-3">
+          <div class="card-title mb-3">📊 Tables principales</div>
+          <table>
+            <thead>
+              <tr><th>Table</th><th>Champs clés</th><th>RLS</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="mono">profiles</span></td>
+                <td class="text-xs text-muted">id · full_name · department</td>
+                <td><span class="badge low">✓</span></td>
+              </tr>
+              <tr>
+                <td><span class="mono">user_roles</span></td>
+                <td class="text-xs text-muted">user_id · role (app_role enum)</td>
+                <td><span class="badge low">✓</span></td>
+              </tr>
+              <tr>
+                <td><span class="mono">operations</span></td>
+                <td class="text-xs text-muted">ref · client · currencies · amount · rate · status · risk_score · risk_level</td>
+                <td><span class="badge low">✓</span></td>
+              </tr>
+              <tr>
+                <td><span class="mono">alerts</span></td>
+                <td class="text-xs text-muted">operation_id · severity · category · message · acknowledged</td>
+                <td><span class="badge low">✓</span></td>
+              </tr>
+              <tr>
+                <td><span class="mono">audit_logs</span></td>
+                <td class="text-xs text-muted">user_id · action · module · metadata (JSONB)</td>
+                <td><span class="badge low">✓</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="card-title mb-2">🔐 Énumérations SQL</div>
+          <div class="code-block" style="font-size:10.5px;">
+<span class="cm">-- Rôles applicatifs</span>
+<span class="kw">CREATE TYPE</span> app_role <span class="kw">AS ENUM</span> (
+  <span class="str">'front_office'</span>, <span class="str">'back_office'</span>,
+  <span class="str">'risk_team'</span>, <span class="str">'manager'</span>, <span class="str">'admin'</span>
+);
+<span class="cm">-- Statuts opération</span>
+<span class="kw">CREATE TYPE</span> operation_status <span class="kw">AS ENUM</span> (
+  <span class="str">'draft'</span>, <span class="str">'pending'</span>, <span class="str">'validated'</span>,
+  <span class="str">'rejected'</span>, <span class="str">'escalated'</span>, <span class="str">'settled'</span>
+);
+<span class="cm">-- Niveaux de risque</span>
+<span class="kw">CREATE TYPE</span> risk_level <span class="kw">AS ENUM</span> (
+  <span class="str">'low'</span>, <span class="str">'moderate'</span>, <span class="str">'high'</span>, <span class="str">'critical'</span>
+);</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card mb-3">
+          <div class="card-title mb-2">⚙️ Triggers automatiques</div>
+          <div class="space-y-2">
+            <div class="card-sm">
+              <div class="card-title text-xs">🎯 trg_operations_risk</div>
+              <div class="card-body">Calcule automatiquement <span class="mono">risk_score</span> et <span class="mono">risk_level</span> à chaque INSERT ou UPDATE de l'opération (montant, taux, SWIFT, horaire, paire).</div>
+            </div>
+            <div class="card-sm">
+              <div class="card-title text-xs">🔔 trg_operations_alerts</div>
+              <div class="card-body">Génère les alertes dans la table <span class="mono">alerts</span> immédiatement après insertion d'une opération selon les seuils définis.</div>
+            </div>
+            <div class="card-sm">
+              <div class="card-title text-xs">👤 trg_handle_new_user</div>
+              <div class="card-body">Crée automatiquement le profil et attribue le rôle lors de l'inscription d'un nouvel utilisateur.</div>
+            </div>
+            <div class="card-sm">
+              <div class="card-title text-xs">🕐 trg_..._updated</div>
+              <div class="card-body">Met à jour <span class="mono">updated_at</span> automatiquement sur <span class="mono">profiles</span> et <span class="mono">operations</span>.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="highlight warning">
+          <div class="highlight-title">🔒 Row Level Security (RLS)</div>
+          <div class="highlight-body">
+            Toutes les tables sont protégées par des politiques RLS Supabase. Chaque rôle ne peut
+            voir et modifier que ce que ses droits autorisent (ex : Front Office ne peut créer,
+            Back Office valide, Risk Team accède aux alertes, etc.).
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="brand">FX Risk</span> — Présentation du Projet</span>
+    <span class="page">4</span>
+    <span>Modèle de Données</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ SLIDE 5 — RÔLES & WORKFLOW ═══════════════════════════════ -->
+<div class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="slide-num">05</div>
+      <div>
+        <div class="slide-title">Rôles Utilisateurs & Workflow Métier</div>
+        <div class="slide-desc">Système RBAC et cycle de vie d'une opération FX</div>
+      </div>
+      <div class="section-label">RBAC & Workflow</div>
+    </div>
+
+    <div class="grid-2" style="gap:20px; align-items:start;">
+      <div>
+        <div class="card mb-3">
+          <div class="card-title mb-3">👥 Matrice des rôles</div>
+          <table>
+            <thead>
+              <tr><th>Rôle</th><th>Création</th><th>Validation</th><th>Alertes</th><th>Approbation</th><th>Admin</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="badge role">Front Office</span></td>
+                <td class="text-success font-bold">✓</td>
+                <td class="text-dim">—</td>
+                <td class="text-dim">—</td>
+                <td class="text-dim">—</td>
+                <td class="text-dim">—</td>
+              </tr>
+              <tr>
+                <td><span class="badge role">Back Office</span></td>
+                <td class="text-dim">—</td>
+                <td class="text-success font-bold">✓</td>
+                <td class="text-dim">—</td>
+                <td class="text-dim">—</td>
+                <td class="text-dim">—</td>
+              </tr>
+              <tr>
+                <td><span class="badge role">Risk Team</span></td>
+                <td class="text-dim">—</td>
+                <td class="text-success font-bold">✓</td>
+                <td class="text-success font-bold">✓</td>
+                <td class="text-dim">—</td>
+                <td class="text-dim">—</td>
+              </tr>
+              <tr>
+                <td><span class="badge role">Manager</span></td>
+                <td class="text-dim">—</td>
+                <td class="text-dim">—</td>
+                <td class="text-success font-bold">✓</td>
+                <td class="text-success font-bold">✓</td>
+                <td class="text-dim">—</td>
+              </tr>
+              <tr>
+                <td><span class="badge role">Admin</span></td>
+                <td class="text-success font-bold">✓</td>
+                <td class="text-success font-bold">✓</td>
+                <td class="text-success font-bold">✓</td>
+                <td class="text-success font-bold">✓</td>
+                <td class="text-success font-bold">✓</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="card-title mb-2">🎫 Statuts d'une opération</div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <span style="background:rgba(100,116,139,0.15);border:1px solid rgba(100,116,139,0.3);border-radius:999px;padding:5px 12px;font-size:10px;font-weight:700;color:#94a3b8;">DRAFT</span>
+            <span style="color:var(--text-dim);font-size:16px;line-height:1.5;">→</span>
+            <span style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);border-radius:999px;padding:5px 12px;font-size:10px;font-weight:700;color:#f59e0b;">PENDING</span>
+            <span style="color:var(--text-dim);font-size:16px;line-height:1.5;">→</span>
+            <span style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);border-radius:999px;padding:5px 12px;font-size:10px;font-weight:700;color:#10b981;">VALIDATED</span>
+            <div style="width:100%;"></div>
+            <span style="color:var(--text-dim);font-size:10px;margin-left:60px;">↓ aussi possible</span>
+            <div style="width:100%;"></div>
+            <span style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:999px;padding:5px 12px;font-size:10px;font-weight:700;color:#ef4444;">REJECTED</span>
+            <span style="color:var(--text-dim);font-size:16px;line-height:1.5;">/</span>
+            <span style="background:rgba(168,85,247,0.15);border:1px solid rgba(168,85,247,0.3);border-radius:999px;padding:5px 12px;font-size:10px;font-weight:700;color:#a855f7;">ESCALATED</span>
+            <span style="color:var(--text-dim);font-size:16px;line-height:1.5;">/</span>
+            <span style="background:rgba(6,182,212,0.15);border:1px solid rgba(6,182,212,0.3);border-radius:999px;padding:5px 12px;font-size:10px;font-weight:700;color:#06b6d4;">SETTLED</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="card-title mb-4">🔄 Workflow complet d'une opération</div>
+          <div class="space-y-2">
+            <div class="score-rule info">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--accent);min-width:30px;text-align:center;">1</div>
+              <div><div class="score-label">Front Office crée l'opération</div><div class="score-sub">Saisie : client, paire de devises, montant, taux, SWIFT, contrepartie</div></div>
+            </div>
+            <div class="score-rule info">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--accent);min-width:30px;text-align:center;">2</div>
+              <div><div class="score-label">Trigger SQL calcule le risk_score</div><div class="score-sub">Scoring automatique (0-100) + classification du niveau de risque</div></div>
+            </div>
+            <div class="score-rule warning">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--warning);min-width:30px;text-align:center;">3</div>
+              <div><div class="score-label">Alertes générées automatiquement</div><div class="score-sub">Détection des anomalies, création des alertes en base</div></div>
+            </div>
+            <div class="score-rule warning">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--warning);min-width:30px;text-align:center;">4</div>
+              <div><div class="score-label">File de validation (status: pending)</div><div class="score-sub">Back Office / Risk Team examine, recommandations automatiques</div></div>
+            </div>
+            <div class="score-rule danger" style="border-color:var(--accent2);">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--accent2);min-width:30px;text-align:center;">5</div>
+              <div><div class="score-label">Décision : Valider ou Rejeter</div><div class="score-sub">Opérations critiques → File d'approbation Manager</div></div>
+            </div>
+            <div class="score-rule danger" style="border-color:var(--primary);">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--primary-light);min-width:30px;text-align:center;">6</div>
+              <div><div class="score-label">Mise à jour du dashboard & audit</div><div class="score-sub">KRI, cartographie, prédictions, journal d'audit enrichis</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="brand">FX Risk</span> — Présentation du Projet</span>
+    <span class="page">5</span>
+    <span>Rôles & Workflow</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ SLIDE 6 — MOTEUR DE SCORING ═══════════════════════════════ -->
+<div class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="slide-num">06</div>
+      <div>
+        <div class="slide-title">Moteur de Scoring Automatique</div>
+        <div class="slide-desc">Trigger PostgreSQL <span class="mono" style="font-size:13px;">compute_risk()</span> — calcul du risk_score 0–100</div>
+      </div>
+      <div class="section-label">Scoring Engine</div>
+    </div>
+
+    <div class="grid-2" style="gap:20px; align-items:start;">
+      <div>
+        <div class="card mb-3">
+          <div class="card-title mb-3">⚖️ Règles de scoring (critères additifs)</div>
+          <div class="space-y-2">
+            <div class="score-rule danger">
+              <div class="score-pts danger">+30</div>
+              <div><div class="score-label">Format SWIFT invalide</div><div class="score-sub">Référence ne correspond pas au regex BIC <span class="mono">^[A-Z]{6}[A-Z0-9]{2,5}$</span></div></div>
+            </div>
+            <div class="score-rule danger">
+              <div class="score-pts danger">+25</div>
+              <div><div class="score-label">Référence SWIFT absente</div><div class="score-sub">Champ NULL ou vide → risque de contrepartie élevé</div></div>
+            </div>
+            <div class="score-rule warning">
+              <div class="score-pts warning">+20</div>
+              <div><div class="score-label">Montant > 1 000 000</div><div class="score-sub">Transaction de grande taille → exposition accrue</div></div>
+            </div>
+            <div class="score-rule warning">
+              <div class="score-pts warning">+20</div>
+              <div><div class="score-label">Écart de taux > 2%</div><div class="score-sub">|taux_saisi - taux_marché| / taux_marché > 0.02</div></div>
+            </div>
+            <div class="score-rule info">
+              <div class="score-pts info">+15</div>
+              <div><div class="score-label">Hors horaires (avant 7h / après 20h)</div><div class="score-sub">Opération créée en dehors des heures normales de trading</div></div>
+            </div>
+            <div class="score-rule info">
+              <div class="score-pts info">+10</div>
+              <div><div class="score-label">Paire de devises inhabituelle</div><div class="score-sub">Non listée parmi : EUR/USD, USD/JPY, GBP/USD, USD/CHF…</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card mb-3">
+          <div class="card-title mb-3">🏷️ Classification du niveau de risque</div>
+          <div class="grid-2" style="gap:10px;">
+            <div class="matrix-cell low">
+              <div style="font-size:22px; font-weight:900;">0 – 20</div>
+              <div style="font-size:11px; margin-top:4px;">LOW</div>
+              <div style="font-size:10px; opacity:0.7; margin-top:2px;">Risque faible</div>
+            </div>
+            <div class="matrix-cell moderate">
+              <div style="font-size:22px; font-weight:900;">21 – 40</div>
+              <div style="font-size:11px; margin-top:4px;">MODERATE</div>
+              <div style="font-size:10px; opacity:0.7; margin-top:2px;">Risque modéré</div>
+            </div>
+            <div class="matrix-cell high">
+              <div style="font-size:22px; font-weight:900;">41 – 60</div>
+              <div style="font-size:11px; margin-top:4px;">HIGH</div>
+              <div style="font-size:10px; opacity:0.7; margin-top:2px;">Risque élevé</div>
+            </div>
+            <div class="matrix-cell critical">
+              <div style="font-size:22px; font-weight:900;">61 – 100</div>
+              <div style="font-size:11px; margin-top:4px;">CRITICAL</div>
+              <div style="font-size:10px; opacity:0.7; margin-top:2px;">Risque critique</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title mb-2">🔔 Alertes générées automatiquement</div>
+          <div class="space-y-2">
+            <div class="card-sm flex items-center gap-3">
+              <span class="badge critical">Critical</span>
+              <div class="card-body"><span class="font-semibold text-white">SWIFT manquant</span> — opération sans référence</div>
+            </div>
+            <div class="card-sm flex items-center gap-3">
+              <span class="badge critical">Critical</span>
+              <div class="card-body"><span class="font-semibold text-white">Score critique</span> — risk_score atteint niveau critical</div>
+            </div>
+            <div class="card-sm flex items-center gap-3">
+              <span class="badge high">High</span>
+              <div class="card-body"><span class="font-semibold text-white">Montant élevé</span> — transaction > 1 000 000</div>
+            </div>
+            <div class="card-sm flex items-center gap-3">
+              <span class="badge moderate">Moderate</span>
+              <div class="card-body"><span class="font-semibold text-white">Hors horaires</span> — transaction de nuit</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="brand">FX Risk</span> — Présentation du Projet</span>
+    <span class="page">6</span>
+    <span>Moteur de Scoring</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ SLIDE 7 — MODULES APPLICATIFS ═══════════════════════════════ -->
+<div class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="slide-num">07</div>
+      <div>
+        <div class="slide-title">Modules de l'Application</div>
+        <div class="slide-desc">Vue d'ensemble des 10 modules fonctionnels</div>
+      </div>
+      <div class="section-label">Fonctionnalités</div>
+    </div>
+
+    <div class="grid-3" style="gap:14px;">
+      <!-- Module 1: Dashboard -->
+      <div class="card">
+        <div class="flex items-center gap-2 mb-2">
+          <span style="font-size:20px;">📊</span>
+          <div class="card-title">Tableau de bord KRI</div>
+        </div>
+        <div class="card-body">
+          Indicateurs clés : total opérations, risque élevé, alertes ouvertes, score moyen, exposition opérationnelle.<br/>
+          <strong style="color:#fff;">Graphiques :</strong> tendance 14j/30j/12m avec prévision, distribution des risques (Pie), opérations par paire de devises (Bar).
+        </div>
+        <div class="mt-2"><span class="badge tech">Recharts</span></div>
+      </div>
+
+      <!-- Module 2: Opérations -->
+      <div class="card">
+        <div class="flex items-center gap-2 mb-2">
+          <span style="font-size:20px;">💱</span>
+          <div class="card-title">Opérations FX</div>
+        </div>
+        <div class="card-body">
+          Historique complet des opérations FX Spot. Consultation des montants, paires de devises, statuts, scores et détails opérationnels. Formulaire de création avec sélection client (existant ou nouveau).
+        </div>
+        <div class="mt-2 chip-list">
+          <span class="badge low">Zod validation</span>
+          <span class="badge tech">Combobox</span>
+        </div>
+      </div>
+
+      <!-- Module 3: Validation -->
+      <div class="card">
+        <div class="flex items-center gap-2 mb-2">
+          <span style="font-size:20px;">✅</span>
+          <div class="card-title">File de Validation</div>
+        </div>
+        <div class="card-body">
+          Opérations <span class="mono">pending</span> triées par risk_score décroissant. Recherche par référence, client, contrepartie, paire. Recommandations automatiques contextuelles. Actions : Valider / Rejeter.
+        </div>
+        <div class="mt-2"><span class="badge role">Back Office</span> <span class="badge role">Risk Team</span></div>
+      </div>
+
+      <!-- Module 4: Alertes -->
+      <div class="card">
+        <div class="flex items-center gap-2 mb-2">
+          <span style="font-size:20px;">🔔</span>
+          <div class="card-title">Centre d'Alertes</div>
+        </div>
+        <div class="card-body">
+          Alertes auto-générées affichées avec sévérité, catégorie et message. Filtrage par niveau. Acquittement par les équipes autorisées avec traçabilité complète.
+        </div>
+        <div class="mt-2"><span class="badge role">Risk Team</span> <span class="badge role">Manager</span></div>
+      </div>
+
+      <!-- Module 5: Heatmap -->
+      <div class="card">
+        <div class="flex items-center gap-2 mb-2">
+          <span style="font-size:20px;">🗺️</span>
+          <div class="card-title">Cartographie des Risques</div>
+        </div>
+        <div class="card-body">
+          Matrice dynamique <strong style="color:#fff;">Probabilité × Impact</strong> en 3×3. Probabilité basée sur le risk_score, impact sur le montant. Mise à jour temps réel. Top 10 opérations les plus risquées.
+        </div>
+        <div class="mt-2"><span class="badge tech">Matrice 3×3</span></div>
+      </div>
+
+      <!-- Module 6: Predictions -->
+      <div class="card">
+        <div class="flex items-center gap-2 mb-2">
+          <span style="font-size:20px;">🧠</span>
+          <div class="card-title">Prédiction des Risques</div>
+        </div>
+        <div class="card-body">
+          Projection heuristique à <strong style="color:#fff;">7 jours</strong> : risque moyen prévu, tendance (régression linéaire), volume haut risque estimé, exposition projetée, niveau de confiance, recommandations.
+        </div>
+        <div class="mt-2"><span class="badge tech">Régression</span></div>
+      </div>
+
+      <!-- Module 7: Rapports -->
+      <div class="card">
+        <div class="flex items-center gap-2 mb-2">
+          <span style="font-size:20px;">📄</span>
+          <div class="card-title">Reporting</div>
+        </div>
+        <div class="card-body">
+          Génération de rapports : opérations, alertes, audit, exposition aux risques. Export <strong style="color:#fff;">PDF</strong> via jsPDF + AutoTable et <strong style="color:#fff;">CSV</strong>. Déclenchement manuel.
+        </div>
+        <div class="mt-2"><span class="badge tech">jsPDF</span> <span class="badge tech">CSV</span></div>
+      </div>
+
+      <!-- Module 8: Audit -->
+      <div class="card">
+        <div class="flex items-center gap-2 mb-2">
+          <span style="font-size:20px;">📋</span>
+          <div class="card-title">Journal d'Audit</div>
+        </div>
+        <div class="card-body">
+          Traçabilité complète : connexion, création d'opération, validation, rejet, acquittement d'alerte, actions de supervision. Chaque action enregistre user, module, résultat, metadata JSONB.
+        </div>
+        <div class="mt-2"><span class="badge role">Admin</span> <span class="badge role">Manager</span></div>
+      </div>
+
+      <!-- Module 9: Clients -->
+      <div class="card">
+        <div class="flex items-center gap-2 mb-2">
+          <span style="font-size:20px;">👤</span>
+          <div class="card-title">Annuaire Clients</div>
+        </div>
+        <div class="card-body">
+          Liste des clients avec profils détaillés et historique des opérations par client. Support Particulier (CIN) et Société (Matricule Fiscal). Création possible lors de la saisie d'une opération.
+        </div>
+        <div class="mt-2"><span class="badge tech">Fiche client</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="brand">FX Risk</span> — Présentation du Projet</span>
+    <span class="page">7</span>
+    <span>Modules Applicatifs</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ SLIDE 8 — IMPLÉMENTATION CLÉS ═══════════════════════════════ -->
+<div class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="slide-num">08</div>
+      <div>
+        <div class="slide-title">Points d'Implémentation Clés</div>
+        <div class="slide-desc">Code, patterns et décisions techniques importantes à présenter</div>
+      </div>
+      <div class="section-label">Implémentation</div>
+    </div>
+
+    <div class="grid-2" style="gap:20px; align-items:start;">
+      <div class="flex flex-col gap-3">
+        <div class="card">
+          <div class="card-title mb-2">⚡ Realtime — useRealtimeInvalidate</div>
+          <div class="code-block" style="font-size:10.5px;">
+<span class="cm">// Hook personnalisé : abonnement Supabase WebSocket</span>
+<span class="cm">// → invalide le cache React Query à chaque changement DB</span>
+<span class="kw">useRealtimeInvalidate</span>(<span class="str">"operations"</span>, [
+  [<span class="str">"ops-dash"</span>],
+  [<span class="str">"ops-total-count"</span>]
+]);
+<span class="kw">useRealtimeInvalidate</span>(<span class="str">"alerts"</span>, [[<span class="str">"alerts-dash"</span>]]);</div>
+          <div class="card-body mt-2">Toutes les pages s'actualisent automatiquement sans polling grâce aux subscriptions Supabase Realtime.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title mb-2">🔐 Authentification & Autorisation</div>
+          <div class="code-block" style="font-size:10.5px;">
+<span class="cm">-- Fonction SQL get_user_role()</span>
+<span class="kw">SELECT</span> role <span class="kw">FROM</span> user_roles
+  <span class="kw">WHERE</span> user_id = _user_id
+  <span class="kw">ORDER BY CASE</span> role
+    <span class="kw">WHEN</span> <span class="str">'admin'</span> <span class="kw">THEN</span> <span class="num">1</span>
+    <span class="kw">WHEN</span> <span class="str">'manager'</span> <span class="kw">THEN</span> <span class="num">2</span>
+    <span class="kw">WHEN</span> <span class="str">'risk_team'</span> <span class="kw">THEN</span> <span class="num">3</span>
+  <span class="kw">END LIMIT</span> <span class="num">1</span></div>
+          <div class="card-body mt-2">JWT Supabase + <span class="mono">has_role()</span> vérifié dans chaque policy RLS. Le front lit le rôle depuis la session pour adapter l'UI.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title mb-2">📈 Régression linéaire prédictive</div>
+          <div class="code-block" style="font-size:10.5px;">
+<span class="cm">// Calcul de la pente (slope) de l'historique 14j</span>
+<span class="kw">function</span> <span class="fn">regressionSlope</span>(values: <span class="str">number[]</span>) {
+  <span class="kw">const</span> meanX = (n - <span class="num">1</span>) / <span class="num">2</span>;
+  <span class="kw">const</span> meanY = average(values);
+  <span class="kw">const</span> num = values.<span class="fn">reduce</span>(
+    (sum, v, i) => sum + (i - meanX)*(v - meanY), <span class="num">0</span>);
+  <span class="kw">return</span> denom ? num / denom : <span class="num">0</span>;
+}
+<span class="cm">// Projection : risk_prévu = avg + slope × jours</span></div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <div class="card">
+          <div class="card-title mb-2">📑 Recommandations automatiques (getRiskRecommendations)</div>
+          <div class="space-y-2 mt-1">
+            <div class="card-sm"><span class="badge critical mr-2">Critical</span><span class="card-body">Demander confirmation SWIFT (SWIFT manquant)</span></div>
+            <div class="card-sm"><span class="badge high mr-2">High</span><span class="card-body">Vérifier le format BIC SWIFT invalide</span></div>
+            <div class="card-sm"><span class="badge high mr-2">High</span><span class="card-body">Justifier l'écart de taux > 2% vs marché</span></div>
+            <div class="card-sm"><span class="badge moderate mr-2">Moderate</span><span class="card-body">Contrôler le montant élevé (> 1M)</span></div>
+            <div class="card-sm"><span class="badge moderate mr-2">Moderate</span><span class="card-body">Vérifier opération hors horaires normaux</span></div>
+            <div class="card-sm"><span class="badge low mr-2">Low</span><span class="card-body">Revoir paire de devises inhabituelle</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title mb-2">🗺️ Matrice de risque Probabilité × Impact</div>
+          <div style="display:grid; grid-template-columns: auto 1fr 1fr 1fr; gap:6px; align-items:center;">
+            <div></div>
+            <div class="text-xs text-dim text-center font-bold">Impact Faible</div>
+            <div class="text-xs text-dim text-center font-bold">Impact Moyen</div>
+            <div class="text-xs text-dim text-center font-bold">Impact Élevé</div>
+            <div class="text-xs text-dim font-bold" style="writing-mode:vertical-rl; transform:rotate(180deg); text-align:center; padding:4px;">Prob. Élevée</div>
+            <div class="matrix-cell moderate" style="padding:8px; font-size:10px;">Modéré</div>
+            <div class="matrix-cell high" style="padding:8px; font-size:10px;">Élevé</div>
+            <div class="matrix-cell critical" style="padding:8px; font-size:10px;">Critique</div>
+            <div class="text-xs text-dim font-bold" style="writing-mode:vertical-rl; transform:rotate(180deg); text-align:center; padding:4px;">Prob. Moy.</div>
+            <div class="matrix-cell low" style="padding:8px; font-size:10px;">Faible</div>
+            <div class="matrix-cell moderate" style="padding:8px; font-size:10px;">Modéré</div>
+            <div class="matrix-cell high" style="padding:8px; font-size:10px;">Élevé</div>
+            <div class="text-xs text-dim font-bold" style="writing-mode:vertical-rl; transform:rotate(180deg); text-align:center; padding:4px;">Prob. Faible</div>
+            <div class="matrix-cell low" style="padding:8px; font-size:10px;">Faible</div>
+            <div class="matrix-cell low" style="padding:8px; font-size:10px;">Faible</div>
+            <div class="matrix-cell moderate" style="padding:8px; font-size:10px;">Modéré</div>
+          </div>
+          <div class="card-body mt-2">Probabilité ← risk_score : &lt;30=Low, &lt;60=Med, ≥60=High · Impact ← montant : &lt;250k=Low, &lt;1M=Med, ≥1M=High</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="brand">FX Risk</span> — Présentation du Projet</span>
+    <span class="page">8</span>
+    <span>Implémentation Clés</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ SLIDE 9 — DASHBOARD KPI ═══════════════════════════════ -->
+<div class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="slide-num">09</div>
+      <div>
+        <div class="slide-title">Tableau de Bord — Indicateurs KRI</div>
+        <div class="slide-desc">Vue opérationnelle en temps réel — fichier <span class="mono" style="font-size:12px;">app.index.tsx</span></div>
+      </div>
+      <div class="section-label">Dashboard</div>
+    </div>
+
+    <div class="grid-5 mb-4">
+      <div class="kpi primary">
+        <div class="kpi-icon">📊</div>
+        <div class="kpi-label">Total opérations</div>
+        <div class="kpi-value">—</div>
+        <div class="kpi-sub">Toutes opérations confondues</div>
+      </div>
+      <div class="kpi warning">
+        <div class="kpi-icon">⚠️</div>
+        <div class="kpi-label">Risque élevé</div>
+        <div class="kpi-value">—</div>
+        <div class="kpi-sub">High + Critical</div>
+      </div>
+      <div class="kpi warning">
+        <div class="kpi-icon">🔔</div>
+        <div class="kpi-label">Open Alerts</div>
+        <div class="kpi-value">—</div>
+        <div class="kpi-sub">Non acquittées</div>
+      </div>
+      <div class="kpi accent">
+        <div class="kpi-icon">📈</div>
+        <div class="kpi-label">Score moyen</div>
+        <div class="kpi-value">—/100</div>
+        <div class="kpi-sub">Plus bas = plus sûr</div>
+      </div>
+      <div class="kpi success">
+        <div class="kpi-icon">✅</div>
+        <div class="kpi-label">En attente</div>
+        <div class="kpi-value">—</div>
+        <div class="kpi-sub">Pending validation</div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="gap:16px;">
+      <div class="card">
+        <div class="card-title mb-2">📉 Graphique de tendance (AreaChart)</div>
+        <div class="card-body mb-3">
+          Fenêtre navigable 14 jours / 30 jours / 12 mois.<br/>
+          4 séries : <strong style="color:#fff;">opérations observées</strong>, <strong style="color:#f59e0b;">opérations prévues</strong> (tirets), <strong style="color:#ef4444;">risque observé</strong>, <strong style="color:#f59e0b;">risque prévu</strong> (tirets).<br/>
+          La prévision utilise la régression linéaire sur la fenêtre historique.
+        </div>
+        <!-- Fake area chart using CSS -->
+        <div style="height:80px; background:var(--bg-card2); border-radius:8px; border:1px solid var(--border); overflow:hidden; position:relative; padding:10px;">
+          <svg width="100%" height="60" viewBox="0 0 400 60" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6366f1" stop-opacity="0.5"/><stop offset="100%" stop-color="#6366f1" stop-opacity="0.05"/></linearGradient>
+              <linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ef4444" stop-opacity="0.4"/><stop offset="100%" stop-color="#ef4444" stop-opacity="0.05"/></linearGradient>
+            </defs>
+            <path d="M0,45 C20,40 40,30 80,35 C120,40 140,20 180,25 C220,30 240,15 280,20 C310,24 350,18 400,22 L400,60 L0,60 Z" fill="url(#ga)"/>
+            <path d="M0,45 C20,40 40,30 80,35 C120,40 140,20 180,25 C220,30 240,15 280,20 C310,24 350,18 400,22" fill="none" stroke="#6366f1" stroke-width="2"/>
+            <path d="M0,55 C20,50 40,45 80,48 C120,51 140,40 180,42 C220,44 240,38 280,35 C310,33 350,28 400,25 L400,60 L0,60 Z" fill="url(#gb)"/>
+            <path d="M0,55 C20,50 40,45 80,48 C120,51 140,40 180,42 C220,44 240,38 280,35 C310,33 350,28 400,25" fill="none" stroke="#ef4444" stroke-width="2"/>
+            <path d="M310,24 C330,22 360,18 400,14" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5,4"/>
+          </svg>
+          <div style="position:absolute; bottom:6px; left:10px; right:10px; display:flex; justify-content:space-between; font-size:9px; color:var(--text-dim);">
+            <span>J-13</span><span>J-7</span><span>Aujourd'hui</span><span style="color:var(--warning);">→ Prévision</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <div class="card">
+          <div class="card-title mb-2">🥧 Distribution des risques (PieChart)</div>
+          <div class="flex gap-3 items-center">
+            <svg width="70" height="70" viewBox="0 0 70 70">
+              <circle cx="35" cy="35" r="28" fill="none" stroke="#10b981" stroke-width="12" stroke-dasharray="44 132" stroke-dashoffset="0"/>
+              <circle cx="35" cy="35" r="28" fill="none" stroke="#f59e0b" stroke-width="12" stroke-dasharray="33 132" stroke-dashoffset="-44"/>
+              <circle cx="35" cy="35" r="28" fill="none" stroke="#ef4444" stroke-width="12" stroke-dasharray="33 132" stroke-dashoffset="-77"/>
+              <circle cx="35" cy="35" r="28" fill="none" stroke="#dc2626" stroke-width="12" stroke-dasharray="22 132" stroke-dashoffset="-110"/>
+              <circle cx="35" cy="35" r="20" fill="var(--bg-card)"/>
+            </svg>
+            <div class="flex flex-col gap-1">
+              <span class="badge low">Low — faible</span>
+              <span class="badge moderate">Moderate — modéré</span>
+              <span class="badge high">High — élevé</span>
+              <span class="badge critical">Critical — critique</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title mb-2">📊 Opérations par paire (BarChart)</div>
+          <div class="card-body mb-2">Top 6 paires les plus échangées affichées en barres horizontales.</div>
+          <div class="space-y-1">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="mono" style="width:60px;">EUR/USD</span>
+              <div style="flex:1;background:var(--bg-card2);border-radius:4px;height:10px;"><div style="background:var(--primary);width:80%;height:100%;border-radius:4px;"></div></div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="mono" style="width:60px;">USD/JPY</span>
+              <div style="flex:1;background:var(--bg-card2);border-radius:4px;height:10px;"><div style="background:var(--primary);width:60%;height:100%;border-radius:4px;"></div></div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="mono" style="width:60px;">GBP/USD</span>
+              <div style="flex:1;background:var(--bg-card2);border-radius:4px;height:10px;"><div style="background:var(--primary);width:45%;height:100%;border-radius:4px;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="brand">FX Risk</span> — Présentation du Projet</span>
+    <span class="page">9</span>
+    <span>Dashboard KRI</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ SLIDE 10 — CE QU'IL FAUT MONTRER ═══════════════════════════════ -->
+<div class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="slide-num">10</div>
+      <div>
+        <div class="slide-title">Guide de Présentation</div>
+        <div class="slide-desc">Ce qu'il faut montrer et expliquer lors de la soutenance</div>
+      </div>
+      <div class="section-label">Soutenance</div>
+    </div>
+
+    <div class="grid-2" style="gap:20px; align-items:start;">
+      <div>
+        <div class="card mb-3">
+          <div class="card-title mb-3" style="color:var(--accent);">🎯 Démonstration — ordre recommandé</div>
+          <div class="space-y-2">
+            <div class="card-sm flex items-center gap-3">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--gradient-1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">1</div>
+              <div><div class="card-title text-xs">Login multi-rôles</div><div class="card-body">Montrer la page de login, se connecter avec front@fxrisk.demo puis admin@fxrisk.demo</div></div>
+            </div>
+            <div class="card-sm flex items-center gap-3">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--gradient-1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">2</div>
+              <div><div class="card-title text-xs">Dashboard temps réel</div><div class="card-body">Montrer les KPI, le graphique de tendance, la distribution des risques</div></div>
+            </div>
+            <div class="card-sm flex items-center gap-3">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--gradient-1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">3</div>
+              <div><div class="card-title text-xs">Créer une opération risquée</div><div class="card-body">Sans SWIFT + montant élevé + paire inhabituelle → montrer le score 61+ (Critical)</div></div>
+            </div>
+            <div class="card-sm flex items-center gap-3">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--gradient-1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">4</div>
+              <div><div class="card-title text-xs">File de validation</div><div class="card-body">Montrer les recommandations automatiques, valider ou rejeter l'opération</div></div>
+            </div>
+            <div class="card-sm flex items-center gap-3">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--gradient-1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">5</div>
+              <div><div class="card-title text-xs">Centre d'alertes</div><div class="card-body">Montrer les alertes auto-générées, acquitter une alerte critique</div></div>
+            </div>
+            <div class="card-sm flex items-center gap-3">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--gradient-1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">6</div>
+              <div><div class="card-title text-xs">Cartographie + Prédiction</div><div class="card-body">Matrice dynamique Prob×Impact, puis module prédictif 7 jours</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <div class="card">
+          <div class="card-title mb-3" style="color:var(--warning);">💡 Points techniques à valoriser</div>
+          <div class="space-y-2">
+            <div class="highlight primary">
+              <div class="highlight-title">🔧 Scoring côté base de données</div>
+              <div class="highlight-body">Le calcul du risk_score est entièrement fait par un trigger PostgreSQL, garantissant cohérence et sécurité indépendamment du client.</div>
+            </div>
+            <div class="highlight accent">
+              <div class="highlight-title">⚡ Temps réel sans polling</div>
+              <div class="highlight-body">Utilisation de Supabase Realtime WebSocket via un hook React personnalisé <span class="mono">useRealtimeInvalidate</span> pour invalider le cache automatiquement.</div>
+            </div>
+            <div class="highlight success">
+              <div class="highlight-title">🔐 Sécurité à plusieurs niveaux</div>
+              <div class="highlight-body">RLS PostgreSQL + JWT Supabase + logique UI par rôle. La sécurité est appliquée au niveau de la base de données, pas seulement de l'interface.</div>
+            </div>
+            <div class="highlight warning">
+              <div class="highlight-title">🧠 Module prédictif heuristique</div>
+              <div class="highlight-body">Première version basée sur la régression linéaire (slope). Présentable comme fondation pour un futur modèle ML (LSTM, ARIMA…).</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title mb-2">🔑 Comptes de démonstration</div>
+          <table>
+            <thead><tr><th>Rôle</th><th>Email</th></tr></thead>
+            <tbody>
+              <tr><td><span class="badge role">Front Office</span></td><td><span class="mono">front@fxrisk.demo</span></td></tr>
+              <tr><td><span class="badge role">Back Office</span></td><td><span class="mono">back@fxrisk.demo</span></td></tr>
+              <tr><td><span class="badge role">Risk Team</span></td><td><span class="mono">risk@fxrisk.demo</span></td></tr>
+              <tr><td><span class="badge role">Manager</span></td><td><span class="mono">manager@fxrisk.demo</span></td></tr>
+              <tr><td><span class="badge role">Admin</span></td><td><span class="mono">admin@fxrisk.demo</span></td></tr>
+            </tbody>
+          </table>
+          <div class="card-body mt-2">Mot de passe : <span class="mono">Demo!2026</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="brand">FX Risk</span> — Présentation du Projet</span>
+    <span class="page">10</span>
+    <span>Guide de Présentation</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ SLIDE 11 — CONCLUSION ═══════════════════════════════ -->
+<div class="slide slide-hero" style="padding:50px 80px;">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-corner"></div>
+
+  <div style="position:relative; z-index:1; width:100%; max-width:800px; margin:0 auto; text-align:center;">
+    <div class="hero-badge" style="margin-bottom:24px;">
+      <span class="dot"></span>
+      Conclusion & Perspectives
+    </div>
+
+    <h2 style="font-size:40px; font-weight:900; letter-spacing:-2px; background: linear-gradient(135deg, #fff 0%, var(--primary-light) 50%, var(--accent) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:20px;">
+      Une plateforme complète<br/>de gestion des risques FX
+    </h2>
+
+    <div class="grid-3" style="gap:16px; margin-bottom:30px; text-align:left;">
+      <div style="background:rgba(99,102,241,0.1); border:1px solid rgba(99,102,241,0.25); border-radius:14px; padding:20px;">
+        <div style="font-size:28px; margin-bottom:8px;">✅</div>
+        <div style="font-size:13px; font-weight:700; color:#fff; margin-bottom:6px;">Objectifs atteints</div>
+        <div style="font-size:11px; color:var(--text-muted); line-height:1.6;">Scoring auto, alertes temps réel, workflow multi-rôles, cartographie, reporting, audit complet</div>
+      </div>
+      <div style="background:rgba(6,182,212,0.1); border:1px solid rgba(6,182,212,0.25); border-radius:14px; padding:20px;">
+        <div style="font-size:28px; margin-bottom:8px;">🚀</div>
+        <div style="font-size:13px; font-weight:700; color:#fff; margin-bottom:6px;">Perspectives</div>
+        <div style="font-size:11px; color:var(--text-muted); line-height:1.6;">Modèle ML avancé (LSTM/ARIMA), intégration flux de marché en direct, mobile PWA</div>
+      </div>
+      <div style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.25); border-radius:14px; padding:20px;">
+        <div style="font-size:28px; margin-bottom:8px;">🏗️</div>
+        <div style="font-size:13px; font-weight:700; color:#fff; margin-bottom:6px;">Stack moderne</div>
+        <div style="font-size:11px; color:var(--text-muted); line-height:1.6;">React 19, TypeScript strict, PostgreSQL, Supabase BaaS, Realtime WebSocket, TanStack</div>
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+      <span class="hero-pill outline">10 modules fonctionnels</span>
+      <span class="hero-pill outline">5 rôles RBAC</span>
+      <span class="hero-pill outline">4 tables + triggers</span>
+      <span class="hero-pill outline">6 critères de scoring</span>
+      <span class="hero-pill primary">Temps réel WebSocket</span>
+    </div>
+  </div>
+
+  <div class="hero-meta" style="position:absolute;">
+    <span>FX Risk · 2026</span>
+    <span style="color:var(--primary-light); font-weight:600;">Merci de votre attention</span>
+    <span>Questions ?</span>
+  </div>
+</div>
+
+</body>
+</html>

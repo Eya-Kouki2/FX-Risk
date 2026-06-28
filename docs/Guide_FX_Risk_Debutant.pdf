@@ -1,0 +1,1580 @@
+%PDF-1.3
+%ºß¬à
+3 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 4 0 R
+>>
+endobj
+4 0 obj
+<<
+/Length 1154
+>>
+stream
+0.5670000000000001 w
+0 G
+0.06 0.12 0.25 rg
+0. 841.8899999999999864 595.2755905511811534 -204.0944881889764133 re
+f
+BT
+/F2 24 Tf
+27.5999999999999979 TL
+1. g
+51.0236220472441033 739.8427559055118081 Td
+(FX Risk) Tj
+ET
+BT
+/F1 14 Tf
+16.0999999999999979 TL
+1. g
+51.0236220472441033 700.15771653543311 Td
+(Guide du projet pour debutants) Tj
+ET
+BT
+/F1 14 Tf
+16.0999999999999979 TL
+1. g
+51.0236220472441033 671.8112598425196893 Td
+(De zero a la comprehension complete) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+1. g
+51.0236220472441033 649.1340944881889072 Td
+(Langage simple - Organisation des fichiers - Installation pas a pas) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 581.1025984251967884 Td
+(Ce document explique le projet FX Risk avec un langage simple. Il est concu pour une personne qui decouvre) Tj
+T* (le developpement web, React, Supabase ou la gestion des risques de change. Aucune connaissance prealable) Tj
+T* (n'est requise.) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.471 g
+51.0236220472441033 22.6774015748030706 Td
+(FX Risk - Guide debutant) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.471 g
+501.73228346456699 22.6774015748030706 Td
+(Page 1 / 7) Tj
+ET
+endstream
+endobj
+5 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 6 0 R
+>>
+endobj
+6 0 obj
+<<
+/Length 4850
+>>
+stream
+0.5670000000000001 w
+0 G
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.059 0.122 0.251 rg
+51.0236220472441033 790.8663779527558972 Td
+(1. Qu'est-ce que ce projet ?) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 754.5829133858267141 Td
+(FX Risk est une application web qui aide une banque ou une equipe financiere a suivre les operations de) Tj
+T* (change \(Foreign Exchange, abrege FX\). Quand quelqu'un achete ou vend des devises \(euro, dollar, etc.\),) Tj
+T* (l'application enregistre l'operation, calcule automatiquement son niveau de risque, genere des alertes si quelque) Tj
+T* (chose est suspect, et permet aux differents services de valider ou rejeter la transaction.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 687.1183464566928478 Td
+(En resume : c'est un tableau de bord intelligent pour surveiller les risques lies aux operations FX, avec des roles) Tj
+T* (utilisateurs \(Front Office, Back Office, Risk Team, Manager, Admin\).) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.118 0.251 0.471 rg
+51.0236220472441033 649.1340944881889072 Td
+(1.1 Le probleme resolu) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 626.4569291338582389 Td
+(- Centraliser toutes les operations FX au meme endroit.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 607.4648031496062686 Td
+(- Calculer automatiquement un score de risque de 0 a 100.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 588.4726771653542983 Td
+(- Alerter en cas d'anomalie : montant eleve, SWIFT manquant, horaire atypique.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 569.480551181102328 Td
+(- Faire valider les operations par les bonnes equipes.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 550.4884251968503577 Td
+(- Garder une trace de qui a fait quoi \(journal d'audit\).) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 531.4962992125983874 Td
+(- Afficher des indicateurs \(KRI\), graphiques et predictions.) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.118 0.251 0.471 rg
+51.0236220472441033 512.5041732283464171 Td
+(1.2 Exemple concret) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 489.827007874015635 Td
+(Un operateur Front Office saisit : Client ABC, achat de 2 000 000 USD contre EUR, sans reference SWIFT, a) Tj
+T* (22h. Le systeme calcule un score eleve, cree une alerte « SWIFT manquant », et place l'operation dans la file) Tj
+T* (de validation. Le Back Office voit la recommandation « Demander confirmation SWIFT » et peut valider ou) Tj
+T* (rejeter.) Tj
+ET
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.059 0.122 0.251 rg
+51.0236220472441033 422.3624409448817687 Td
+(2. Technologies utilisees \(expliquees simplement\)) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 386.0789763779525856 Td
+(Le projet repose sur plusieurs briques. Voici ce que chacune fait, en langage courant :) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0. g
+51.0236220472441033 362.8348818897636079 Td
+(React 19) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 345.8270078740155782 Td
+(Bibliotheque JavaScript pour construire l'interface : boutons, tableaux, graphiques. C'est ce que l'utilisateur voit) Tj
+T* (a l'ecran.) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0. g
+51.0236220472441033 307.8427559055116944 Td
+(TypeScript) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 290.8348818897636647 Td
+(JavaScript avec des types. Cela aide a eviter les erreurs avant d'executer le code \(par exemple : un montant) Tj
+T* (doit etre un nombre\).) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0. g
+51.0236220472441033 252.8506299212596105 Td
+(Vite) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 235.8427559055115807 Td
+(Outil qui lance le projet en developpement et prepare la version finale. Commande principale : npm run dev.) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0. g
+51.0236220472441033 212.5986614173226599 Td
+(TanStack Router / Start) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 195.5907874015746302 Td
+(Gere les pages \(/login, /app, /app/operations...\) et le rendu cote serveur \(SSR\). Chaque URL correspond a un) Tj
+T* (fichier dans src/routes/.) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0. g
+51.0236220472441033 157.6065354330706896 Td
+(Supabase) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 140.5986614173226599 Td
+(Backend dans le cloud : base de donnees PostgreSQL, authentification \(login\), securite par roles \(RLS\), mises) Tj
+T* (a jour en temps reel. Des triggers SQL calculent le risque et creent les alertes automatiquement a chaque) Tj
+T* (insertion.) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0. g
+51.0236220472441033 87.8742519685036996 Td
+(Tailwind CSS + shadcn/ui) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.471 g
+51.0236220472441033 22.6774015748030706 Td
+(FX Risk - Guide debutant) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.471 g
+501.73228346456699 22.6774015748030706 Td
+(Page 2 / 7) Tj
+ET
+endstream
+endobj
+7 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 8 0 R
+>>
+endobj
+8 0 obj
+<<
+/Length 4750
+>>
+stream
+0.5670000000000001 w
+0 G
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 790.8663779527558972 Td
+(Styles et composants prets a l'emploi \(cartes, boutons, formulaires\) pour une interface moderne et coherente.) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0. g
+51.0236220472441033 767.6222834645668627 Td
+(Recharts) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 750.614409448818833 Td
+(Bibliotheque de graphiques \(courbes, camemberts, barres\) utilisee sur le tableau de bord.) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0. g
+51.0236220472441033 727.3703149606299121 Td
+(jsPDF) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 710.3624409448818824 Td
+(Genere les rapports PDF exportables depuis la page Rapports de l'application.) Tj
+ET
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.059 0.122 0.251 rg
+51.0236220472441033 687.1183464566928478 Td
+(3. Organisation des fichiers) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 650.8348818897636647 Td
+(Pour un debutant, retenez trois zones : src/ \(code de l'application\), supabase/ \(base de donnees\), racine) Tj
+T* (\(configuration\).) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.118 0.251 0.471 rg
+51.0236220472441033 612.8506299212597241 Td
+(3.1 Racine du projet) Tj
+ET
+0.96 0.97 0.98 rg
+51.0236220472441033 598.6774015748030706 493.2283464566929752 -102.6141732283464592 re
+f
+BT
+/F5 8.5 Tf
+9.7749999999999986 TL
+0.157 g
+59.5275590551181182 587.3388188976377933 Td
+(FX-Risk/) Tj
+T* (  package.json        Dependances npm et scripts \(dev, build, lint\)) Tj
+T* (  vite.config.ts      Configuration du build Vite) Tj
+T* (  tsconfig.json       Configuration TypeScript) Tj
+T* (  .env.example        Modele des variables d'environnement) Tj
+T* (  README.md           Documentation principale du projet) Tj
+T* (  docs/               Documentation generee \(ce PDF\)) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.118 0.251 0.471 rg
+51.0236220472441033 481.8899999999999295 Td
+(3.2 Dossier src/ - coeur de l'application) Tj
+ET
+0.96 0.97 0.98 rg
+51.0236220472441033 467.7167716535432191 493.2283464566929752 -128.6929133858267846 re
+f
+BT
+/F5 8.5 Tf
+9.7749999999999986 TL
+0.157 g
+59.5275590551181182 456.378188976377885 Td
+(src/) Tj
+T* (  routes/             Une page web = un fichier ici) Tj
+T* (  components/         Blocs reutilisables \(menu, badges, dialogues\)) Tj
+T* (  lib/                Logique metier \(auth, risque, PDF, utilitaires\)) Tj
+T* (  hooks/              Hooks React \(ex: rafraichissement temps reel\)) Tj
+T* (  integrations/       Connexion Supabase \(client, auth, types\)) Tj
+T* (  router.tsx          Point d'entree du routeur) Tj
+T* (  server.ts           Serveur SSR) Tj
+T* (  styles.css          Styles globaux Tailwind) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.118 0.251 0.471 rg
+51.0236220472441033 324.8506299212597241 Td
+(3.3 Dossier src/routes/ - les pages web) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 302.1734645669290558 Td
+(Convention TanStack Router : le nom du fichier devient l'URL.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 278.9293700787401349 Td
+(- login.tsx ........................ Page de connexion) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 259.9372440944881646 Td
+(- app.index.tsx .................... Tableau de bord \(KRI, graphiques\)) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 240.9451181102361943 Td
+(- app.operations.index.tsx ......... Liste des operations FX) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 221.9529921259843377 Td
+(- app.operations.new.tsx ............. Creer une nouvelle operation) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 202.9608661417323674 Td
+(- app.validation.tsx ............... File de validation) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 183.9687401574803971 Td
+(- app.approvals.tsx ................ File d'approbation \(manager\)) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 164.9766141732284268 Td
+(- app.alerts.tsx ................... Centre d'alertes) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 145.9844881889765702 Td
+(- app.heatmap.tsx .................. Cartographie des risques) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 126.9923622047245999 Td
+(- app.predictions.tsx .............. Prediction des risques \(7 jours\)) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 108.0002362204726296 Td
+(- app.reports.tsx .................. Rapports PDF et CSV) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 89.0081102362206593 Td
+(- app.audit.tsx .................... Journal d'audit) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.471 g
+51.0236220472441033 22.6774015748030706 Td
+(FX Risk - Guide debutant) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.471 g
+501.73228346456699 22.6774015748030706 Td
+(Page 3 / 7) Tj
+ET
+endstream
+endobj
+9 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 10 0 R
+>>
+endobj
+10 0 obj
+<<
+/Length 5117
+>>
+stream
+0.5670000000000001 w
+0 G
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 790.8663779527558972 Td
+(- app.clients.index.tsx ............ Annuaire clients) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 771.8742519685039269 Td
+(- app.clients.$clientId.tsx ........ Fiche detaillee d'un client) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 752.8821259842519567 Td
+(- app.admin.users.tsx .............. Gestion des utilisateurs) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 733.8899999999999864 Td
+(- app.admin.settings.tsx ........... Parametres admin) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.118 0.251 0.471 rg
+51.0236220472441033 714.8978740157480161 Td
+(3.4 Dossier src/components/) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 692.2207086614173477 Td
+(- app-shell.tsx : barre laterale, menu de navigation selon le role.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 673.2285826771652637 Td
+(- operation-detail-dialog.tsx : fenetre de detail d'une operation.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 654.2364566929134071 Td
+(- risk-indicators.tsx : badges de niveau de risque \(low, high, etc.\).) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 635.2443307086614368 Td
+(- ui/ : composants shadcn \(Button, Card, Table, Dialog...\).) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.118 0.251 0.471 rg
+51.0236220472441033 616.2522047244093528 Td
+(3.5 Dossier src/lib/ - logique importante) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 593.5750393700786844 Td
+(- auth.ts : session utilisateur, roles, permissions.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 574.5829133858267141 Td
+(- risk.ts : formatage montants, recommandations, helpers risque.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 555.5907874015747439 Td
+(- pdf.ts : export PDF des rapports operations/alertes.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 536.5986614173227736 Td
+(- utils.ts : fonctions utilitaires communes.) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.118 0.251 0.471 rg
+51.0236220472441033 517.6065354330708033 Td
+(3.6 Dossier supabase/) Tj
+ET
+0.96 0.97 0.98 rg
+51.0236220472441033 503.4333070866140361 493.2283464566929752 -76.5354330708661479 re
+f
+BT
+/F5 8.5 Tf
+9.7749999999999986 TL
+0.157 g
+59.5275590551181182 492.0947244094487019 Td
+(supabase/) Tj
+T* (  migrations/         Scripts SQL \(tables, regles, triggers, policies\)) Tj
+T* (  seed_operations.sql Donnees de test \(optionnel\)) Tj
+T* (  config.toml         Configuration Supabase locale) Tj
+T* (  SEED_DATA.md        Instructions pour les donnees de demo) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 412.724645669291192 Td
+(Les migrations creent notamment : profiles, user_roles, operations, alerts, audit_logs, et les fonctions) Tj
+T* (compute_risk\(\) et generate_alerts\(\) executees automatiquement.) Tj
+ET
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.059 0.122 0.251 rg
+51.0236220472441033 374.7403937007872514 Td
+(4. Flux complet de l'application) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 338.4569291338580683 Td
+(- 1. Connexion sur login.tsx via Supabase Auth.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 319.4648031496061549 Td
+(- 2. Lecture du role \(front_office, back_office...\) via lib/auth.ts.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 300.4726771653541846 Td
+(- 3. Le menu \(app-shell.tsx\) affiche uniquement les pages autorisees.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 281.4805511811022143 Td
+(- 4. Front Office cree une operation : insertion dans la table operations.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 262.4884251968503577 Td
+(- 5. Trigger SQL compute_risk\(\) : calcule risk_score \(0-100\) et risk_level.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 243.4962992125983874 Td
+(- 6. Trigger generate_alerts\(\) : cree des alertes si anomalies detectees.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 224.5041732283464171 Td
+(- 7. Operation visible dans File de validation \(statut : pending\).) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 205.5120472440944468 Td
+(- 8. Back Office / Risk / Manager / Admin : Valider ou Rejeter.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 186.5199212598425902 Td
+(- 9. Dashboard, alertes et graphiques se mettent a jour \(temps reel\).) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 167.5277952755906199 Td
+(- 10. Actions enregistrees dans audit_logs pour la tracabilite.) Tj
+ET
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.059 0.122 0.251 rg
+51.0236220472441033 148.5356692913386496 Td
+(5. Les cinq roles utilisateurs) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 112.2522047244095802 Td
+(RBAC = controle d'acces base sur les roles. Chaque utilisateur a un seul role.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 89.0081102362206593 Td
+(- front_office : cree des operations, consulte clients et historique.) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.471 g
+51.0236220472441033 22.6774015748030706 Td
+(FX Risk - Guide debutant) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.471 g
+501.73228346456699 22.6774015748030706 Td
+(Page 4 / 7) Tj
+ET
+endstream
+endobj
+11 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 12 0 R
+>>
+endobj
+12 0 obj
+<<
+/Length 4961
+>>
+stream
+0.5670000000000001 w
+0 G
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 790.8663779527558972 Td
+(- back_office : valide ou rejette les operations en attente.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 771.8742519685039269 Td
+(- risk_team : supervise alertes, cartographie, validation, predictions.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 752.8821259842519567 Td
+(- manager : approuve les cas critiques ou escalades.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 733.8899999999999864 Td
+(- admin : acces complet, gestion utilisateurs et parametres.) Tj
+ET
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.059 0.122 0.251 rg
+51.0236220472441033 714.8978740157480161 Td
+(6. Modules fonctionnels en detail) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0. g
+51.0236220472441033 678.614409448818833 Td
+(Tableau de bord \(app.index.tsx\)) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 661.6065354330708033 Td
+(Affiche les KRI : total operations, operations a haut risque, alertes ouvertes, score moyen, operations en) Tj
+T* (attente, exposition. Graphiques : tendance 14J/30J/12M, distribution des risques, paires de devises.) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0. g
+51.0236220472441033 623.6222834645668627 Td
+(Operations FX) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 606.614409448818833 Td
+(Historique complet : reference, client, contrepartie, montant, taux, statut, score. Creation via formulaire guide.) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0. g
+51.0236220472441033 583.3703149606299121 Td
+(File de validation) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 566.3624409448818824 Td
+(Operations en attente avec recherche, score, recommandations automatiques \(SWIFT, montant, horaire...\) et) Tj
+T* (actions Valider / Rejeter.) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0. g
+51.0236220472441033 528.3781889763778281 Td
+(Centre d'alertes) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 511.3703149606297984 Td
+(Alertes generees automatiquement : severite, categorie, message. Possibilite d'acquitter.) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0. g
+51.0236220472441033 488.1262204724408207 Td
+(Cartographie des risques) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 471.1183464566928478 Td
+(Matrice Probabilite x Impact calculee dynamiquement a partir des operations courantes.) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0. g
+51.0236220472441033 447.8742519685038701 Td
+(Prediction des risques) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 430.8663779527558404 Td
+(Projection heuristique sur 7 jours : risque moyen prevu, tendance, volume haut risque, exposition prevue.) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0. g
+51.0236220472441033 407.6222834645669195 Td
+(Rapports et audit) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 390.6144094488188898 Td
+(Export PDF/CSV des operations et alertes. Journal d'audit pour tracer les actions sensibles.) Tj
+ET
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.059 0.122 0.251 rg
+51.0236220472441033 367.3703149606299121 Td
+(7. Scoring et alertes automatiques) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 331.086850393700729 Td
+(Le score \(0-100\) prend en compte : montant eleve, SWIFT manquant ou invalide, horaire atypique, ecart de) Tj
+T* (taux, paire inhabituelle.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 293.1025984251967884 Td
+(Classification : low \(<=20\), moderate \(<=40\), high \(<=60\), critical \(>60\).) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 269.8585039370078675 Td
+(Types d'alertes : High Amount, Missing SWIFT, Late-Night Operation, Critical Risk Score.) Tj
+ET
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.059 0.122 0.251 rg
+51.0236220472441033 246.6144094488189467 Td
+(8. Installation depuis zero) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0. g
+51.0236220472441033 210.3309448818897636 Td
+(Prerequis) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 193.3230708661417339 Td
+(- Node.js installe \(https://nodejs.org\) - version LTS recommandee.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 174.3309448818897636 Td
+(- Compte Supabase gratuit \(https://supabase.com\).) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 155.3388188976377933 Td
+(- Editeur de code : VS Code ou Cursor.) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0. g
+51.0236220472441033 136.3466929133859367 Td
+(Etapes pas a pas) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 119.338818897637907 Td
+(- Etape 1 : Ouvrir le dossier du projet dans un terminal.) Tj
+ET
+0.96 0.97 0.98 rg
+51.0236220472441033 108.8506299212598378 493.2283464566929752 -37.4173228346456739 re
+f
+BT
+/F5 8.5 Tf
+9.7749999999999986 TL
+0.157 g
+59.5275590551181182 97.5120472440944468 Td
+(cd FX-Risk) Tj
+T* (npm install) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.471 g
+51.0236220472441033 22.6774015748030706 Td
+(FX Risk - Guide debutant) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.471 g
+501.73228346456699 22.6774015748030706 Td
+(Page 5 / 7) Tj
+ET
+endstream
+endobj
+13 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 14 0 R
+>>
+endobj
+14 0 obj
+<<
+/Length 4789
+>>
+stream
+0.5670000000000001 w
+0 G
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 790.8663779527558972 Td
+(- Etape 2 : Copier .env.example vers .env et remplir les cles Supabase.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 771.8742519685039269 Td
+(- Etape 3 : Dans Supabase > SQL Editor, executer les migrations dans l'ordre chronologique.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 752.8821259842519567 Td
+(- Etape 4 : Desactiver la confirmation email \(Auth > Settings\) pour les comptes demo.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 733.8899999999999864 Td
+(- Etape 5 : Lancer l'application.) Tj
+ET
+0.96 0.97 0.98 rg
+51.0236220472441033 723.4018110236220309 493.2283464566929752 -24.3779527559055147 re
+f
+BT
+/F5 8.5 Tf
+9.7749999999999986 TL
+0.157 g
+59.5275590551181182 712.0632283464566399 Td
+(npm run dev) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 684.8506299212598378 Td
+(- Etape 6 : Ouvrir http://localhost:5173 dans le navigateur.) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0. g
+51.0236220472441033 665.8585039370077538 Td
+(Variables d'environnement \(.env\)) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 648.8506299212597241 Td
+(- VITE_SUPABASE_URL : URL de votre projet Supabase.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 629.8585039370077538 Td
+(- VITE_SUPABASE_PUBLISHABLE_KEY : cle publique \(anon key\).) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 610.8663779527557836 Td
+(- SUPABASE_SERVICE_ROLE_KEY : cle serveur \(ne jamais exposer cote client\).) Tj
+ET
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.059 0.122 0.251 rg
+51.0236220472441033 591.8742519685038133 Td
+(9. Comptes de demonstration) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 555.5907874015747439 Td
+(Mot de passe pour tous les comptes : Demo!2026) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 532.3466929133857093 Td
+(- front@fxrisk.demo - Front Office) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 513.354566929133739 Td
+(- back@fxrisk.demo - Back Office) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 494.3624409448817687 Td
+(- risk@fxrisk.demo - Risk Team) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 475.3703149606298552 Td
+(- manager@fxrisk.demo - Manager) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 456.378188976377885 Td
+(- admin@fxrisk.demo - Admin) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 437.3860629921259715 Td
+(Sur la page login, les boutons Quick Demo permettent une connexion rapide.) Tj
+ET
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.059 0.122 0.251 rg
+51.0236220472441033 414.1419685039369938 Td
+(10. Commandes utiles) Tj
+ET
+0.96 0.97 0.98 rg
+51.0236220472441033 386.3624409448818255 493.2283464566929752 -89.5748031496062964 re
+f
+BT
+/F5 8.5 Tf
+9.7749999999999986 TL
+0.157 g
+59.5275590551181182 375.0238582677164914 Td
+(npm run dev      Demarrer en developpement \(port 5173\)) Tj
+T* (npm run build    Construire pour la production) Tj
+T* (npm run preview  Previsualiser le build) Tj
+T* (npm run lint     Verifier la qualite du code) Tj
+T* (npm run format   Formater le code avec Prettier) Tj
+T* (node scripts/generate-guide-debutant.mjs  Regenerer ce PDF) Tj
+ET
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.059 0.122 0.251 rg
+51.0236220472441033 282.614409448818833 Td
+(11. Glossaire pour debutants) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 246.3309448818896499 Td
+(- FX : Foreign Exchange = operations de change entre devises.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 227.3388188976377933 Td
+(- SWIFT : reference bancaire internationale de virement.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 208.346692913385823 Td
+(- KRI : Key Risk Indicators = indicateurs cles de risque.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 189.3545669291338527 Td
+(- RLS : Row Level Security = regles qui limitent l'acces aux lignes en base.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 170.3624409448819961 Td
+(- Trigger : fonction SQL executee automatiquement a l'insertion ou mise a jour.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 151.3703149606300258 Td
+(- Hook : fonction React reutilisable \(useQuery, useSession...\).) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 132.3781889763780555 Td
+(- Route : une URL associee a une page.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 113.3860629921260852 Td
+(- Migration : script SQL versionne qui modifie la structure de la base.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 94.3939370078741149 Td
+(- SSR : Server Side Rendering = pages generees cote serveur.) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.471 g
+51.0236220472441033 22.6774015748030706 Td
+(FX Risk - Guide debutant) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.471 g
+501.73228346456699 22.6774015748030706 Td
+(Page 6 / 7) Tj
+ET
+endstream
+endobj
+15 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 16 0 R
+>>
+endobj
+16 0 obj
+<<
+/Length 1251
+>>
+stream
+0.5670000000000001 w
+0 G
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.059 0.122 0.251 rg
+51.0236220472441033 790.8663779527558972 Td
+(12. Conseils pour apprendre) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 754.5829133858267141 Td
+(- Lisez README.md pour la documentation complete.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 735.5907874015747439 Td
+(- Explorez src/routes/ une page a la fois.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 716.5986614173227736 Td
+(- Connectez-vous avec chaque role demo pour voir les differences.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 697.6065354330708033 Td
+(- Creez une operation test et suivez son parcours jusqu'a la validation.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+56.6929133858267775 678.614409448818833 Td
+(- Modifiez un libelle simple, sauvegardez, observez le resultat dans le navigateur.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+51.0236220472441033 648.2837007874014716 Td
+(Document genere pour le projet FX Risk - Plateforme de Gestion des Risques de Change.) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.471 g
+51.0236220472441033 22.6774015748030706 Td
+(FX Risk - Guide debutant) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.471 g
+501.73228346456699 22.6774015748030706 Td
+(Page 7 / 7) Tj
+ET
+endstream
+endobj
+1 0 obj
+<</Type /Pages
+/Kids [3 0 R 5 0 R 7 0 R 9 0 R 11 0 R 13 0 R 15 0 R ]
+/Count 7
+>>
+endobj
+17 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+18 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+19 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+20 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+21 0 obj
+<<
+/Type /Font
+/BaseFont /Courier
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+22 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+23 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+24 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+25 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Roman
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+26 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+27 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Italic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+28 0 obj
+<<
+/Type /Font
+/BaseFont /Times-BoldItalic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+29 0 obj
+<<
+/Type /Font
+/BaseFont /ZapfDingbats
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+30 0 obj
+<<
+/Type /Font
+/BaseFont /Symbol
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+2 0 obj
+<<
+/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]
+/Font <<
+/F1 17 0 R
+/F2 18 0 R
+/F3 19 0 R
+/F4 20 0 R
+/F5 21 0 R
+/F6 22 0 R
+/F7 23 0 R
+/F8 24 0 R
+/F9 25 0 R
+/F10 26 0 R
+/F11 27 0 R
+/F12 28 0 R
+/F13 29 0 R
+/F14 30 0 R
+>>
+/XObject <<
+>>
+>>
+endobj
+31 0 obj
+<<
+/Producer (jsPDF 4.2.1)
+/CreationDate (D:20260627023004+01'00')
+>>
+endobj
+32 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+/OpenAction [3 0 R /FitH null]
+/PageLayout /OneColumn
+>>
+endobj
+xref
+0 33
+0000000000 65535 f 
+0000028221 00000 n 
+0000030082 00000 n 
+0000000015 00000 n 
+0000000152 00000 n 
+0000001358 00000 n 
+0000001495 00000 n 
+0000006397 00000 n 
+0000006534 00000 n 
+0000011336 00000 n 
+0000011474 00000 n 
+0000016644 00000 n 
+0000016783 00000 n 
+0000021797 00000 n 
+0000021936 00000 n 
+0000026778 00000 n 
+0000026917 00000 n 
+0000028317 00000 n 
+0000028443 00000 n 
+0000028574 00000 n 
+0000028708 00000 n 
+0000028846 00000 n 
+0000028970 00000 n 
+0000029099 00000 n 
+0000029231 00000 n 
+0000029367 00000 n 
+0000029495 00000 n 
+0000029622 00000 n 
+0000029751 00000 n 
+0000029884 00000 n 
+0000029986 00000 n 
+0000030335 00000 n 
+0000030421 00000 n 
+trailer
+<<
+/Size 33
+/Root 32 0 R
+/Info 31 0 R
+/ID [ <E1EEAF0627641B69E2B557429B99F2A0> <E1EEAF0627641B69E2B557429B99F2A0> ]
+>>
+startxref
+30525
+%%EOF

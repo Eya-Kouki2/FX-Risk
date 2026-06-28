@@ -11,7 +11,7 @@ import {
   type RiskLevel,
   type RiskRecommendationTone,
 } from "@/lib/risk";
-import { CheckCircle2, XCircle, AlertTriangle, Search } from "lucide-react";
+import { CheckCircle2, XCircle, AlertTriangle, ArrowUpCircle, Search } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { logAudit, useSession } from "@/lib/auth";
@@ -32,6 +32,7 @@ function ValidationQueue() {
   const { user } = useSession();
   const qc = useQueryClient();
   const canAct = user?.role !== "front_office";
+  const canEscalate = canAct && user?.role !== "admin";
   const [search, setSearch] = useState("");
 
   // 🔴 Realtime: auto-refresh when operations are submitted or validated
@@ -49,7 +50,7 @@ function ValidationQueue() {
     },
   });
 
-  const act = async (id: string, status: "validated" | "rejected", ref: string) => {
+  const act = async (id: string, status: "validated" | "rejected" | "escalated", ref: string) => {
     const update: { status: typeof status; validated_by?: string; validated_at?: string } = {
       status,
     };
@@ -60,8 +61,13 @@ function ValidationQueue() {
     const { error } = await supabase.from("operations").update(update).eq("id", id);
     if (error) return toast.error(error.message);
     await logAudit(`${status}_operation`, "validation", { ref });
-    toast.success(`Opération ${ref} ${status === "validated" ? "validée" : "rejetée"}`);
+    toast.success(
+      `Opération ${ref} ${
+        status === "validated" ? "validée" : status === "rejected" ? "rejetée" : "escaladée"
+      }`,
+    );
     qc.invalidateQueries({ queryKey: ["validation-ops"] });
+    qc.invalidateQueries({ queryKey: ["escalated-ops"] });
   };
 
   const normalizedSearch = search.trim().toLowerCase();
@@ -165,6 +171,15 @@ function ValidationQueue() {
                   <Button size="sm" onClick={() => act(o.id, "validated", o.operation_ref)}>
                     <CheckCircle2 className="h-4 w-4 mr-1.5" /> Valider
                   </Button>
+                  {canEscalate && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => act(o.id, "escalated", o.operation_ref)}
+                    >
+                      <ArrowUpCircle className="h-4 w-4 mr-1.5" /> Escalader
+                    </Button>
+                  )}
                   <Button
                     size="sm"
                     variant="destructive"
